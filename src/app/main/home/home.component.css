@@ -1,0 +1,234 @@
+/*--------------------------------------------------------------
+# Hero Section
+--------------------------------------------------------------*/
+.hero {
+    width: 100%;
+    min-height: 100vh;
+    background: url("/assets/hero-bg.jpg") top center;
+    background-size: cover;
+    position: relative;
+    padding: 120px 0;
+    z-index: 3;
+  }
+  
+  @media (min-width: 1034px) {
+    .hero:after {
+      position: absolute;
+      content: "";
+      width: 40%;
+      background: var(--color-secondary);
+      top: 0;
+      bottom: 0;
+    }
+  }
+  
+  .hero:before {
+    position: absolute;
+    content: "";
+    background: rgba(27, 47, 69, 0.6);
+    inset: 0;
+  }
+  
+  @media (max-width: 1034px) {
+    .hero:before {
+      background: rgba(27, 47, 69, 0.7);
+    }
+  }
+  
+  .hero .container {
+    z-index: 1;
+  }
+  
+  @media (min-width: 1365px) {
+    .hero {
+      background-attachment: fixed;
+    }
+  }
+  
+  .hero h2 {
+    margin: 0;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+    font-family: var(--font-secondary);
+  }
+  
+  .hero blockquote {
+    color: #fff;
+    padding-left: 20px;
+    font-size: 15px;
+    font-family: var(--font-default);
+    border-left: 2px solid var(--color-primary);
+    margin: 40px 0;
+  }
+  
+  .hero .btn-get-started {
+    font-family: var(--font-secondary);
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 50px;
+    transition: 0.5s;
+    color: #fff;
+    background: var(--color-primary);
+  }
+  
+  .hero .btn-get-started:hover {
+    background: rgba(86, 184, 230, 0.8);
+  }
+  
+  .hero .btn-watch-video {
+    font-size: 16px;
+    transition: 0.5s;
+    margin-left: 25px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+  }
+  
+  .hero .btn-watch-video i {
+    color: var(--color-primary);
+    font-size: 32px;
+    transition: 0.3s;
+    line-height: 0;
+    margin-right: 8px;
+  }
+  
+  .hero .btn-watch-video:hover {
+    color: #fff;
+  }
+  
+  .hero .btn-watch-video:hover i {
+    color: #82cbed;
+  }
+  
+  @media (max-width: 640px) {
+    .hero h2 {
+      font-size: 36px;
+      line-height: 1;
+    }
+  
+    .hero .btn-get-started,
+    .hero .btn-watch-video {
+      font-size: 13px;
+    }
+  }
+  
+  /*--------------------------------------------------------------
+  # Why Choose Us Section
+  --------------------------------------------------------------*/
+  .why-us {
+    padding-bottom: 0;
+  }
+  
+  .why-us .img-bg {
+    min-height: 500px;
+    background-size: cover;
+  }
+  
+  .why-us .slides {
+    background-color: #f7f9fc;
+  }
+  
+  .why-us h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+  
+  .why-us h4 {
+    font-size: 18px;
+    font-weight: 400;
+    color: #29486a;
+    font-family: var(--font-secondary);
+  }
+  
+  .why-us .swiper {
+    margin: 140px 140px 120px 140px;
+    overflow: hidden;
+  }
+  
+  .why-us .swiper-button-prev:after,
+  .why-us .swiper-button-next:after {
+    font-size: 24px;
+    color: var(--color-secondary);
+  }
+  
+  .why-us .swiper-button-prev {
+    left: 80px;
+  }
+  
+  .why-us .swiper-button-next {
+    right: 80px;
+  }
+  
+  .why-us .swiper-pagination {
+    margin-top: 30px;
+    position: relative;
+  }
+  
+  .why-us .swiper-pagination .swiper-pagination-bullet {
+    background-color: var(--color-secondary);
+  }
+  
+  .why-us .swiper-pagination .swiper-pagination-bullet-active {
+    background-color: var(--color-primary);
+  }
+  
+  @media (max-width: 1200px) {
+    .why-us .swiper {
+      margin: 60px 60px 40px 60px;
+    }
+  
+    .why-us .swiper-button-prev,
+    .why-us .swiper-button-next {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 575px) {
+    .why-us .swiper {
+      margin: 40px 40px 20px 40px;
+    }
+  }
+  
+  .page-about .why-us {
+    padding: 0 0 80px 0;
+  }
+
+  section {
+    overflow: hidden;
+    padding: 80px 0;
+  }
+  
+  .section-header {
+    text-align: center;
+    padding-bottom: 30px;
+  }
+  
+  .section-header h2 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    position: relative;
+  }
+  
+  .section-header h2:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: var(--color-primary);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+  }
+  
+  .section-header p {
+    margin-bottom: 0;
+  }
