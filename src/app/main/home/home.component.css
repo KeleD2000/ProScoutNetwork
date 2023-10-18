@@ -179,34 +179,7 @@ h6 {
     margin: 140px 140px 120px 140px;
     overflow: hidden;
   }
-  
-  .why-us .swiper-button-prev:after,
-  .why-us .swiper-button-next:after {
-    font-size: 24px;
-    color: #1b2f45;
-  }
-  
-  .why-us .swiper-button-prev {
-    left: 80px;
-  }
-  
-  .why-us .swiper-button-next {
-    right: 80px;
-  }
-  
-  .why-us .swiper-pagination {
-    margin-top: 30px;
-    position: relative;
-  }
-  
-  .why-us .swiper-pagination .swiper-pagination-bullet {
-    background-color: #1b2f45;
-  }
-  
-  .why-us .swiper-pagination .swiper-pagination-bullet-active {
-    background-color: #56b8e6;
-  }
-  
+ 
   @media (max-width: 1200px) {
     .why-us .swiper {
       margin: 60px 60px 40px 60px;
@@ -264,7 +237,7 @@ h6 {
   }
 
   .call-to-action {
-    background: linear-gradient(rgba(27, 47, 69, 0.8), rgba(27, 47, 69, 0.8)), url("/assets/cta-bg.jpg") center center;
+    background: linear-gradient(rgba(27, 47, 69, 0.8), rgba(27, 47, 69, 0.8)), url("/assets/fooldal2.jpg") center center;
     background-size: cover;
     padding: 100px 0;
   }
