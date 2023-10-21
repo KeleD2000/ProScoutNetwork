@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-signup',
@@ -8,13 +9,18 @@ import { FormGroup } from '@angular/forms';
 })
 export class SignupComponent {
   registerForm!: FormGroup
-
+  showForm: string = 'none';
 
   constructor(){
     this.registerForm = new FormGroup ({
+      
 
     })
   }
+
   
+  ngOnInit(){
+    AOS.init();
+  }
 
 }

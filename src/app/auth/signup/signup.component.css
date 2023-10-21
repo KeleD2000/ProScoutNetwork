@@ -1,5 +1,5 @@
 .contact {
-    background: url("/assets/contact-bg.png") left top no-repeat;
+    background-color: #cad7dd;
     background-size: contain;
     position: relative;
   }
@@ -9,15 +9,25 @@
       background-position: center 50px;
     }
   }
-  
-  .contact:before {
-    content: "";
-    background: rgba(255, 255, 255, 0.7);
-    position: absolute;
-    bottom: 0;
-    top: 0;
-    left: 0;
-    right: 0;
+
+  .form {
+    background-color: #56b8e6;
+    border: 1px solid white;
+    border-radius: 15px 8px 15px 8px;
+  }
+
+  .left-button{
+    background: #1f98d1;
+    border: 1px solid #fff;
+    color: #fff;
+    border-radius: 15px 8px 15px 8px;
+  }
+
+  .right-button{
+    background: #1f98d1;
+    border: 1px solid #fff;
+    color: #fff;
+    border-radius: 15px 8px 15px 8px;
   }
   
   .contact .info-item+.info-item {
@@ -54,6 +64,19 @@
   
   .contact .php-email-form {
     width: 100%;
+    text-align: center;
+  }
+
+  .img{
+    width: 250px;
+    height: auto;
+  }
+  .regist-button{
+    background: #1f98d1;
+    border: 1px solid #fff;
+    padding: 12px 40px;
+    color: #fff;
+
   }
   
   .contact .php-email-form .form-group {
