@@ -1,119 +1,220 @@
 <body class="page-contact">
-    <main id="main">
+  <main id="main">
 
-        <!-- ======= Breadcrumbs ======= -->
-        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('assets/reg1.jpg');">
-          <div class="container position-relative d-flex flex-column align-items-center">
-    
-            <h2>Regisztráció</h2>
-            <ol>
-              <li><a href="index.html">Főoldal</a></li>
-              <li>Regisztráció</li>
-            </ol>
-    
-          </div>
-        </div><!-- End Breadcrumbs -->
-    
-        <!-- ======= Contact Section ======= -->
-        <section id="contact" class="contact">
-          <div class="container position-relative" data-aos="fade-up">
-    
-            <div class="row gy-4 d-flex justify-content-end">
-    
-              <div class="col-lg-5 mb-3" data-aos="fade-up" data-aos-delay="100">
-    
-                <div class="info-item d-flex">
-                  <i class="bi bi-geo-alt flex-shrink-0"></i>
-                  <div>
-                    <h4>Hely:</h4>
-                    <p>7624 Pécs, Fejér Lipót utca 3.</p>
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('assets/reg1.jpg');">
+      <div class="container position-relative d-flex flex-column align-items-center">
+
+        <h2>Regisztráció</h2>
+        <ol>
+          <li><a routerLink="/">Főoldal</a></li>
+          <li>Regisztráció</li>
+        </ol>
+
+      </div>
+    </div><!-- End Breadcrumbs -->
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container position-relative" data-aos="fade-up">
+
+        <div class="d-flex justify-content-center pt-3">
+          <div class="col-lg-6 form mb-3" data-aos="fade-right">
+            <div class="container">
+              <div class="row" style="justify-content: center;">
+                <div class="col-md-6 m-3">
+                  <div *ngIf="showForm === 'none'; else formContent" class="d-flex justify-content-between"
+                    data-aos="flip-left" data-aos-delay="100">
+                    <button class="btn btn-primary left-button" (click)="showForm = 'form1'">Sportoló</button>
+                    <button class="btn btn-primary ml-auto right-button" (click)="showForm = 'form2'">Játékos
+                      kereső</button>
+
                   </div>
-                </div><!-- End Info Item -->
-    
-                <div class="info-item d-flex">
-                  <i class="bi bi-envelope flex-shrink-0"></i>
-                  <div>
-                    <h4>Email:</h4>
-                    <p>info@example.com</p>
-                  </div>
-                </div><!-- End Info Item -->
-    
-                <div class="info-item d-flex">
-                  <i class="bi bi-phone flex-shrink-0"></i>
-                  <div>
-                    <h4>Call:</h4>
-                    <p>+1 5589 55488 55</p>
-                  </div>
-                </div><!-- End Info Item -->
-              </div>
-              <div class="col-lg-6 form mb-3" data-aos="fade-right">
-                <div class="container">
-                  <div class="row" style="justify-content: center;">
-                    <div class="col-md-6 m-3">
-                      <div *ngIf="showForm === 'none'; else formContent" class="d-flex justify-content-between" data-aos="flip-left" data-aos-delay="100">
-                        <button class="btn btn-primary left-button" (click)="showForm = 'form1'" >Sportoló</button>
-                        <button class="btn btn-primary ml-auto right-button" (click)="showForm = 'form2'">Játékos kereső</button>
-                        
-                      </div>
-                      <img src="assets/logo-removebg-preview.png" class="img" data-aos="flip-right" data-aos-delay="100">
-                      <ng-template #formContent>
-                        <div [ngSwitch]="showForm" data-aos="flip-right" data-aos-delay="100">
-                          <div *ngSwitchCase="'form1'">
-                            <h3>Form 1</h3>
-                            <form class="php-email-form">
-                              <!-- Form 1 tartalma -->
-                              <div class="mb-3">
-                                <label for="field1">Field 1</label>
-                                <input type="text" class="form-control" id="field1" name="field1">
-                              </div>
-                              <div class="mb-3">
-                                <label for="field1">Field 1</label>
-                                <input type="text" class="form-control" id="field1" name="field1">
-                              </div>
-                              <div class="mb-3">
-                                <label for="field1">Field 1</label>
-                                <input type="text" class="form-control" id="field1" name="field1">
-                              </div>
-                              <div class="mb-3">
-                                <label for="field1">Field 1</label>
-                                <input type="text" class="form-control" id="field1" name="field1">
-                              </div>
-                              <div class="mb-3">
-                                <label for="field1">Field 1</label>
-                                <input type="text" class="form-control" id="field1" name="field1">
-                              </div>
-                            </form>
-                            <div class="text-center">
-                              <button class="regist-button">Regisztráció</button>
-                            </div>
+                  <img src="assets/logo-removebg-preview.png" class="img" data-aos="flip-right" data-aos-delay="100">
+                  <ng-template #formContent>
+                    <div [ngSwitch]="showForm" data-aos="flip-right" data-aos-delay="100">
+                      <div *ngSwitchCase="'form1'">
+                        <h3>Sportoló regisztráció</h3>
+                        <form [formGroup]="registerFormPlayer" class="php-email-form">
+                          <!-- Form 1 tartalma -->
+                          <div class="mb-3">
+                            <label for="field1">Vezetéknév</label>
+                            <input formControlName="lastname" type="text" class="form-control" id="field1"
+                              name="field1">
                           </div>
-                          <div *ngSwitchCase="'form2'" data-aos="flip-right" data-aos-delay="100">
-                            <h3>Form 2</h3>
-                            <form class="php-email-form">
-                              <!-- Form 2 tartalma -->
-                              <div class="mb-3">
-                                <label for="field2">Field 2</label>
-                                <input type="text" class="form-control" id="field2" name="field2">
-                              </div>
-                            </form>
-                            <div class="text-center">
-                              <button class="regist-button">Regisztráció</button>
-                            </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('lastname')?.errors?.['required'] && (registerFormPlayer.get('lastname')?.dirty || registerFormPlayer.get('lastname')?.touched)"
+                            class="error-message">
+                            Vezetéknév megadása kötelező
                           </div>
+                          <div class="mb-3">
+                            <label for="field2">Keresztnév</label>
+                            <input formControlName="firstname" type="text" class="form-control" id="field2"
+                              name="field2">
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('firstname')?.errors?.['required'] && (registerFormPlayer.get('firstname')?.dirty || registerFormPlayer.get('firstname')?.touched)"
+                            class="error-message">
+                            Vezetéknév megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field3">E-mail</label>
+                            <input formControlName="email" type="text" class="form-control" id="field3" name="field3">
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('email')?.errors?.['required'] && (registerFormPlayer.get('email')?.dirty || registerFormPlayer.get('email')?.touched)"
+                            class="error-message">
+                            Email cím megadása kötelező
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('email')?.errors?.['email'] && (registerFormPlayer.get('email')?.dirty || registerFormPlayer.get('email')?.touched)"
+                            class="error-message">
+                            Adj meg érvényes email címet
+                          </div>
+                          <div class="mb-3">
+                            <label for="field4">Felhasználó név</label>
+                            <input formControlName="username" type="text" class="form-control" id="field4"
+                              name="field4">
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('username')?.errors?.['required'] && (registerFormPlayer.get('username')?.dirty || registerFormPlayer.get('username')?.touched)"
+                            class="error-message">
+                            Felhasználónév megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field5">Sportág</label>
+                            <input formControlName="sport" type="text" class="form-control" id="field5" name="field5">
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('sport')?.errors?.['required'] && (registerFormPlayer.get('sport')?.dirty || registerFormPlayer.get('sport')?.touched)"
+                            class="error-message">
+                            Sportág megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field6">Hely</label>
+                            <input formControlName="location" type="text" class="form-control" id="field6"
+                              name="field6">
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('location')?.errors?.['required'] && (registerFormPlayer.get('location')?.dirty || registerFormPlayer.get('location')?.touched)"
+                            class="error-message">
+                            Hely megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field7">Életkor</label>
+                            <input formControlName="age" type="text" class="form-control" id="field7" name="field7">
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('age')?.errors?.['required'] && (registerFormPlayer.get('age')?.dirty || registerFormPlayer.get('age')?.touched)"
+                            class="error-message">
+                            Életkor megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field8">Jelszó</label>
+                            <input formControlName="password" type="text" class="form-control" id="field8"
+                              name="field8">
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
+                            class="error-message">
+                            Jelszó megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field9">Jelszó megadása mégegyszer</label>
+                            <input formControlName="passwordAccept" type="text" class="form-control" id="field9"
+                              name="field9">
+                          </div>
+                        </form>
+                        <div class="text-center">
+                          <button class="regist-button">Regisztráció</button>
                         </div>
-                      </ng-template>
+                      </div>
+                      <div *ngSwitchCase="'form2'" data-aos="flip-right" data-aos-delay="100">
+                        <h3>Játékos kereső regisztráció</h3>
+                        <form [formGroup]="registerFormScout" class="php-email-form">
+                          <!-- Form 2 tartalma -->
+                          <div class="mb-3">
+                            <label for="field1">Vezetéknév</label>
+                            <input formControlName="lastname" type="text" class="form-control" id="field1"
+                              name="field1">
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('lastname')?.errors?.['required'] && (registerFormScout.get('lastname')?.dirty || registerFormScout.get('lastname')?.touched)"
+                            class="error-message">
+                            Vezetéknév megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field2">Keresztnév</label>
+                            <input formControlName="firstname" type="text" class="form-control" id="field2"
+                              name="field2">
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('firstname')?.errors?.['required'] && (registerFormScout.get('firstname')?.dirty || registerFormScout.get('firstname')?.touched)"
+                            class="error-message">
+                            Keresztnév megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field3">E-mail</label>
+                            <input formControlName="email" type="text" class="form-control" id="field3" name="field3">
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('email')?.errors?.['required'] && (registerFormScout.get('email')?.dirty || registerFormScout.get('email')?.touched)"
+                            class="error-message">
+                            Email megadása kötelező
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('email')?.errors?.['email'] && (registerFormScout.get('email')?.dirty || registerFormScout.get('email')?.touched)"
+                            class="error-message">
+                            Adj meg érvényes email címet
+                          </div>
+                          <div class="mb-3">
+                            <label for="field4">Felhasználó név</label>
+                            <input formControlName="username" type="text" class="form-control" id="field4"
+                              name="field4">
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('username')?.errors?.['required'] && (registerFormScout.get('username')?.dirty || registerFormScout.get('username')?.touched)"
+                            class="error-message">
+                            Felhasználó név megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field5">Csapat</label>
+                            <input formControlName="team" type="text" class="form-control" id="field5" name="field5">
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('team')?.errors?.['required'] && (registerFormScout.get('team')?.dirty || registerFormScout.get('team')?.touched)"
+                            class="error-message">
+                            Csapat megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field6">Jelszó</label>
+                            <input formControlName="password" type="text" class="form-control" id="field1"
+                              name="field6">
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
+                            class="error-message">
+                            Jelszó megadása kötelező
+                          </div>
+                        </form>
+                        <div class="text-center">
+                          <button (click)="onSubmitScout()" class="regist-button">Regisztráció</button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </ng-template>
                 </div>
               </div>
-              
-              
-              <!-- End Contact Form -->
-    
             </div>
-    
           </div>
-        </section><!-- End Contact Section -->
-    
-      </main><!-- End #main -->
-    </body>
+
+
+          <!-- End Contact Form -->
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+</body>

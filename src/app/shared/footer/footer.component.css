@@ -5,7 +5,7 @@
   .footer .footer-content {
     background-color: #f7f9fc;
     background-size: contain;
-    padding: 60px 0 30px 0;
+    padding: 30px 0 30px 0;
   }
   
   .footer .footer-content .footer-info {
@@ -21,6 +21,11 @@
     max-height: 40px;
     margin-right: 6px;
   }
+
+  img {
+    max-height: 90px;
+  }
+
   
   .footer .footer-content .footer-info .logo span {
     font-size: 30px;

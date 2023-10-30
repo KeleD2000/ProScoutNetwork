@@ -1,21 +1,22 @@
-<header id="header" class="header d-flex align-items-center fixed-top" [ngClass]="{'scroll-down-menu': isScrollingDown}">
+<body class="page-about">
+  <header id="header" class="header d-flex align-items-center fixed-top" [ngClass]="{'scroll-down-menu': isScrollingDown}">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-
-      <a class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
+      <a routerLink="/" class="logo d-flex align-items-center">
         <img src="/assets/logo-removebg-preview.png" alt="Logó kép" class="logo">
       </a>
-
-
+  
       <fa-icon [icon]="faHamb" class="mobile-nav-toggle mobile-nav-show" (click)="toggleMobileNav()"></fa-icon>
+      
+  
       <nav id="navbar" class="navbar" [ngClass]="{'mobile-nav-active': isMobileNavActive}">
         <ul>
-          <li><a href="index.html" class="active">Főoldal</a></li>
+          <li><a routerLink="/" class="active">Főoldal</a></li>
           <li><a href="about.html">Rólunk</a></li>
           <li><a href="services.html">Statisztikák</a></li>
-          <li><a class="btn-get-started">Bejelentkezés</a></li>
+          <li><a class="btn-get-started" routerLink="/signin" (click)="toggleMobileNav()">Bejelentkezés</a></li>
         </ul>
-      </nav><!-- .navbar -->
-
+      </nav>
     </div>
   </header>
+</body>
+

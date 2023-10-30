@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { MainModule } from './main/main.module';
 import { MainRoutingModule } from './main/main-routing.module';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -19,6 +20,7 @@ import { MainRoutingModule } from './main/main-routing.module';
     SharedModule, 
     MainModule,
     MainRoutingModule,
+    HttpClientModule
   
   ],
   providers: [],
