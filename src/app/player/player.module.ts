@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { PlayerRoutingModule } from './player-routing.module';
 import { PlayerMainComponent } from './player-main/player-main.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -12,6 +13,7 @@ import { PlayerMainComponent } from './player-main/player-main.component';
   imports: [
     CommonModule,
     PlayerRoutingModule,
+    FontAwesomeModule
   ]
 })
 export class PlayerModule { }

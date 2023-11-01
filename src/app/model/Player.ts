@@ -1,10 +1,12 @@
-export interface Scout{
+export interface Player {
     lastname: string,
     firstname: string,
     email: string,
     username: string,
     sport: string, 
-    team: string,
     password : string,
+    position: string,
     roles: string,
+    location: string,
+    age: number
 }

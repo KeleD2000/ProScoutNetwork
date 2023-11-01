@@ -91,6 +91,15 @@
                             Sportág megadása kötelező
                           </div>
                           <div class="mb-3">
+                            <label for="field5">Pozició</label>
+                            <input formControlName="position" type="text" class="form-control" id="field5" name="field5">
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('position')?.errors?.['required'] && (registerFormPlayer.get('position')?.dirty || registerFormPlayer.get('position')?.touched)"
+                            class="error-message">
+                            Pozició megadása kötelező
+                          </div>
+                          <div class="mb-3">
                             <label for="field6">Hely</label>
                             <input formControlName="location" type="text" class="form-control" id="field6"
                               name="field6">
@@ -125,7 +134,7 @@
                               name="field9">
                           </div>
                           <div class="text-center">
-                            <button class="regist-button" (click)="onSubmitScout()">Regisztráció</button>
+                            <button class="regist-button" (click)="onSubmitPlayer()">Regisztráció</button>
                           </div>
                         </form>
                       </div>
@@ -176,6 +185,15 @@
                             *ngIf="registerFormScout.get('username')?.errors?.['required'] && (registerFormScout.get('username')?.dirty || registerFormScout.get('username')?.touched)"
                             class="error-message">
                             Felhasználó név megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field5">Sport</label>
+                            <input formControlName="sport" type="text" class="form-control" id="field5" name="field5">
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('sport')?.errors?.['required'] && (registerFormScout.get('sport')?.dirty || registerFormScout.get('sport')?.touched)"
+                            class="error-message">
+                            Sport megadása kötelező
                           </div>
                           <div class="mb-3">
                             <label for="field5">Csapat</label>
