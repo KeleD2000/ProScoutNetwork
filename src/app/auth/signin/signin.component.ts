@@ -9,7 +9,13 @@ import * as AOS from 'aos';
 export class SigninComponent {
 
   ngOnInit(){
-    AOS.init();
+
   }
+
+  ngAfterViewInit(){
+    AOS.init({
+      once: true
+    });
+   }
 
 }

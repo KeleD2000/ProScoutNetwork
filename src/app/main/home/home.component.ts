@@ -9,7 +9,13 @@ import * as AOS from 'aos';
 })
 export class HomeComponent {
   ngOnInit() {
-    AOS.init();
+
+ }
+
+ ngAfterViewInit(){
+  AOS.init({
+    once: true
+  });
  }
 
 }

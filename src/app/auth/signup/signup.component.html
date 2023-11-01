@@ -55,7 +55,7 @@
                           <div
                             *ngIf="registerFormPlayer.get('firstname')?.errors?.['required'] && (registerFormPlayer.get('firstname')?.dirty || registerFormPlayer.get('firstname')?.touched)"
                             class="error-message">
-                            Vezetéknév megadása kötelező
+                            Keresztnév megadása kötelező
                           </div>
                           <div class="mb-3">
                             <label for="field3">E-mail</label>
@@ -124,10 +124,10 @@
                             <input formControlName="passwordAccept" type="text" class="form-control" id="field9"
                               name="field9">
                           </div>
+                          <div class="text-center">
+                            <button class="regist-button" (click)="onSubmitScout()">Regisztráció</button>
+                          </div>
                         </form>
-                        <div class="text-center">
-                          <button class="regist-button">Regisztráció</button>
-                        </div>
                       </div>
                       <div *ngSwitchCase="'form2'" data-aos="flip-right" data-aos-delay="100">
                         <h3>Játékos kereső regisztráció</h3>
@@ -196,10 +196,10 @@
                             class="error-message">
                             Jelszó megadása kötelező
                           </div>
+                          <div class="text-center">
+                            <button (click)="onSubmitScout()" class="regist-button">Regisztráció</button>
+                          </div>
                         </form>
-                        <div class="text-center">
-                          <button (click)="onSubmitScout()" class="regist-button">Regisztráció</button>
-                        </div>
                       </div>
                     </div>
                   </ng-template>
