@@ -6,6 +6,7 @@ import { Role } from 'src/app/model/Roles';
 import { Scout } from 'src/app/model/Scout';
 import { ScoutService } from 'src/app/services/scout.service';
 
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -13,10 +14,11 @@ import { ScoutService } from 'src/app/services/scout.service';
 })
 export class SignupComponent {
   registerFormPlayer!: FormGroup
-  registerFormScout!:FormGroup
+  registerFormScout!: FormGroup
   showForm: string = 'none';
+  passwordsMatch: boolean = true;
 
-  constructor(private scoutService: ScoutService, private fb: FormBuilder){
+  constructor(private scoutService: ScoutService, private fb: FormBuilder) {
     this.registerFormPlayer = this.fb.group({
       lastname: ['', [Validators.required]],
       firstname: ['', [Validators.required]],
@@ -25,27 +27,41 @@ export class SignupComponent {
       position: ['', [Validators.required]],
       sport: ['', [Validators.required]],
       location: ['', [Validators.required]],
-      age: ['', [Validators.required]],
+      age: [0, [Validators.required]],
       password: ['', [Validators.required]],
       passwordAccept: ['', [Validators.required]],
     });
 
+    this.registerFormPlayer.get('password')?.valueChanges.subscribe(() => {
+      this.registerFormPlayer.get('passwordAccept')?.updateValueAndValidity();
+    })
+
     this.registerFormScout = this.fb.group({
-      lastname:['', [Validators.required]],
+      lastname: ['', [Validators.required]],
       firstname: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       username: ['', [Validators.required]],
       sport: ['', [Validators.required]],
       team: ['', [Validators.required]],
       password: ['', [Validators.required]],
-      passwordAccept: ['', ],
+      passwordAccept: ['', [Validators.required]],
     });
   }
 
-  onSubmitScout(){
-    if(this.registerFormScout.valid){
+  passwordMatchPlayer(){
+    const password = this.registerFormPlayer.get('password')?.value;
+    const confirmPassword = this.registerFormPlayer.get('passwordAccept')?.value;
+    console.log(password);
+    console.log(confirmPassword);
+
+    return password === confirmPassword;
+  }
+
+
+  onSubmitScout() {
+    if (this.registerFormScout.valid) {
       const scoutData: Scout = {
-        lastname : this.registerFormScout.get('lastname')?.value,
+        lastname: this.registerFormScout.get('lastname')?.value,
         firstname: this.registerFormScout.get('firstname')?.value,
         email: this.registerFormScout.get('email')?.value,
         username: this.registerFormScout.get('username')?.value,
@@ -55,7 +71,7 @@ export class SignupComponent {
         roles: Role.Scout
 
       }
-      this.scoutService.registerScout(scoutData).subscribe( res => {
+      this.scoutService.registerScout(scoutData).subscribe(res => {
         console.log('Sikeres mentés', res);
       }, error => {
         console.error('Mentés sikertelen', error);
@@ -63,10 +79,10 @@ export class SignupComponent {
     }
   }
 
-  onSubmitPlayer(){
-    if(this.registerFormPlayer.valid){
+  onSubmitPlayer() {
+    if (this.registerFormPlayer.valid) {
       const playerData: Player = {
-        lastname : this.registerFormPlayer.get('lastname')?.value,
+        lastname: this.registerFormPlayer.get('lastname')?.value,
         firstname: this.registerFormPlayer.get('firstname')?.value,
         email: this.registerFormPlayer.get('email')?.value,
         username: this.registerFormPlayer.get('username')?.value,
@@ -77,22 +93,23 @@ export class SignupComponent {
         password: this.registerFormPlayer.get('password')?.value,
         roles: Role.Player
       }
-      this.scoutService.registerPlayer(playerData).subscribe( res => {
+      this.scoutService.registerPlayer(playerData).subscribe(res => {
         console.log('Sikeres mentés', res);
       }, error => {
         console.error('Mentés sikertelen', error);
       });
     }
+    console.log(this.registerFormPlayer.get('password')?.value)
   }
-  
-  ngOnInit(){
+
+  ngOnInit() {
 
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     AOS.init({
       once: true
     });
-   }
+  }
 
 }

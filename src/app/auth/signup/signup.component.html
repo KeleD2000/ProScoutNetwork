@@ -30,7 +30,8 @@
                       kereső</button>
 
                   </div>
-                  <img src="assets/logo-removebg-preview.png" class="img" data-aos="flip-right" data-aos-delay="100">
+                  <img src="assets/logo-removebg-preview.png" class="img img-fluid" data-aos="flip-right"
+                    data-aos-delay="100">
                   <ng-template #formContent>
                     <div [ngSwitch]="showForm" data-aos="flip-right" data-aos-delay="100">
                       <div *ngSwitchCase="'form1'">
@@ -92,7 +93,8 @@
                           </div>
                           <div class="mb-3">
                             <label for="field5">Pozició</label>
-                            <input formControlName="position" type="text" class="form-control" id="field5" name="field5">
+                            <input formControlName="position" type="text" class="form-control" id="field5"
+                              name="field5">
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('position')?.errors?.['required'] && (registerFormPlayer.get('position')?.dirty || registerFormPlayer.get('position')?.touched)"
@@ -133,6 +135,14 @@
                             <input formControlName="passwordAccept" type="text" class="form-control" id="field9"
                               name="field9">
                           </div>
+                          <div
+                          *ngIf="registerFormPlayer.get('passwordAccept')?.errors?.['required'] && (registerFormPlayer.get('passwordAccept')?.dirty || registerFormPlayer.get('passwordAccept')?.touched)"
+                          class="error-message mb-2">
+                          Jelszó megadása kötelező
+                        </div>
+                        <div class="error-message" *ngIf="registerFormPlayer.get('confirmPassword')?.dirty && passwordMatchPlayer()">
+                          A jelszavak nem egyeznek meg.
+                        </div>                  
                           <div class="text-center">
                             <button class="regist-button" (click)="onSubmitPlayer()">Regisztráció</button>
                           </div>
@@ -206,11 +216,21 @@
                           </div>
                           <div class="mb-3">
                             <label for="field6">Jelszó</label>
-                            <input formControlName="password" type="text" class="form-control" id="field1"
+                            <input formControlName="password" type="password" class="form-control" id="field1"
                               name="field6">
                           </div>
                           <div
                             *ngIf="registerFormScout.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
+                            class="error-message">
+                            Jelszó megadása kötelező
+                          </div>
+                          <div class="mb-3">
+                            <label for="field6">Jelszó megadása mégegyszer</label>
+                            <input formControlName="passwordAccept" type="password" class="form-control" id="field1"
+                              name="field6">
+                          </div>
+                          <div
+                            *ngIf="registerFormScout.get('passwordAccept')?.errors?.['required'] && (registerFormPlayer.get('passwordAccept')?.dirty || registerFormPlayer.get('passwordAccept')?.touched)"
                             class="error-message">
                             Jelszó megadása kötelező
                           </div>

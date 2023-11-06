@@ -7,12 +7,15 @@ import { SharedModule } from './shared/shared.module';
 import { MainModule } from './main/main.module';
 import { MainRoutingModule } from './main/main-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+
 
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,
