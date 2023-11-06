@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import * as AOS from 'aos';
 
 @Component({
@@ -7,6 +8,11 @@ import * as AOS from 'aos';
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent {
+
+
+  constructor(private fb: FormBuilder){
+    
+  }
 
   ngOnInit(){
 

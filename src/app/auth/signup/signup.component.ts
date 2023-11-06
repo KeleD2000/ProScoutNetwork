@@ -5,6 +5,7 @@ import { Player } from 'src/app/model/Player';
 import { Role } from 'src/app/model/Roles';
 import { Scout } from 'src/app/model/Scout';
 import { ScoutService } from 'src/app/services/scout.service';
+import { passwordMatchValidator } from 'src/app/validators/password-match-validator';
 
 
 @Component({
@@ -30,11 +31,9 @@ export class SignupComponent {
       age: [0, [Validators.required]],
       password: ['', [Validators.required]],
       passwordAccept: ['', [Validators.required]],
+    }, {
+      validators: passwordMatchValidator
     });
-
-    this.registerFormPlayer.get('password')?.valueChanges.subscribe(() => {
-      this.registerFormPlayer.get('passwordAccept')?.updateValueAndValidity();
-    })
 
     this.registerFormScout = this.fb.group({
       lastname: ['', [Validators.required]],
@@ -45,24 +44,17 @@ export class SignupComponent {
       team: ['', [Validators.required]],
       password: ['', [Validators.required]],
       passwordAccept: ['', [Validators.required]],
+    }, {
+      validators: passwordMatchValidator
     });
-  }
-
-  passwordMatchPlayer(){
-    const password = this.registerFormPlayer.get('password')?.value;
-    const confirmPassword = this.registerFormPlayer.get('passwordAccept')?.value;
-    console.log(password);
-    console.log(confirmPassword);
-
-    return password === confirmPassword;
   }
 
 
   onSubmitScout() {
     if (this.registerFormScout.valid) {
       const scoutData: Scout = {
-        lastname: this.registerFormScout.get('lastname')?.value,
-        firstname: this.registerFormScout.get('firstname')?.value,
+        last_name: this.registerFormScout.get('lastname')?.value,
+        first_name: this.registerFormScout.get('firstname')?.value,
         email: this.registerFormScout.get('email')?.value,
         username: this.registerFormScout.get('username')?.value,
         sport: this.registerFormScout.get('sport')?.value,
@@ -82,8 +74,8 @@ export class SignupComponent {
   onSubmitPlayer() {
     if (this.registerFormPlayer.valid) {
       const playerData: Player = {
-        lastname: this.registerFormPlayer.get('lastname')?.value,
-        firstname: this.registerFormPlayer.get('firstname')?.value,
+        last_name: this.registerFormPlayer.get('lastname')?.value,
+        first_name: this.registerFormPlayer.get('firstname')?.value,
         email: this.registerFormPlayer.get('email')?.value,
         username: this.registerFormPlayer.get('username')?.value,
         sport: this.registerFormPlayer.get('sport')?.value,

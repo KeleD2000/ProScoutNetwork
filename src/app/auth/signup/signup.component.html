@@ -45,7 +45,7 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('lastname')?.errors?.['required'] && (registerFormPlayer.get('lastname')?.dirty || registerFormPlayer.get('lastname')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Vezetéknév megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -55,7 +55,7 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('firstname')?.errors?.['required'] && (registerFormPlayer.get('firstname')?.dirty || registerFormPlayer.get('firstname')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Keresztnév megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -64,12 +64,12 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('email')?.errors?.['required'] && (registerFormPlayer.get('email')?.dirty || registerFormPlayer.get('email')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Email cím megadása kötelező
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('email')?.errors?.['email'] && (registerFormPlayer.get('email')?.dirty || registerFormPlayer.get('email')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Adj meg érvényes email címet
                           </div>
                           <div class="mb-3">
@@ -79,7 +79,7 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('username')?.errors?.['required'] && (registerFormPlayer.get('username')?.dirty || registerFormPlayer.get('username')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Felhasználónév megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -88,7 +88,7 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('sport')?.errors?.['required'] && (registerFormPlayer.get('sport')?.dirty || registerFormPlayer.get('sport')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Sportág megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -98,7 +98,7 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('position')?.errors?.['required'] && (registerFormPlayer.get('position')?.dirty || registerFormPlayer.get('position')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Pozició megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -108,7 +108,7 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('location')?.errors?.['required'] && (registerFormPlayer.get('location')?.dirty || registerFormPlayer.get('location')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Hely megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -117,32 +117,32 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('age')?.errors?.['required'] && (registerFormPlayer.get('age')?.dirty || registerFormPlayer.get('age')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Életkor megadása kötelező
                           </div>
                           <div class="mb-3">
                             <label for="field8">Jelszó</label>
-                            <input formControlName="password" type="text" class="form-control" id="field8"
+                            <input formControlName="password" type="password" class="form-control" id="field8"
                               name="field8">
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Jelszó megadása kötelező
                           </div>
                           <div class="mb-3">
                             <label for="field9">Jelszó megadása mégegyszer</label>
-                            <input formControlName="passwordAccept" type="text" class="form-control" id="field9"
+                            <input formControlName="passwordAccept" type="password" class="form-control" id="field9"
                               name="field9">
                           </div>
                           <div
-                          *ngIf="registerFormPlayer.get('passwordAccept')?.errors?.['required'] && (registerFormPlayer.get('passwordAccept')?.dirty || registerFormPlayer.get('passwordAccept')?.touched)"
-                          class="error-message mb-2">
-                          Jelszó megadása kötelező
-                        </div>
-                        <div class="error-message" *ngIf="registerFormPlayer.get('confirmPassword')?.dirty && passwordMatchPlayer()">
-                          A jelszavak nem egyeznek meg.
-                        </div>                  
+                            *ngIf="registerFormPlayer.get('passwordAccept')?.errors?.['required'] && (registerFormPlayer.get('passwordAccept')?.dirty || registerFormPlayer.get('passwordAccept')?.touched)"
+                            class="error-message mb-3">
+                            Jelszó megadása kötelező
+                          </div>
+                          <div *ngIf="registerFormPlayer.hasError('passwordMismatch')" class="error-message mb-3">
+                            Jelszók nem egyeznek meg.
+                          </div>
                           <div class="text-center">
                             <button class="regist-button" (click)="onSubmitPlayer()">Regisztráció</button>
                           </div>
@@ -159,7 +159,7 @@
                           </div>
                           <div
                             *ngIf="registerFormScout.get('lastname')?.errors?.['required'] && (registerFormScout.get('lastname')?.dirty || registerFormScout.get('lastname')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Vezetéknév megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -169,7 +169,7 @@
                           </div>
                           <div
                             *ngIf="registerFormScout.get('firstname')?.errors?.['required'] && (registerFormScout.get('firstname')?.dirty || registerFormScout.get('firstname')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Keresztnév megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -178,12 +178,12 @@
                           </div>
                           <div
                             *ngIf="registerFormScout.get('email')?.errors?.['required'] && (registerFormScout.get('email')?.dirty || registerFormScout.get('email')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Email megadása kötelező
                           </div>
                           <div
                             *ngIf="registerFormScout.get('email')?.errors?.['email'] && (registerFormScout.get('email')?.dirty || registerFormScout.get('email')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Adj meg érvényes email címet
                           </div>
                           <div class="mb-3">
@@ -193,7 +193,7 @@
                           </div>
                           <div
                             *ngIf="registerFormScout.get('username')?.errors?.['required'] && (registerFormScout.get('username')?.dirty || registerFormScout.get('username')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Felhasználó név megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -202,7 +202,7 @@
                           </div>
                           <div
                             *ngIf="registerFormScout.get('sport')?.errors?.['required'] && (registerFormScout.get('sport')?.dirty || registerFormScout.get('sport')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Sport megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -211,7 +211,7 @@
                           </div>
                           <div
                             *ngIf="registerFormScout.get('team')?.errors?.['required'] && (registerFormScout.get('team')?.dirty || registerFormScout.get('team')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Csapat megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -221,7 +221,7 @@
                           </div>
                           <div
                             *ngIf="registerFormScout.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Jelszó megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -231,8 +231,11 @@
                           </div>
                           <div
                             *ngIf="registerFormScout.get('passwordAccept')?.errors?.['required'] && (registerFormPlayer.get('passwordAccept')?.dirty || registerFormPlayer.get('passwordAccept')?.touched)"
-                            class="error-message">
+                            class="error-message mb-3">
                             Jelszó megadása kötelező
+                          </div>
+                          <div *ngIf="registerFormScout.hasError('passwordMismatch')" class="error-message mb-3">
+                            Jelszók nem egyeznek meg.
                           </div>
                           <div class="text-center">
                             <button (click)="onSubmitScout()" class="regist-button">Regisztráció</button>

@@ -1,6 +1,6 @@
 export interface Scout{
-    lastname: string,
-    firstname: string,
+    last_name: string,
+    first_name: string,
     email: string,
     username: string,
     sport: string, 
