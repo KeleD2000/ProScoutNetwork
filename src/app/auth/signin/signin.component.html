@@ -15,23 +15,23 @@
         <section id="contact" class="contact">
             <div class="d-flex justify-content-center p-3">
                 <div class="row" style="justify-content: center;">
-                    <form class="form" >
+                    <form class="form" [formGroup]="loginForm">
                         <div class="input-flex">
                             <div class="mb-3" data-aos="flip-right" data-aos-delay="100">
                                 <label for="field1">Felhasználó név</label>
-                                <input formControlName="lastname" type="text" class="form-control" id="field1"
+                                <input formControlName="username" type="text" class="form-control" id="field1"
                                     name="field1">
                             </div>
                             <div class="mb-3" data-aos="flip-right" data-aos-delay="100">
-                                <label for="field1">Jelszó</label>
-                                <input formControlName="lastname" type="text" class="form-control" id="field1"
-                                    name="field1">
+                                <label for="field2">Jelszó</label>
+                                <input formControlName="password" type="password" class="form-control" id="field2"
+                                    name="field2">
                             </div>
                         </div>
                     </form>
                     <div class="col-md-6 m-3 d-flex flex-column align-items-center">
                         <div data-aos="flip-left" data-aos-delay="100">
-                            <button class="btn btn-primary left-button">Bejelentkezés</button>
+                            <button class="btn btn-primary left-button" (click)="onSubmit()">Bejelentkezés</button>
                         </div>
                         <img src="assets/logo-removebg-preview.png" class="img" data-aos="flip-right"
                             data-aos-delay="100">

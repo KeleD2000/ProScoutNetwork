@@ -45,7 +45,7 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('lastname')?.errors?.['required'] && (registerFormPlayer.get('lastname')?.dirty || registerFormPlayer.get('lastname')?.touched)"
-                            class="error-message mb-3">
+                            class="error-message mb-3" [@fadeInOut]>
                             Vezetéknév megadása kötelező
                           </div>
                           <div class="mb-3">

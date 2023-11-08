@@ -1,17 +1,26 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import * as AOS from 'aos';
 import { Player } from 'src/app/model/Player';
 import { Role } from 'src/app/model/Roles';
 import { Scout } from 'src/app/model/Scout';
-import { ScoutService } from 'src/app/services/scout.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { passwordMatchValidator } from 'src/app/validators/password-match-validator';
 
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+  styleUrls: ['./signup.component.css'],
+  animations: [
+    trigger('fadeInOut', [
+      state('in', style({ opacity: 1 })),
+      transition(':enter', [style({ opacity: 0 }), animate(300)]),
+      transition(':leave', animate(300, style({ opacity: 0 })))
+    ])
+  ]
 })
 export class SignupComponent {
   registerFormPlayer!: FormGroup
@@ -19,7 +28,7 @@ export class SignupComponent {
   showForm: string = 'none';
   passwordsMatch: boolean = true;
 
-  constructor(private scoutService: ScoutService, private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router : Router, private authService: AuthService) {
     this.registerFormPlayer = this.fb.group({
       lastname: ['', [Validators.required]],
       firstname: ['', [Validators.required]],
@@ -63,8 +72,9 @@ export class SignupComponent {
         roles: Role.Scout
 
       }
-      this.scoutService.registerScout(scoutData).subscribe(res => {
+      this.authService.registerScout(scoutData).subscribe(res => {
         console.log('Sikeres mentés', res);
+        this.router.navigate(['/signin']);
       }, error => {
         console.error('Mentés sikertelen', error);
       });
@@ -85,8 +95,9 @@ export class SignupComponent {
         password: this.registerFormPlayer.get('password')?.value,
         roles: Role.Player
       }
-      this.scoutService.registerPlayer(playerData).subscribe(res => {
+      this.authService.registerPlayer(playerData).subscribe(res => {
         console.log('Sikeres mentés', res);
+        this.router.navigate(['/signin']);
       }, error => {
         console.error('Mentés sikertelen', error);
       });
