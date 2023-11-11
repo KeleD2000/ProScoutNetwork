@@ -8,6 +8,7 @@ import { MainModule } from './main/main.module';
 import { MainRoutingModule } from './main/main-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 
 
@@ -15,7 +16,8 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
 @NgModule({
   declarations: [
     AppComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,

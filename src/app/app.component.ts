@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 
 
 @Component({
@@ -10,8 +10,9 @@ import { NavigationEnd, NavigationError, NavigationStart, Router } from '@angula
 export class AppComponent {
   title = 'ProScoutNetwork';
   spinner: boolean = false;
+  showHeaderAndFooter: boolean = true;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.router.events.subscribe(event => {
@@ -23,6 +24,14 @@ export class AppComponent {
         }, 2500);
       }
     });
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        // Ellenőrizze, hogy az aktuális útvonal 404-es hiba-e
+        const isNotFound = this.activatedRoute.firstChild?.snapshot.url.some(segment => segment.path === 'not-found');
+        this.showHeaderAndFooter = !isNotFound;
+      }
+    });
+
   }
 
 

@@ -1,6 +1,9 @@
 <app-spinner *ngIf="spinner"></app-spinner>
-<div *ngIf="!spinner" class="app-container">
+<div *ngIf="!spinner && showHeaderAndFooter" class="app-container">
     <app-header></app-header>
     <router-outlet></router-outlet>
     <app-footer></app-footer>
+</div>
+<div *ngIf="!spinner && !showHeaderAndFooter" class="app-container">
+    <router-outlet></router-outlet>
 </div>
