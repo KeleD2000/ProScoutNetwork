@@ -11,6 +11,8 @@ export class HeaderComponent {
   isScrollingDown = false;
   faHamb = faBars
   isMobileNavActive: boolean = false;
+  isItPlayer: boolean = false;
+  isItScout: boolean = false;
 
 
   @HostListener('window:scroll', ['$event'])
@@ -26,7 +28,25 @@ export class HeaderComponent {
 
   toggleMobileNav() {
     this.isMobileNavActive = !this.isMobileNavActive;
-    console.log("szar");
+
+  }
+
+  logout(){
+    if(localStorage.getItem('isPlayer')){
+      localStorage.removeItem('isPlayer');
+      this.isItPlayer = false;
+    }else if(localStorage.getItem('isScout')){
+      localStorage.removeItem('isScout');
+      this.isItScout = false;
+    }
+  }
+
+  ngOnInit(){
+    if(localStorage.getItem('isPlayer')){
+      this.isItPlayer = true;
+    }else if(localStorage.getItem('isScout')){
+      this.isItScout = true;
+    }
   }
 
 }

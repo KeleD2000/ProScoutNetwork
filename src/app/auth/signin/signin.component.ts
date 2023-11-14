@@ -12,6 +12,8 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class SigninComponent {
   loginForm!: FormGroup
+  isItPlayer: boolean = false;
+  isItScout: boolean = false;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router){
     this.loginForm = this.fb.group({
@@ -27,7 +29,17 @@ export class SigninComponent {
         password: this.loginForm.get('password')?.value
       };
       this.authService.login(loginUser).subscribe( p => {
-        console.log("Sikeres bejelentkezés", p);
+        for(const [key, value] of Object.entries(p)){
+          for(let i in value){
+            if(value[i].authority === 'PLAYER'){
+              this.isItPlayer = true;
+              localStorage.setItem('isPlayer', JSON.stringify(this.isItPlayer));
+            }else if(value[i].authority === 'SCOUT'){
+              this.isItScout = true;
+              localStorage.setItem('isScout', JSON.stringify(this.isItScout));
+            }
+          }
+        }
         this.router.navigate(['player-main']);
       })
     }else{
