@@ -45,7 +45,7 @@
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('lastname')?.errors?.['required'] && (registerFormPlayer.get('lastname')?.dirty || registerFormPlayer.get('lastname')?.touched)"
-                            class="error-message mb-3" [@fadeInOut]>
+                            class="error-message mb-3">
                             Vezetéknév megadása kötelező
                           </div>
                           <div class="mb-3">
@@ -123,12 +123,17 @@
                           <div class="mb-3">
                             <label for="field8">Jelszó</label>
                             <input formControlName="password" type="password" class="form-control" id="field8"
-                              name="field8">
+                              name="field8" minlength="8">
                           </div>
                           <div
                             *ngIf="registerFormPlayer.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
                             class="error-message mb-3">
                             Jelszó megadása kötelező
+                          </div>
+                          <div
+                            *ngIf="registerFormPlayer.get('password')?.errors?.['minlength'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
+                            class="error-message mb-3">
+                            A jelszónak legalább 8 karakter hosszúnak kell lennie.
                           </div>
                           <div class="mb-3">
                             <label for="field9">Jelszó megadása mégegyszer</label>
@@ -217,13 +222,18 @@
                           <div class="mb-3">
                             <label for="field6">Jelszó</label>
                             <input formControlName="password" type="password" class="form-control" id="field1"
-                              name="field6">
+                              name="field6" minlength="8">
                           </div>
                           <div
                             *ngIf="registerFormScout.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
                             class="error-message mb-3">
                             Jelszó megadása kötelező
                           </div>
+                          <div
+                          *ngIf="registerFormScout.get('password')?.errors?.['minlength'] && (registerFormScout.get('password')?.dirty || registerFormScout.get('password')?.touched)"
+                          class="error-message mb-3">
+                          A jelszónak legalább 8 karakter hosszúnak kell lennie.
+                        </div>
                           <div class="mb-3">
                             <label for="field6">Jelszó megadása mégegyszer</label>
                             <input formControlName="passwordAccept" type="password" class="form-control" id="field1"

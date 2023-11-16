@@ -38,7 +38,7 @@ export class SignupComponent {
       sport: ['', [Validators.required]],
       location: ['', [Validators.required]],
       age: [0, [Validators.required]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.min(8)]],
       passwordAccept: ['', [Validators.required]],
     }, {
       validators: passwordMatchValidator
@@ -51,7 +51,7 @@ export class SignupComponent {
       username: ['', [Validators.required]],
       sport: ['', [Validators.required]],
       team: ['', [Validators.required]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.min(8)]],
       passwordAccept: ['', [Validators.required]],
     }, {
       validators: passwordMatchValidator

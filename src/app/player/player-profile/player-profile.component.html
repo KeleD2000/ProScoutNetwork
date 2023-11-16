@@ -14,7 +14,7 @@
   </main>
   <section class="m-3">
     <div class="row">
-      <div class="col-lg-4">
+      <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
         <div class="card mb-4">
           <div class="card-body text-center">
             <img src="assets/not-found.jpg" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
@@ -22,13 +22,13 @@
             <p class="text-muted mb-1">Sportág, poszt</p>
             <p class="text-muted mb-4">Hely</p>
             <div class="d-flex justify-content-center mb-2">
-              <button type="button" class="btn btn-primary">Fájlok</button>
+              <button type="button" class="btn btn-primary" (click)="openModal('files')">Fájlok</button>
               <button type="button" class="btn btn-outline-primary ms-1">Üzenet küldés</button>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-8">
+      <div class="col-lg-8" data-aos="zoom-in" data-aos-delay="100">
         <div class="card mb-4">
           <div class="card-body">
             <div class="row">
@@ -76,6 +76,55 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="overlay" *ngIf="showModal" [@fadeInOut]></div>
+      <div class="modal fade modalc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+          id="exampleModal">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{ modalTitle }}</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+                        </button>
+                    </div>
+                    <div class="modal-body d-flex justify-content-center">
+                      <form #myForm="ngForm">
+                        <label for="options">Válassz egy elemet:</label>
+                        <select id="options" name="selectedOption" [(ngModel)]="selectedOption">
+                          <option value="PDF">PDF</option>
+                          <option value="Profilkép">Profilkép</option>
+                          <option value="Videó">Videó</option>
+                        </select>
+                      
+                        <div *ngIf="selectedOption === 'PDF'" [@fadeInOut]>
+                          <label for="input1">PDF fájl feltöltése:</label>
+                          <div class="mb-3">
+                            <input id="input1" type="file" name="input1Value" [(ngModel)]="input1Value" accept="pdf" />
+                          </div>
+                        </div>
+                      
+                        <div *ngIf="selectedOption === 'Profilkép'" [@fadeInOut]>
+                          <label for="input2">Profilkép feltöltése:</label>
+                          <div class="mb-3">
+                            <input id="input2" type="file" name="input2Value" [(ngModel)]="input2Value" accept="video/mp4" />
+                          </div>
+                        </div>
+                      
+                        <div *ngIf="selectedOption === 'Videó'" [@fadeInOut]>
+                          <label for="input3">Videó feltöltése:</label>
+                          <div class="mb-3">
+                            <input id="input3" type="file" name="input3Value" [(ngModel)]="input3Value" accept="jpg"/>
+                          </div>
+                        </div>
+                      </form>                      
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Bezárás</button>
+                    </div>
+                </form>
+            </div>
+        </div>   
       </div>
     </div>
   </section>

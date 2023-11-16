@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as AOS from 'aos';
 import { LoginUser } from 'src/app/model/LoginUser';
@@ -17,8 +17,8 @@ export class SigninComponent {
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router){
     this.loginForm = this.fb.group({
-      username : [''],
-      password : ['']
+      username : ['', [Validators.required]],
+      password : ['', [Validators.required]]
     })
   }
 

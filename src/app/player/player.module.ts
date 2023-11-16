@@ -5,6 +5,7 @@ import { PlayerRoutingModule } from './player-routing.module';
 import { PlayerMainComponent } from './player-main/player-main.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { PlayerProfileComponent } from './player-profile/player-profile.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { PlayerProfileComponent } from './player-profile/player-profile.componen
   imports: [
     CommonModule,
     PlayerRoutingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    FormsModule
   ]
 })
 export class PlayerModule { }
