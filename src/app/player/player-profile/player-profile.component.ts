@@ -1,6 +1,7 @@
 import { Component, Renderer2 } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as AOS from 'aos';
+import { FileService } from 'src/app/services/file.service';
 
 @Component({
   selector: 'app-player-profile',
@@ -25,8 +26,9 @@ export class PlayerProfileComponent {
   input1Value: string = '';
   input2Value: string = '';
   input3Value: string = '';
+  selectedFile?: File;
 
-  constructor(private renderer: Renderer2){
+  constructor(private renderer: Renderer2, private fileService: FileService){
 
   }
 
@@ -63,6 +65,27 @@ export class PlayerProfileComponent {
     }
     this.showModal = false;
     this.renderer.removeClass(document.body, 'no-scroll');
+  }
+
+  onFileChange( event: any){
+  this.selectedFile = event.target.files[0];    
+  }
+
+  uploadFile(){
+    if(!this.selectedFile){
+      return;
+    }
+    const username = localStorage.getItem('isLoggedin');
+    if(username){
+      const data = new FormData();
+      data.append("file", this.selectedFile, this.selectedFile.name);
+      data.append("type", this.selectedOption);
+      data.append("format", this.selectedFile.type);
+      data.append("username", JSON.parse(username));
+      this.fileService.fileUpload(data).subscribe( p => {
+        console.log(p, "Sikeres");
+      })
+    }
   }
 
   ngAfterViewInit(){

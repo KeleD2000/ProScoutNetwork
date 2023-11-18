@@ -39,6 +39,7 @@ export class HeaderComponent {
       localStorage.removeItem('isScout');
       this.isItScout = false;
     }
+    localStorage.removeItem('isLoggedin');
   }
 
   ngOnInit(){

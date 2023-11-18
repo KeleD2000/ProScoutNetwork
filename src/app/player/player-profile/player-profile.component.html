@@ -93,33 +93,34 @@
                         <label for="options">Válassz egy elemet:</label>
                         <select id="options" name="selectedOption" [(ngModel)]="selectedOption">
                           <option value="PDF">PDF</option>
-                          <option value="Profilkép">Profilkép</option>
+                          <option value="profilpic">Profilkép</option>
                           <option value="Videó">Videó</option>
                         </select>
                       
                         <div *ngIf="selectedOption === 'PDF'" [@fadeInOut]>
                           <label for="input1">PDF fájl feltöltése:</label>
                           <div class="mb-3">
-                            <input id="input1" type="file" name="input1Value" [(ngModel)]="input1Value" accept="pdf" />
+                            <input id="input1" type="file" name="input1Value" accept="pdf" (change)="onFileChange($event)" />
                           </div>
                         </div>
                       
-                        <div *ngIf="selectedOption === 'Profilkép'" [@fadeInOut]>
+                        <div *ngIf="selectedOption === 'profilpic'" [@fadeInOut]>
                           <label for="input2">Profilkép feltöltése:</label>
                           <div class="mb-3">
-                            <input id="input2" type="file" name="input2Value" [(ngModel)]="input2Value" accept="video/mp4" />
+                            <input id="input2" type="file" name="input2Value" (change)="onFileChange($event)" />
                           </div>
                         </div>
                       
                         <div *ngIf="selectedOption === 'Videó'" [@fadeInOut]>
                           <label for="input3">Videó feltöltése:</label>
                           <div class="mb-3">
-                            <input id="input3" type="file" name="input3Value" [(ngModel)]="input3Value" accept="jpg"/>
+                            <input id="input3" type="file" name="input3Value" (change)="onFileChange($event)"/>
                           </div>
                         </div>
                       </form>                      
                     </div>
                     <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="uploadFile()">Feltöltés</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Bezárás</button>
                     </div>
                 </form>

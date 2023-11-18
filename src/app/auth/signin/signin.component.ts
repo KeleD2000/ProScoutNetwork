@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as AOS from 'aos';
+import { LoginResponse } from 'src/app/model/LoginResponse';
 import { LoginUser } from 'src/app/model/LoginUser';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -28,7 +29,8 @@ export class SigninComponent {
         username: this.loginForm.get('username')?.value,
         password: this.loginForm.get('password')?.value
       };
-      this.authService.login(loginUser).subscribe( p => {
+      this.authService.login(loginUser).subscribe( (p : LoginResponse) => {
+        localStorage.setItem('isLoggedin', JSON.stringify(p.username));
         for(const [key, value] of Object.entries(p)){
           for(let i in value){
             if(value[i].authority === 'PLAYER'){
