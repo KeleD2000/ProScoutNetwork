@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,5 +13,11 @@ export class FileService {
 
   fileUpload(data: FormData){
     return this.http.post(`${this.baseUrl}/api/upload`, data);
+  }
+
+  getProfilePicBlob(username: any): Observable<Blob> {
+    const imageUrl = `${this.baseUrl}/api/profilkep/${username}`;
+
+    return this.http.get(imageUrl, { responseType: 'blob' });
   }
 }

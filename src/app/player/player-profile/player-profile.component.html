@@ -17,7 +17,8 @@
       <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
         <div class="card mb-4">
           <div class="card-body text-center">
-            <img src="assets/not-found.jpg" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+            <img *ngIf="!image" src="assets/not-found.jpg" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+            <img *ngIf="image" [src]="image" alt="pic" class="rounded-circle img-fluid" style="width: 150px;">
             <h5 class="my-3">Neve</h5>
             <p class="text-muted mb-1">Sportág, poszt</p>
             <p class="text-muted mb-4">Hely</p>
@@ -92,12 +93,12 @@
                       <form #myForm="ngForm">
                         <label for="options">Válassz egy elemet:</label>
                         <select id="options" name="selectedOption" [(ngModel)]="selectedOption">
-                          <option value="PDF">PDF</option>
+                          <option value="pdf">PDF</option>
                           <option value="profilpic">Profilkép</option>
                           <option value="Videó">Videó</option>
                         </select>
                       
-                        <div *ngIf="selectedOption === 'PDF'" [@fadeInOut]>
+                        <div *ngIf="selectedOption === 'pdf'" [@fadeInOut]>
                           <label for="input1">PDF fájl feltöltése:</label>
                           <div class="mb-3">
                             <input id="input1" type="file" name="input1Value" accept="pdf" (change)="onFileChange($event)" />

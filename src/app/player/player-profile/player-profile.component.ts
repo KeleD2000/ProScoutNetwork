@@ -2,6 +2,7 @@ import { Component, Renderer2 } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
+import { SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-player-profile',
@@ -26,7 +27,9 @@ export class PlayerProfileComponent {
   input1Value: string = '';
   input2Value: string = '';
   input3Value: string = '';
+  username: string = '';
   selectedFile?: File;
+  image: any;
 
   constructor(private renderer: Renderer2, private fileService: FileService){
 
@@ -84,8 +87,30 @@ export class PlayerProfileComponent {
       data.append("username", JSON.parse(username));
       this.fileService.fileUpload(data).subscribe( p => {
         console.log(p, "Sikeres");
+        window.location.reload();
       })
     }
+  }
+
+  ngOnInit(){
+    const username = localStorage.getItem('isLoggedin');
+    let current = username?.replace(/"/g, '');
+    console.log(current);
+    
+    this.fileService.getProfilePicBlob(current).subscribe(
+      (response: any) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.image = reader.result as string;
+        };
+        reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+      },
+      (error) => {
+        console.error('Error fetching profile picture:', error);
+      }
+    );
+    
+      
   }
 
   ngAfterViewInit(){
