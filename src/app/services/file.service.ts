@@ -20,4 +20,9 @@ export class FileService {
 
     return this.http.get(imageUrl, { responseType: 'blob' });
   }
+
+  deleteProfilPic(username: any): Observable<any>{
+    return this.http.delete(`${this.baseUrl}/deleteProfilePic/${username}`);
+  }
+  
 }

@@ -71,3 +71,8 @@
 .modalc{
   color: #56B8E6;
 }
+
+.delete{
+  color: red;
+  cursor: pointer;
+}

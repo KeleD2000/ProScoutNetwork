@@ -2,7 +2,7 @@ import { Component, Renderer2 } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
-import { SafeUrl } from '@angular/platform-browser';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-player-profile',
@@ -30,6 +30,7 @@ export class PlayerProfileComponent {
   username: string = '';
   selectedFile?: File;
   image: any;
+  faDelete = faTrash;
 
   constructor(private renderer: Renderer2, private fileService: FileService){
 
@@ -90,6 +91,21 @@ export class PlayerProfileComponent {
         window.location.reload();
       })
     }
+  }
+
+  deleteProfilePic() {
+    console.log("cmi");
+    const username = localStorage.getItem('isLoggedin');
+    let current = username?.replace(/"/g, '');
+    this.fileService.deleteProfilPic(current).subscribe(
+      () => {
+        console.log('Profilkép sikeresen törölve.');
+        window.location.reload();
+      },
+      (error) => {
+        console.error('Hiba történt a profilkép törlése közben.', error);
+      }
+    );
   }
 
   ngOnInit(){
