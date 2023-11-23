@@ -30,9 +30,10 @@ export class PlayerProfileComponent {
   username: string = '';
   selectedFile?: File;
   image: any;
+  fileId = 2;
   faDelete = faTrash;
 
-  constructor(private renderer: Renderer2, private fileService: FileService){
+  constructor(private renderer: Renderer2, private fileService: FileService) {
 
   }
 
@@ -44,14 +45,14 @@ export class PlayerProfileComponent {
     }
     this.showModal = true;
     this.renderer.addClass(document.body, 'no-scroll');
-  
+
     // Az adott platformnak megfelelő tartalom beállítása
     this.modalTitle = '';
     switch (platform) {
       case 'files':
         this.modalTitle = 'Fájlok';
     }
-  
+
     // A popup tartalom és cím beállítása
     const modalTitleElement = document.querySelector('.modal-title');
     const modalBody = document.querySelector('.modal-body');
@@ -59,7 +60,7 @@ export class PlayerProfileComponent {
       modalTitleElement.innerHTML = this.modalTitle;
     }
   }
-  
+
 
   closeModal() {
     const modal = document.getElementById('exampleModal');
@@ -71,22 +72,59 @@ export class PlayerProfileComponent {
     this.renderer.removeClass(document.body, 'no-scroll');
   }
 
-  onFileChange( event: any){
-  this.selectedFile = event.target.files[0];    
+  onFileChange(event: any) {
+    this.selectedFile = event.target.files[0];
   }
 
-  uploadFile(){
-    if(!this.selectedFile){
+  downloadPdf(fileId: number): void {
+    this.fileService.downloadPdf(fileId).subscribe(data => {
+      const blob = new Blob([data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'filename.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+
+  uploadPdfFile() {
+    if (!this.selectedFile) {
       return;
     }
     const username = localStorage.getItem('isLoggedin');
-    if(username){
+    if (username) {
+      const data = new FormData();
+      data.append("file", this.selectedFile, this.selectedFile.name);
+      data.append("type", 'pdf');
+      data.append("format", this.selectedFile.type);
+      data.append("username", JSON.parse(username));
+      this.fileService.pdfFileUpload(data).subscribe(p => {
+        console.log(p, "Sikeres");
+        window.location.reload();
+      })
+    }
+  }
+
+  uploadVideoFile() {
+
+  }
+
+  uploadProfilpicFile() {
+    if (!this.selectedFile) {
+      return;
+    }
+    const username = localStorage.getItem('isLoggedin');
+    if (username) {
       const data = new FormData();
       data.append("file", this.selectedFile, this.selectedFile.name);
       data.append("type", this.selectedOption);
       data.append("format", this.selectedFile.type);
       data.append("username", JSON.parse(username));
-      this.fileService.fileUpload(data).subscribe( p => {
+      this.fileService.fileUpload(data).subscribe(p => {
         console.log(p, "Sikeres");
         window.location.reload();
       })
@@ -94,44 +132,44 @@ export class PlayerProfileComponent {
   }
 
   deleteProfilePic() {
-    console.log("cmi");
     const username = localStorage.getItem('isLoggedin');
     let current = username?.replace(/"/g, '');
-    this.fileService.deleteProfilPic(current).subscribe(
-      () => {
-        console.log('Profilkép sikeresen törölve.');
-        window.location.reload();
-      },
-      (error) => {
-        console.error('Hiba történt a profilkép törlése közben.', error);
+    this.fileService.deleteProfilPic(current).subscribe(response => {
+      console.log(response);
+      window.location.reload();
+    },
+      error => {
+        console.error(error);
       }
     );
   }
 
-  ngOnInit(){
+  ngOnInit() {
     const username = localStorage.getItem('isLoggedin');
     let current = username?.replace(/"/g, '');
     console.log(current);
-    
+
     this.fileService.getProfilePicBlob(current).subscribe(
       (response: any) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.image = reader.result as string;
-        };
-        reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+        if (response) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            this.image = reader.result as string;
+          };
+          reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+        }
       },
       (error) => {
         console.error('Error fetching profile picture:', error);
       }
     );
-    
-      
+
+
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     AOS.init({
       once: true
     });
-   }
+  }
 }

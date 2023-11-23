@@ -71,12 +71,11 @@
                 <p class="mb-4"><span class="text-primary font-italic me-1">poszt</span> Játékos stasztikája</p>
                 <p class="mt-4 mb-1" style="font-size: .77rem;">PDF fájl</p>
                 <div class="progress rounded mb-2">
-                  <div><a>Kattins ide a PDF fájlhoz való megtekintéséhez, ha érdekel a játékosnak a statisztikái.</a>
-                  </div>
+                  <div><a (click)="downloadPdf(fileId)"> Kattins ide a videóhoz való megtekintéséhez, ha érdekel a játékosról feltöltött videó.</a></div>
                 </div>
                 <p class="mt-4 mb-1" style="font-size: .77rem;">Videó megtekintése</p>
                 <div class="progress rounded mb-2">
-                  <div>Kattins ide a videóhoz való megtekintéséhez, ha érdekel a játékosról feltöltött videó.</div>
+                  <div><a> Kattins ide a videóhoz való megtekintéséhez, ha érdekel a játékosról feltöltött videó.</a></div>
                 </div>
               </div>
             </div>
@@ -113,38 +112,40 @@
                   <select id="options" name="selectedOption" [(ngModel)]="selectedOption">
                     <option value="pdf">PDF</option>
                     <option value="profilpic">Profilkép</option>
-                    <option value="Videó">Videó</option>
+                    <option value="video">Videó</option>
                   </select>
-
-                  <div *ngIf="selectedOption === 'pdf'" [@fadeInOut]>
-                    <label for="input1">PDF fájl feltöltése:</label>
-                    <div class="mb-3">
-                      <input id="input1" type="file" name="input1Value" accept="pdf" (change)="onFileChange($event)" />
+                  <div [ngSwitch]="selectedOption">
+                    <div *ngSwitchCase="'pdf'" [@fadeInOut]>
+                      <label for="input1">PDF fájl feltöltése:</label>
+                      <div class="mb-3">
+                        <input id="input1" type="file" name="input1Value" accept="pdf" (change)="onFileChange($event)" />
+                      </div>
+                      <button type="button" class="btn btn-primary" (click)="uploadPdfFile()">PDF Feltöltés</button>
                     </div>
-                  </div>
-
-                  <div *ngIf="selectedOption === 'profilpic'" [@fadeInOut]>
-                    <label for="input2">Profilkép feltöltése:</label>
-                    <div class="mb-3">
-                      <input id="input2" type="file" name="input2Value" (change)="onFileChange($event)" />
+            
+                    <div *ngSwitchCase="'profilpic'" [@fadeInOut]>
+                      <label for="input2">Profilkép feltöltése:</label>
+                      <div class="mb-3">
+                        <input id="input2" type="file" name="input2Value" (change)="onFileChange($event)" />
+                      </div>
+                      <button type="button" class="btn btn-primary" (click)="uploadProfilpicFile()">Profilkép Feltöltés</button>
                     </div>
-                  </div>
-
-                  <div *ngIf="selectedOption === 'Videó'" [@fadeInOut]>
-                    <label for="input3">Videó feltöltése:</label>
-                    <div class="mb-3">
-                      <input id="input3" type="file" name="input3Value" (change)="onFileChange($event)" />
+            
+                    <div *ngSwitchCase="'video'" [@fadeInOut]>
+                      <label for="input3">Videó feltöltése:</label>
+                      <div class="mb-3">
+                        <input id="input3" type="file" name="input3Value" (change)="onFileChange($event)" />
+                      </div>
+                      <button type="button" class="btn btn-primary" (click)="uploadVideoFile()">Videó Feltöltés</button>
                     </div>
                   </div>
                 </form>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                  (click)="uploadFile()">Feltöltés</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                  (click)="closeModal()">Bezárás</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Bezárás</button>
               </div>
             </form>
+            
           </div>
         </div>
       </div>

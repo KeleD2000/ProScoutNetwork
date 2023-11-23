@@ -15,14 +15,28 @@ export class FileService {
     return this.http.post(`${this.baseUrl}/api/upload`, data);
   }
 
+  pdfFileUpload(data: FormData){
+    return this.http.post(`${this.baseUrl}/api/uploadPdf`, data);
+
+  }
+
+  downloadPdf(fileId: number): Observable<Blob> {
+    const url = `${this.baseUrl}/api/downloadPdf/${fileId}`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
+
   getProfilePicBlob(username: any): Observable<Blob> {
     const imageUrl = `${this.baseUrl}/api/profilkep/${username}`;
 
     return this.http.get(imageUrl, { responseType: 'blob' });
   }
 
-  deleteProfilPic(username: any): Observable<any>{
-    return this.http.delete(`${this.baseUrl}/deleteProfilePic/${username}`);
+  deleteProfilPic(username: any){
+    return this.http.delete(`${this.baseUrl}/api/deleteProfilePic/${username}`);
+  }
+
+  getCurrentUser(){
+    
   }
   
 }
