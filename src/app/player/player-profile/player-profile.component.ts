@@ -3,6 +3,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-player-profile',
@@ -28,16 +29,21 @@ export class PlayerProfileComponent {
   input2Value: string = '';
   input3Value: string = '';
   username: string = '';
+  profileDetails: any[] = [];
   selectedFile?: File;
   image: any;
-  fileId = 2;
+  fileId: number = 0;
+  videoFileId: number = 0;
+  selectedPlatform: string = '';
+  videoUrl?: SafeResourceUrl;
   faDelete = faTrash;
 
-  constructor(private renderer: Renderer2, private fileService: FileService) {
+  constructor(private renderer: Renderer2, private fileService: FileService, private sanitizer: DomSanitizer) {
 
   }
 
   openModal(platform: string) {
+    this.selectedPlatform = platform;
     const modal = document.getElementById('exampleModal');
     if (modal) {
       modal.style.display = 'block';
@@ -45,21 +51,26 @@ export class PlayerProfileComponent {
     }
     this.showModal = true;
     this.renderer.addClass(document.body, 'no-scroll');
-
+  
     // Az adott platformnak megfelelő tartalom beállítása
     this.modalTitle = '';
     switch (platform) {
       case 'files':
         this.modalTitle = 'Fájlok';
+        break;
+      case 'videos':
+        this.modalTitle = 'Játékos videója';
+        this.downloadVideo(this.videoFileId);  // Megjeleníti a videót azonnal
+        break;
     }
-
+  
     // A popup tartalom és cím beállítása
     const modalTitleElement = document.querySelector('.modal-title');
-    const modalBody = document.querySelector('.modal-body');
-    if (modalTitleElement && modalBody) {
+    if (modalTitleElement) {
       modalTitleElement.innerHTML = this.modalTitle;
     }
   }
+  
 
 
   closeModal() {
@@ -110,7 +121,21 @@ export class PlayerProfileComponent {
   }
 
   uploadVideoFile() {
-
+    if (!this.selectedFile) {
+      return;
+    }
+    const username = localStorage.getItem('isLoggedin');
+    if (username) {
+      const data = new FormData();
+      data.append("file", this.selectedFile, this.selectedFile.name);
+      data.append("type", this.selectedOption);
+      data.append("format", this.selectedFile.type);
+      data.append("username", JSON.parse(username));
+      this.fileService.videoFileUpload(data).subscribe(p => {
+        console.log(p, "Sikeres");
+        window.location.reload();
+      })
+    }
   }
 
   uploadProfilpicFile() {
@@ -144,6 +169,20 @@ export class PlayerProfileComponent {
     );
   }
 
+  downloadVideo(fileId: number){
+    this.fileService.downloadVideo(fileId).subscribe(
+      (data: any) => {
+        const blob = new Blob([data], { type: 'video/mp4' });
+        this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+        console.log(this.videoUrl);
+      },
+      error => {
+        console.error('Hiba a videó letöltésekor', error);
+      }
+    );
+
+  }
+
   ngOnInit() {
     const username = localStorage.getItem('isLoggedin');
     let current = username?.replace(/"/g, '');
@@ -164,7 +203,44 @@ export class PlayerProfileComponent {
       }
     );
 
-
+    this.fileService.getCurrentUser(current).subscribe(user => {
+      console.log(user);
+      const profilObj = {
+        name: '',
+        email: '',
+        location: '',
+        sport: '',
+        pos: '',
+        pdf_file_id: 0,
+        pic_file_id: 0,
+        video_file_id: 0,
+      };
+      for (const [key, value] of Object.entries(user)) {
+        if (key === 'player') {
+          profilObj.name = value.last_name + ' ' + value.first_name;
+          profilObj.email = value.email;
+          profilObj.location = value.location;
+          profilObj.sport = value.sport;
+          profilObj.pos = value.position;
+    
+          for (let i in value.files) {
+            if (value.files[i].type === 'pdf') {
+              profilObj.pdf_file_id = value.files[i].files_id;
+            }
+            if (value.files[i].type === 'video') {
+              profilObj.video_file_id = value.files[i].files_id;
+            }
+            if (value.files[i].type === 'profilpic') {
+              profilObj.pic_file_id = value.files[i].files_id;
+            }
+          }
+        }
+      }
+      this.fileId = profilObj.pdf_file_id;
+      this.videoFileId = profilObj.video_file_id;
+      this.profileDetails.push(profilObj);
+    });
+    console.log(this.profileDetails);
   }
 
   ngAfterViewInit() {

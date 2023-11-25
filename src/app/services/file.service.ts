@@ -20,9 +20,17 @@ export class FileService {
 
   }
 
+  videoFileUpload(data: FormData){
+    return this.http.post(`${this.baseUrl}/api/uploadVideo`, data);
+  }
+
   downloadPdf(fileId: number): Observable<Blob> {
     const url = `${this.baseUrl}/api/downloadPdf/${fileId}`;
     return this.http.get(url, { responseType: 'blob' });
+  }
+
+  downloadVideo(fileId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/videos/${fileId}/download`, { responseType: 'arraybuffer' });
   }
 
   getProfilePicBlob(username: any): Observable<Blob> {
@@ -35,8 +43,10 @@ export class FileService {
     return this.http.delete(`${this.baseUrl}/api/deleteProfilePic/${username}`);
   }
 
-  getCurrentUser(){
-    
+  getCurrentUser(username: any){
+    const url =`${this.baseUrl}/api/current-user/${username}`;
+
+    return this.http.get(url, username);
   }
   
 }

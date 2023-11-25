@@ -14,7 +14,7 @@
   </main>
   <section class="m-3">
     <div class="row">
-      <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+      <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100" *ngFor="let profile of profileDetails">
         <div class="card mb-4">
           <div class="p-3 text-end delete" (click)="deleteProfilePic()">
             <fa-icon [icon]="faDelete"></fa-icon>
@@ -23,9 +23,9 @@
             <img *ngIf="!image" src="assets/not-found.jpg" alt="avatar" class="rounded-circle img-fluid"
               style="width: 150px;">
             <img *ngIf="image" [src]="image" alt="pic" class="rounded-circle img-fluid" style="width: 150px;">
-            <h5 class="my-3">Neve</h5>
-            <p class="text-muted mb-1">Sportág, poszt</p>
-            <p class="text-muted mb-4">Hely</p>
+            <h5 class="my-3">{{profile.name}}</h5>
+            <p class="text-muted mb-1">{{profile.sport}}, {{profile.pos}}</p>
+            <p class="text-muted mb-4">{{profile.location}}</p>
             <div class="d-flex justify-content-center mb-2">
               <button type="button" class="btn btn-primary" (click)="openModal('files')">Fájlok</button>
               <button type="button" class="btn btn-outline-primary ms-1">Üzenet küldés</button>
@@ -33,7 +33,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-8" data-aos="zoom-in" data-aos-delay="100">
+      <div class="col-lg-8" data-aos="zoom-in" data-aos-delay="100" *ngFor="let profile of profileDetails">
         <div class="card mb-4">
           <div class="card-body">
             <div class="row">
@@ -41,7 +41,7 @@
                 <p class="mb-0">Teljes neve</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">neve</p>
+                <p class="text-muted mb-0">{{profile.name}}</p>
               </div>
             </div>
             <hr>
@@ -50,7 +50,7 @@
                 <p class="mb-0">Email</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">example@example.com</p>
+                <p class="text-muted mb-0">{{profile.email}}</p>
               </div>
             </div>
             <hr>
@@ -59,7 +59,7 @@
                 <p class="mb-0">Hely</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">location</p>
+                <p class="text-muted mb-0">{{profile.location}}</p>
               </div>
             </div>
           </div>
@@ -67,15 +67,15 @@
         <div class="row">
           <div class="col-md-6 mx-auto">
             <div class="card mb-4 mb-md-0">
-              <div class="card-body">
-                <p class="mb-4"><span class="text-primary font-italic me-1">poszt</span> Játékos stasztikája</p>
+              <div class="card-body" *ngFor="let profile of profileDetails">
+                <p class="mb-4"><span class="text-primary font-italic me-1">{{profile.pos}}</span> Játékos stasztikája</p>
                 <p class="mt-4 mb-1" style="font-size: .77rem;">PDF fájl</p>
                 <div class="progress rounded mb-2">
                   <div><a (click)="downloadPdf(fileId)"> Kattins ide a videóhoz való megtekintéséhez, ha érdekel a játékosról feltöltött videó.</a></div>
                 </div>
                 <p class="mt-4 mb-1" style="font-size: .77rem;">Videó megtekintése</p>
                 <div class="progress rounded mb-2">
-                  <div><a> Kattins ide a videóhoz való megtekintéséhez, ha érdekel a játékosról feltöltött videó.</a></div>
+                  <div><a (click)="openModal('videos')"> Kattins ide a videóhoz való megtekintéséhez, ha érdekel a játékosról feltöltött videó.</a></div>
                 </div>
               </div>
             </div>
@@ -107,7 +107,15 @@
                 </button>
               </div>
               <div class="modal-body d-flex justify-content-center">
-                <form #myForm="ngForm">
+                <div *ngIf="selectedPlatform==='videos'">
+                  <div *ngIf="videoUrl">
+                    <video width="480" height="240" controls>
+                      <source [src]="videoUrl" type="video/mp4">
+                      A böngésződ nem támogatja a videó lejátszását.
+                    </video>
+                  </div>
+                </div>
+                <form #myForm="ngForm" *ngIf="selectedPlatform === 'files'">
                   <label for="options">Válassz egy elemet:</label>
                   <select id="options" name="selectedOption" [(ngModel)]="selectedOption">
                     <option value="pdf">PDF</option>
@@ -145,7 +153,6 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Bezárás</button>
               </div>
             </form>
-            
           </div>
         </div>
       </div>
