@@ -76,3 +76,7 @@
   color: red;
   cursor: pointer;
 }
+
+video{
+  border: 3px solid #56B8E6;
+}

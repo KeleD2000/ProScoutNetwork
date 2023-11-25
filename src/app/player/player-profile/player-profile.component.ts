@@ -4,6 +4,8 @@ import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { UserService } from 'src/app/services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-player-profile',
@@ -38,7 +40,10 @@ export class PlayerProfileComponent {
   videoUrl?: SafeResourceUrl;
   faDelete = faTrash;
 
-  constructor(private renderer: Renderer2, private fileService: FileService, private sanitizer: DomSanitizer) {
+  constructor(private renderer: Renderer2, private fileService: FileService, 
+    private sanitizer: DomSanitizer, private userSerivce: UserService,
+    private router: Router
+    ) {
 
   }
 
@@ -71,6 +76,19 @@ export class PlayerProfileComponent {
     }
   }
   
+  deleteProfile(){
+    const user = localStorage.getItem('isLoggedin');
+    let username: string | undefined;
+  
+    if (user) {
+      username = user.replace(/"/g, '');
+    }
+
+    this.userSerivce.deletePlayer(username).subscribe( user => {
+      console.log(user);
+      this.router.navigateByUrl('/');
+    })
+  }
 
 
   closeModal() {
@@ -210,6 +228,7 @@ export class PlayerProfileComponent {
         email: '',
         location: '',
         sport: '',
+        age: 0,
         pos: '',
         pdf_file_id: 0,
         pic_file_id: 0,
@@ -222,6 +241,7 @@ export class PlayerProfileComponent {
           profilObj.location = value.location;
           profilObj.sport = value.sport;
           profilObj.pos = value.position;
+          profilObj.age = value.age;
     
           for (let i in value.files) {
             if (value.files[i].type === 'pdf') {
