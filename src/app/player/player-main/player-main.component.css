@@ -524,3 +524,14 @@
   a{
     text-decoration: none;
   }
+
+  .btn-get-started {
+    color: #fff;
+    background: #56b8e6;
+    border: 1px solid black;
+  }
+
+  textarea{
+    width: 410px;
+    height: 120px;
+  }
