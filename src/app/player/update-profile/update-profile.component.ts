@@ -13,8 +13,9 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class UpdateProfileComponent {
   updateForm!: FormGroup;
+  profObjHtml: any[] = [];
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router){
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router, private fileService: FileService){
     this.updateForm = this.formBuilder.group({
       firstname: ['', [Validators.required]],
       lastname : ['', [Validators.required]],
@@ -56,7 +57,35 @@ export class UpdateProfileComponent {
     }
   }
   
+  ngOnInit(){
+    const username = localStorage.getItem('isLoggedin');
+    const converted = username?.replace(/"/g, '');
+    this.fileService.getCurrentUser(converted).subscribe( user => {
+      for(const [key, value] of Object.entries(user)){
+        if(key === 'player'){
+          console.log(value);
+          var profObj = {
+            last_name : '',
+            first_name: '',
+            email: '',
+            age: '',
+            loca: '',
+            pos: '',
+            sport: ''
+          }
 
+          profObj.last_name = value.last_name;
+          profObj.first_name = value.first_name;
+          profObj.email = value.email;
+          profObj.age = value.age;
+          profObj.loca = value.location;
+          profObj.pos = value.position;
+          profObj.sport = value.sport;
+          this.profObjHtml.push(profObj);
+        }
+      }
+    });
+  }
   
   ngAfterViewInit() {
     AOS.init({

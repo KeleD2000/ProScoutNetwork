@@ -7,13 +7,15 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { PlayerProfileComponent } from './player-profile/player-profile.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
+import { UpdateAdsComponent } from './update-ads/update-ads.component';
 
 
 @NgModule({
   declarations: [
     PlayerMainComponent,
     PlayerProfileComponent,
-    UpdateProfileComponent
+    UpdateProfileComponent,
+    UpdateAdsComponent
   ],
   imports: [
     CommonModule,

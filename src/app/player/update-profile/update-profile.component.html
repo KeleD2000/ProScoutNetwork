@@ -14,17 +14,16 @@
         </div><!-- End Breadcrumbs -->
         <section id="contact" class="contact">
             <div class="container position-relative" data-aos="fade-up">
-
                 <div class="d-flex justify-content-center pt-3">
                     <div class="col-lg-6 form mb-3" data-aos="fade-right">
                         <div class="container">
                             <div class="row" style="justify-content: center;">
-                                <div class="col-md-6 m-3">
-                                    <form [formGroup]="updateForm">
+                                <div class="col-md-6 m-3" *ngFor="let prof of profObjHtml">
+                                    <form [formGroup]="updateForm" >
                                         <div class="mb-3">
                                             <label for="field1">Vezetéknév</label>
                                             <input formControlName="lastname" type="text" class="form-control"
-                                                id="field1" name="field1">
+                                                id="field1" name="field1" [(ngModel)]="prof.last_name">
                                         </div>
                                         <div *ngIf="updateForm.get('lastname')?.errors?.['required'] && (updateForm.get('lastname')?.dirty || updateForm.get('lastname')?.touched)"
                                             class="error-message mb-3">
@@ -33,7 +32,7 @@
                                         <div class="mb-3">
                                             <label for="field2">Keresztnév</label>
                                             <input formControlName="firstname" type="text" class="form-control"
-                                                id="field2" name="field2">
+                                                id="field2" name="field2" [(ngModel)]="prof.first_name">
                                         </div>
                                         <div *ngIf="updateForm.get('firstname')?.errors?.['required'] && (updateForm.get('firstname')?.dirty || updateForm.get('firstname')?.touched)"
                                             class="error-message mb-3">
@@ -42,7 +41,7 @@
                                         <div class="mb-3">
                                             <label for="field3">Életkor</label>
                                             <input formControlName="age" type="text" class="form-control" id="field3"
-                                                name="field3">
+                                                name="field3" [(ngModel)]="prof.age">
                                         </div>
                                         <div *ngIf="updateForm.get('age')?.errors?.['required'] && (updateForm.get('age')?.dirty || updateForm.get('age')?.touched)"
                                             class="error-message mb-3">
@@ -51,7 +50,7 @@
                                         <div class="mb-3">
                                             <label for="field4">Sport</label>
                                             <input formControlName="sport" type="text" class="form-control" id="field4"
-                                                name="field4">
+                                                name="field4" [(ngModel)]="prof.sport">
                                         </div>
                                         <div *ngIf="updateForm.get('sport')?.errors?.['required'] && (updateForm.get('sport')?.dirty || updateForm.get('sport')?.touched)"
                                             class="error-message mb-3">
@@ -60,7 +59,7 @@
                                         <div class="mb-3">
                                             <label for="field5">Hely</label>
                                             <input formControlName="location" type="text" class="form-control"
-                                                id="field5" name="field5">
+                                                id="field5" name="field5" [(ngModel)]="prof.loca">
                                         </div>
                                         <div *ngIf="updateForm.get('location')?.errors?.['required'] && (updateForm.get('location')?.dirty || updateForm.get('location')?.touched)"
                                             class="error-message mb-3">
@@ -69,7 +68,7 @@
                                         <div class="mb-3">
                                             <label for="field6">Email</label>
                                             <input formControlName="email" type="text" class="form-control" id="field6"
-                                                name="field6">
+                                                name="field6" [(ngModel)]="prof.email">
                                         </div>
                                         <div *ngIf="updateForm.get('email')?.errors?.['required'] && (updateForm.get('email')?.dirty || updateForm.get('email')?.touched)"
                                             class="error-message mb-3">
@@ -82,7 +81,7 @@
                                         <div class="mb-3">
                                             <label for="field7">Pozició</label>
                                             <input formControlName="position" type="text" class="form-control"
-                                                id="field7" name="field7">
+                                                id="field7" name="field7" [(ngModel)]="prof.pos">
                                         </div>
                                         <div *ngIf="updateForm.get('position')?.errors?.['required'] && (updateForm.get('position')?.dirty || updateForm.get('position')?.touched)"
                                             class="error-message mb-3">

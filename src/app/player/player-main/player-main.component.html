@@ -1,4 +1,4 @@
-<body class="page-blog">
+<body>
     <main id="main">
         <!-- ======= Breadcrumbs ======= -->
         <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/assets/player-main1.jpg');">
@@ -11,7 +11,7 @@
                 </ol>
             </div>
         </div><!-- End Breadcrumbs -->
-        <section id="blog" class="blog">
+        <section>
             
             <div class="container m-3" data-aos="fade-up">
 
@@ -23,18 +23,21 @@
                             <div class="sidebar-item search-form">
                                 <h3 class="sidebar-title">Hirdetés létrehozása</h3>
                                 <form class="mt-3 d-flex align-items-center">
-                                  <div class="form-group flex-grow-1">
-                                    <textarea class="form-control input-post" placeholder="Írj valamit..."></textarea>
-                                  </div>
-                                  <div class="d-flex flex-column mx-2">
-                                    <div class="form-group">
-                                      <input type="file" class="custom-file-input" id="imageUpload"/>
+                                    <div class="form-group flex-grow-1">
+                                      <textarea class="form-control input-post" placeholder="Írj valamit..." [(ngModel)]="content" name="content"></textarea>
                                     </div>
-                                    <div class="form-group">
-                                      <button class="btn btn-get-started" type="submit">Megosztás</button>
+                                    <div class="d-flex flex-column mx-2">
+                                        <div class="form-group" *ngIf="this.ownAds">
+                                            <button class="btn btn-get-started" type="submit" [routerLink]="'/update-ads'">Saját posztjaim</button>
+                                          </div>
+                                      <div class="form-group">
+                                        <input type="file" class="custom-file-input" id="imageUpload" (change)="onFileChange($event)"/>
+                                      </div>
+                                      <div class="form-group">
+                                        <button class="btn btn-get-started" type="submit"  (click)="uploadAds()">Megosztás</button>
+                                      </div>
                                     </div>
-                                  </div>
-                                </form>
+                                  </form>
                               </div>
                                                         
                               
