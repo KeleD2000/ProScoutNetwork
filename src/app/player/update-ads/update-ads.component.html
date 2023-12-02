@@ -22,6 +22,11 @@
                                             <label for="field1">Tartalom megváltoztatása</label>
                                             <textarea formControlName="lastname" type="text" class="form-control"
                                                 id="field1" name="field1"></textarea>
+                                            <div>
+                                                <label for="field1">Kép megváltoztatása</label>
+                                                <input type="file" class="custom-file-input" id="imageUpload"
+                                                    (change)="onFileChange($event)" />
+                                            </div>
                                         </div>
                                         <div class="text-center">
                                             <button class="regist-button">Módosítás</button>

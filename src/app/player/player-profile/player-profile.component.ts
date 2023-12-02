@@ -31,6 +31,7 @@ export class PlayerProfileComponent {
   input2Value: string = '';
   input3Value: string = '';
   username: string = '';
+  pdf_filename: string = '';
   profileDetails: any[] = [];
   selectedFile?: File;
   image: any;
@@ -111,7 +112,7 @@ export class PlayerProfileComponent {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'filename.pdf';
+      a.download = this.pdf_filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -246,6 +247,10 @@ export class PlayerProfileComponent {
           for (let i in value.files) {
             if (value.files[i].type === 'pdf') {
               profilObj.pdf_file_id = value.files[i].files_id;
+              const filePath = value.files[i].file_path;
+              const parts = filePath.split('\\');
+              this.pdf_filename = parts[parts.length - 1];
+              this.pdf_filename = value.files[i].file_path.split("'\'").pop();
             }
             if (value.files[i].type === 'video') {
               profilObj.video_file_id = value.files[i].files_id;
@@ -261,6 +266,7 @@ export class PlayerProfileComponent {
       this.profileDetails.push(profilObj);
     });
     console.log(this.profileDetails);
+    console.log(this.pdf_filename);
   }
 
   ngAfterViewInit() {
