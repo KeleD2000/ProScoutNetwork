@@ -17,20 +17,20 @@
                 <div class="row g-5 justify-content-center">
                     <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
                         <div class="row gy-5 posts-list">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6" *ngFor="let ad of ownAds">
                                 <article class="d-flex flex-column">
 
                                     <div class="post-img">
-                                        <img src="/assets/blog-1.jpg" alt="" class="img-fluid">
+                                        <img [src]="ad.image" alt="" class="img-fluid">
                                     </div>
                                     <div class="meta-top">
                                         <ul>
                                             <li class="d-flex align-items-center"><fa-icon
-                                                    [icon]="faPeople"></fa-icon><a href="blog-details.html">John Doe</a>
+                                                    [icon]="faPeople"></fa-icon><a href="blog-details.html">{{this.currentUsername}}</a>
                                             </li>
                                             <div class="row mt-4">
                                                 <div class="col-md-6">
-                                                    <button type="button" class="btn btn-get-started">Módosítás</button>
+                                                    <button type="button" class="btn btn-get-started" (click)="navigateToUpdatePage(ad.playerad_id)">Módosítás</button>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <button type="button" class="btn btn-danger">Törlés</button>
@@ -41,36 +41,8 @@
 
                                     <div class="content">
                                         <p>
-                                            Similique neque nam consequuntur ad non maxime aliquam quas. Quibusdam animi
-                                            praesentium. Aliquam et laboriosam eius aut nostrum quidem aliquid dicta.
+                                            {{ad.content}}.
                                         </p>
-                                    </div>
-
-                                </article>
-                            </div><!-- End post list item -->
-                            <div class="col-lg-6">
-                                <article class="d-flex flex-column">
-
-                                    <div class="post-img">
-                                        <img src="/assets/blog-1.jpg" alt="" class="img-fluid">
-                                    </div>
-                                    <div class="meta-top">
-                                        <ul>
-                                            <li class="d-flex align-items-center"><fa-icon
-                                                    [icon]="faPeople"></fa-icon><a href="blog-details.html">John Doe</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="content">
-                                        <p>
-                                            Similique neque nam consequuntur ad non maxime aliquam quas. Quibusdam animi
-                                            praesentium. Aliquam et laboriosam eius aut nostrum quidem aliquid dicta.
-                                        </p>
-                                    </div>
-
-                                    <div class="read-more mt-auto align-self-end">
-                                        <a href="blog-details.html">Érdekel<i class="bi bi-arrow-right"></i></a>
                                     </div>
 
                                 </article>

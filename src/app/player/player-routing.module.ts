@@ -10,7 +10,7 @@ const routes: Routes = [
   {path: 'player-main', component:PlayerMainComponent},
   {path: 'player-profile', component:PlayerProfileComponent},
   {path: 'update-profile', component: UpdateProfileComponent},
-  {path: 'update-ads', component: UpdateAdsComponent},
+  {path: 'update-ads/:id', component: UpdateAdsComponent},
   {path: 'own-ads', component:OwnAdsComponent}
 ];
 

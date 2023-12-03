@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,4 +22,9 @@ export class PlayerAdsService {
     return this.http.get(`${this.baseUrl}/api/playerAds`);
   }
   
+  getAdsPic(adId: number): Observable<Blob> {
+    const imageUrl = `${this.baseUrl}/api/adsImage/${adId}`;
+
+    return this.http.get(imageUrl, { responseType: 'blob' });
+  }
 }
