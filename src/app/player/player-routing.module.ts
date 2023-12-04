@@ -5,13 +5,15 @@ import { PlayerProfileComponent } from './player-profile/player-profile.componen
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
 import { UpdateAdsComponent } from './update-ads/update-ads.component';
 import { OwnAdsComponent } from './own-ads/own-ads.component';
+import { PlayerMessagesComponent } from './player-messages/player-messages.component';
 
 const routes: Routes = [
   {path: 'player-main', component:PlayerMainComponent},
   {path: 'player-profile', component:PlayerProfileComponent},
   {path: 'update-profile', component: UpdateProfileComponent},
   {path: 'update-ads/:id', component: UpdateAdsComponent},
-  {path: 'own-ads', component:OwnAdsComponent}
+  {path: 'own-ads', component:OwnAdsComponent},
+  {path: 'player-message', component: PlayerMessagesComponent}
 ];
 
 @NgModule({

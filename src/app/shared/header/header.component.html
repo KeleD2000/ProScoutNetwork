@@ -16,7 +16,7 @@
           <li *ngIf="!isItPlayer && !isItScout"><a class="btn-get-started" routerLink="/signin" (click)="toggleMobileNav()">Bejelentkezés</a></li>
           <li *ngIf="isItPlayer"><a routerLink="/player-main" >Főoldal</a></li>
           <li *ngIf="isItPlayer"><a routerLink="/player-profile" >Profil</a></li>  
-          <li *ngIf="isItPlayer"><a routerLink="">Üzenet</a></li>     
+          <li *ngIf="isItPlayer"><a routerLink="/player-message">Üzenet</a></li>     
           <li *ngIf="isItPlayer"><a routerLink="">Licitálás</a></li>
           <li *ngIf="isItScout"><a routerLink="" >Főoldal</a></li>
           <li *ngIf="isItScout"><a routerLink="" >Profil</a></li>  

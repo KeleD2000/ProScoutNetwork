@@ -91,6 +91,13 @@ export class OwnAdsComponent {
     });
   }
 
+  deleteAd(adId: number){
+    this.playerAdsServices.deleteAds(adId).subscribe( del =>{
+      window.location.reload();
+      console.log(del);
+    })
+  }
+
   navigateToUpdatePage(playerad_id: number) {
     // A hirdetés azonosítójának átadása az URL-nek
     this.router.navigate(['/update-ads', playerad_id]);

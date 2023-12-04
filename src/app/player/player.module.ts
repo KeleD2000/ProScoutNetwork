@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
 import { UpdateAdsComponent } from './update-ads/update-ads.component';
 import { OwnAdsComponent } from './own-ads/own-ads.component';
+import { PlayerMessagesComponent } from './player-messages/player-messages.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { OwnAdsComponent } from './own-ads/own-ads.component';
     PlayerProfileComponent,
     UpdateProfileComponent,
     UpdateAdsComponent,
-    OwnAdsComponent
+    OwnAdsComponent,
+    PlayerMessagesComponent
   ],
   imports: [
     CommonModule,

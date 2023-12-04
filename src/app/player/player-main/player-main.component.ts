@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { faClock, faMagnifyingGlass, faPerson } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faMagnifyingGlass, faMedal, faPeopleGroup, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
@@ -13,6 +13,8 @@ export class PlayerMainComponent {
   faSearch = faMagnifyingGlass;
   faPeople = faPerson;
   faC = faClock;
+  faTeam = faPeopleGroup;
+  faSport = faMedal;
   ownAds: boolean = false;
   content = '';
   selectedFile: File | null = null;

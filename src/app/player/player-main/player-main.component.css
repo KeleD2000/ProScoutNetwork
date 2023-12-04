@@ -535,3 +535,7 @@
     width: 410px;
     height: 120px;
   }
+
+  li{
+    border: none;
+  }

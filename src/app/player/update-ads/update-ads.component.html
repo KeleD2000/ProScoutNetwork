@@ -17,19 +17,19 @@
                         <div class="container">
                             <div class="row" style="justify-content: center;">
                                 <div class="col-md-6 m-3">
-                                    <form>
+                                    <form [formGroup]="adsUpdate">
                                         <div class="mb-3">
                                             <label for="field1">Tartalom megváltoztatása</label>
-                                            <textarea formControlName="lastname" type="text" class="form-control"
+                                            <textarea [(ngModel)]="contentValue" formControlName="content" type="text" class="form-control"
                                                 id="field1" name="field1"></textarea>
                                             <div>
-                                                <label for="field1">Kép megváltoztatása</label>
+                                                <label for="field2">Kép megváltoztatása</label>
                                                 <input type="file" class="custom-file-input" id="imageUpload"
                                                     (change)="onFileChange($event)" />
                                             </div>
                                         </div>
                                         <div class="text-center">
-                                            <button class="regist-button">Módosítás</button>
+                                            <button class="regist-button" (click)="modifyAds()">Módosítás</button>
                                         </div>
                                     </form>
                                 </div>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
@@ -14,11 +14,11 @@ export class UpdateAdsComponent {
   selectedFile: File | null = null;
   currentAdId: number = 0;
   adsUpdate !: FormGroup
+  contentValue: string = '';
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private playerAdsService: PlayerAdsService){
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private playerAdsService: PlayerAdsService, private router: Router){
     this.adsUpdate = this.formBuilder.group({
-      content : [''],
-      
+      content : ['']
     })
   }
 
@@ -26,6 +26,21 @@ export class UpdateAdsComponent {
     if (!this.selectedFile){
       return;
     }
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+    formData.append('content', this.adsUpdate.get('content')?.value);
+
+    this.playerAdsService.modifyAds(formData, this.currentAdId).subscribe(
+        (response) => {
+            this.router.navigateByUrl("/own-ads");
+            console.log(response);
+        },
+        (error) => {
+            // Hibakezelés
+            console.error(error);
+        }
+    );
   }
 
   onFileChange(event: any) {
@@ -40,7 +55,14 @@ export class UpdateAdsComponent {
       console.log(this.currentAdId);
   });
   this.playerAdsService.getAllPlayerAds().subscribe( ads =>{
-    console.log(ads)
+    for(const [key, value] of Object.entries(ads)){
+      console.log(value.playerad_id);
+      if(value.playerad_id === this.currentAdId){
+
+        this.contentValue = value.content;
+        console.log(this.contentValue);
+      }
+    }
   })
 }
 

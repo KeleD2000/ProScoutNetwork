@@ -18,6 +18,10 @@ export class PlayerAdsService {
     return this.http.put(`${this.baseUrl}/api/updateAd/` + adId, data);
   }
 
+  deleteAds(adId: number){
+    return this.http.delete(`${this.baseUrl}/api/deleteAd/` + adId);
+  }
+
   getAllPlayerAds(){
     return this.http.get(`${this.baseUrl}/api/playerAds`);
   }
