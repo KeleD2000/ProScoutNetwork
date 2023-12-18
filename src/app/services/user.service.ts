@@ -19,4 +19,12 @@ export class UserService {
     return this.http.delete(`${this.baseUrl}/api/delete_player_profile/${username}`);
   }
 
+  getAllPlayer(){
+    return this.http.get(`${this.baseUrl}/api/players`);
+  }
+
+  getAllScout(){
+    return this.http.get(`${this.baseUrl}/api/scouts`);
+  }
+
 }

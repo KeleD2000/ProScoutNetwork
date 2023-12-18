@@ -36,13 +36,15 @@ export class SigninComponent {
             if(value[i].authority === 'PLAYER'){
               this.isItPlayer = true;
               localStorage.setItem('isPlayer', JSON.stringify(this.isItPlayer));
+              this.router.navigate(['player-main']);
             }else if(value[i].authority === 'SCOUT'){
               this.isItScout = true;
               localStorage.setItem('isScout', JSON.stringify(this.isItScout));
+              this.router.navigate(['scout-main']);
             }
           }
         }
-        this.router.navigate(['player-main']);
+        
       })
     }else{
       console.log("Sikertelen bejelentkezés.");

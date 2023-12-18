@@ -28,15 +28,15 @@
                                             [(ngModel)]="content" name="content"></textarea>
                                     </div>
                                     <div class="d-flex flex-column mx-2">
-                                        <div class="form-group m-1" *ngIf="this.ownAds">
+                                        <div class="form-group mb-1" *ngIf="this.ownAds">
                                             <button class="btn btn-get-started" type="submit"
-                                                [routerLink]="'/own-ads'">Saját posztjaim</button>
+                                                [routerLink]="'/scout-own-ads'">Saját posztjaim</button>
                                         </div>
-                                        <div class="form-group m-1">
+                                        <div class="form-group mb-1">
                                             <input type="file" class="custom-file-input" id="imageUpload"
                                                 (change)="onFileChange($event)" />
                                         </div>
-                                        <div class="form-group m-1">
+                                        <div class="form-group mb-1">
                                             <button class="btn btn-get-started" type="submit"
                                                 (click)="uploadAds()">Megosztás</button>
                                         </div>
@@ -45,26 +45,29 @@
                             </div>
 
 
-                            <div class="col-lg-6" *ngFor="let scoutad of scoutAllAds">
+                            <div class="col-lg-6" *ngFor="let playerad of playerAllAds">
                                 <article class="d-flex flex-column">
 
                                     <div class="post-img">
-                                        <img [src]="scoutad.image" alt="" class="img-fluid">
+                                        <img [src]="playerad.image" alt="" class="img-fluid">
                                     </div>
                                     <div class="meta-top">
                                         <ul class="list-group">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faPeople"></fa-icon><a href="blog-details.html">{{scoutad.name}}</a></li>
+                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faPeople"></fa-icon><a href="blog-details.html">{{playerad.name}}</a></li>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faTeam"></fa-icon><a href="blog-details.html">{{scoutad.team}}</a></li>
+                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faPosition"></fa-icon><a href="blog-details.html">{{playerad.age}}</a></li>
                                                 </div>
                                             </div>
                                         
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faSport"></fa-icon><a href="blog-details.html">{{scoutad.sport}}</a></li>
+                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faPosition"></fa-icon><a href="blog-details.html">{{playerad.position}}</a></li>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faSport"></fa-icon><a href="blog-details.html">{{playerad.sport}}</a></li>
                                                 </div>
                                             </div>
                                         </ul>
@@ -72,7 +75,9 @@
                                         </div>
 
                                     <div class="content">
-                                        <p>{{scoutad.content}}</p>
+                                        <p>
+                                            {{playerad.content}}
+                                        </p>
                                     </div>
 
                                     <div class="read-more mt-auto align-self-end">

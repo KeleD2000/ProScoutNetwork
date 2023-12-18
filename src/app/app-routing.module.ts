@@ -7,6 +7,7 @@ const routes: Routes = [
   {path: '', loadChildren: () => import('./main/main.module').then((m) => m.MainModule)},
   {path: '', loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule)},
   {path: '', loadChildren: () => import('./player/player.module').then((m) => m.PlayerModule)},
+  {path: '', loadChildren: () => import('./scout/scout.module').then((m) => m.ScoutModule)},
   {path: '**', component: NotFoundComponent}
 
 ];

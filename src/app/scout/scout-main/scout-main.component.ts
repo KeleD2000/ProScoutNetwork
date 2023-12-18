@@ -1,29 +1,30 @@
 import { Component } from '@angular/core';
-import { faClock, faMagnifyingGlass, faMedal, faPeopleGroup, faPerson } from '@fortawesome/free-solid-svg-icons';
+import { faClock,faLocationPin, faMagnifyingGlass, faMedal, faPeopleGroup, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
 import { ScoutAdsService } from 'src/app/services/scout-ads.service';
 import { UserService } from 'src/app/services/user.service';
 
+
 @Component({
-  selector: 'app-player-main',
-  templateUrl: './player-main.component.html',
-  styleUrls: ['./player-main.component.css']
+  selector: 'app-scout-main',
+  templateUrl: './scout-main.component.html',
+  styleUrls: ['./scout-main.component.css']
 })
-export class PlayerMainComponent {
+export class ScoutMainComponent {
   faSearch = faMagnifyingGlass;
   faPeople = faPerson;
   faC = faClock;
-  faTeam = faPeopleGroup;
+  faPosition = faLocationPin;
   faSport = faMedal;
+  playerAllAds: any[] = [];
   ownAds: boolean = false;
-  scoutAllAds: any[] = [];
   content = '';
   selectedFile: File | null = null;
 
-  constructor(private playerAdsService: PlayerAdsService, private fileService: FileService, 
-    private userService: UserService, private scoutAdsService: ScoutAdsService) {}
+  constructor(private scoutAdsService: ScoutAdsService, private fileService: FileService, 
+    private playerAdsService: PlayerAdsService, private userService: UserService) {}
 
   uploadAds() {
     if (!this.selectedFile) {
@@ -36,7 +37,7 @@ export class PlayerMainComponent {
       const data = new FormData();
       data.append("content", this.content);
       data.append("file", this.selectedFile, this.selectedFile.name);
-      this.playerAdsService.fileAdsUpload(data, converted).subscribe(p => {
+      this.scoutAdsService.fileAdsUpload(data, converted).subscribe(p => {
         console.log(p, "Sikeres");
         window.location.reload();
       })
@@ -52,43 +53,42 @@ export class PlayerMainComponent {
     const converted = username?.replace(/"/g, '');
     this.fileService.getCurrentUser(converted).subscribe( user => {
       for(const [key, value] of Object.entries(user)){
-        if(key === 'player'){
+        if(key === 'scout'){
           for(let i in value){
-            console.log(value.playerAds);
-            if(value.playerAds.length > 0){
+            if(value.scoutAds.length > 0){
               this.ownAds = true;
-            }
-            for(let j in value.playerAds){
-              console.log(value.playerAds[j]);
             }
           }
         }
       }
     });
 
-    this.userService.getAllScout().subscribe(scout => {
-      for (const [key, value] of Object.entries(scout)) {
+
+    this.userService.getAllPlayer().subscribe(players => {
+      for (const [key, value] of Object.entries(players)) {
         console.log(key, value);
         
-        const scoutAds = [];
+        const playerAds = [];
     
-        for (let i in value.scoutAds) {
-          const scoutAdObj = {
+        for (let i in value.playerAds) {
+          const playerAdObj = {
             name: value.last_name + " " + value.first_name,
+            position: value.position,
+            age: value.age,
+            location: value.location,
             sport: value.sport,
-            team: value.team,
             hasAd: true,
-            content: value.scoutAds[i].content,
+            content: value.playerAds[i].content,
             image: '',
-            ad_id: value.scoutAds[i].scoutad_id
+            ad_id: value.playerAds[i].playerad_id
           };
     
-          this.scoutAdsService.getAdsPic(scoutAdObj.ad_id).subscribe(
+          this.playerAdsService.getAdsPic(playerAdObj.ad_id).subscribe(
             (response: any) => {
               if (response) {
                 const reader = new FileReader();
                 reader.onload = () => {
-                  scoutAdObj.image = reader.result as string;
+                  playerAdObj.image = reader.result as string;
                 };
                 reader.readAsDataURL(new Blob([response]));
               }
@@ -97,15 +97,16 @@ export class PlayerMainComponent {
               console.error('Error fetching ad picture:', error);
             }
           );
-          scoutAds.push(scoutAdObj);
+          playerAds.push(playerAdObj);
         }
     
-        if (scoutAds.length > 0) {
-          this.scoutAllAds.push(...scoutAds);
-          console.log(this.scoutAllAds);
+        if (playerAds.length > 0) {
+          this.playerAllAds.push(...playerAds);
+          console.log(this.playerAllAds);
         }
       }
     });
+    
   }
 
   ngAfterViewInit(){
@@ -114,3 +115,4 @@ export class PlayerMainComponent {
     });
    }
 }
+
