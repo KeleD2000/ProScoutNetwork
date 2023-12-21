@@ -35,16 +35,15 @@ export class PlayerProfileComponent {
   profileDetails: any[] = [];
   selectedFile?: File;
   image: any;
-  fileId: number = 0;
   videoFileId: number = 0;
   selectedPlatform: string = '';
   videoUrl?: SafeResourceUrl;
   faDelete = faTrash;
 
-  constructor(private renderer: Renderer2, private fileService: FileService, 
+  constructor(private renderer: Renderer2, private fileService: FileService,
     private sanitizer: DomSanitizer, private userSerivce: UserService,
     private router: Router
-    ) {
+  ) {
 
   }
 
@@ -57,7 +56,7 @@ export class PlayerProfileComponent {
     }
     this.showModal = true;
     this.renderer.addClass(document.body, 'no-scroll');
-  
+
     // Az adott platformnak megfelelő tartalom beállítása
     this.modalTitle = '';
     switch (platform) {
@@ -69,23 +68,23 @@ export class PlayerProfileComponent {
         this.downloadVideo(this.videoFileId);  // Megjeleníti a videót azonnal
         break;
     }
-  
+
     // A popup tartalom és cím beállítása
     const modalTitleElement = document.querySelector('.modal-title');
     if (modalTitleElement) {
       modalTitleElement.innerHTML = this.modalTitle;
     }
   }
-  
-  deleteProfile(){
+
+  deleteProfile() {
     const user = localStorage.getItem('isLoggedin');
     let username: string | undefined;
-  
+
     if (user) {
       username = user.replace(/"/g, '');
     }
 
-    this.userSerivce.deletePlayer(username).subscribe( user => {
+    this.userSerivce.deletePlayer(username).subscribe(user => {
       console.log(user);
       this.router.navigateByUrl('/');
     })
@@ -188,7 +187,7 @@ export class PlayerProfileComponent {
     );
   }
 
-  downloadVideo(fileId: number){
+  downloadVideo(fileId: number) {
     this.fileService.downloadVideo(fileId).subscribe(
       (data: any) => {
         const blob = new Blob([data], { type: 'video/mp4' });
@@ -223,7 +222,6 @@ export class PlayerProfileComponent {
     );
 
     this.fileService.getCurrentUser(current).subscribe(user => {
-      console.log(user);
       const profilObj = {
         name: '',
         email: '',
@@ -243,25 +241,29 @@ export class PlayerProfileComponent {
           profilObj.sport = value.sport;
           profilObj.pos = value.position;
           profilObj.age = value.age;
-    
-          for (let i in value.files) {
-            if (value.files[i].type === 'pdf') {
-              profilObj.pdf_file_id = value.files[i].files_id;
-              const filePath = value.files[i].file_path;
+
+        }
+        if (key === 'files') {
+          console.log(value);
+          for (let i in value) {
+            console.log(value[i]);
+            if (value[i].type === 'pdf') {
+              console.log(value[i].files_id);
+              profilObj.pdf_file_id = value[i].files_id;
+              const filePath = value[i].file_path;
               const parts = filePath.split('\\');
               this.pdf_filename = parts[parts.length - 1];
-              this.pdf_filename = value.files[i].file_path.split("'\'").pop();
+              this.pdf_filename = value[i].file_path.split("'\'").pop();
             }
-            if (value.files[i].type === 'video') {
-              profilObj.video_file_id = value.files[i].files_id;
+            if (value[i].type === 'video') {
+              profilObj.video_file_id = value[i].files_id;
             }
-            if (value.files[i].type === 'profilpic') {
-              profilObj.pic_file_id = value.files[i].files_id;
+            if (value[i].type === 'profilpic') {
+              profilObj.pic_file_id = value[i].files_id;
             }
           }
         }
       }
-      this.fileId = profilObj.pdf_file_id;
       this.videoFileId = profilObj.video_file_id;
       this.profileDetails.push(profilObj);
     });
