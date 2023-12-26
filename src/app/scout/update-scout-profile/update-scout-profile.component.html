@@ -1,1 +1,89 @@
-<p>update-scout-profile works!</p>
+<body class="page-contact">
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('assets/reg1.jpg');">
+            <div class="container position-relative d-flex flex-column align-items-center">
+
+                <h2>Játékos profil módosítás</h2>
+                <ol>
+                    <li><a routerLink="/">Főoldal</a></li>
+                    <li>Játékos profil módosítás</li>
+                </ol>
+
+            </div>
+        </div><!-- End Breadcrumbs -->
+        <section id="contact" class="contact">
+            <div class="container position-relative" data-aos="fade-up">
+                <div class="d-flex justify-content-center pt-3">
+                    <div class="col-lg-6 form mb-3" data-aos="fade-right">
+                        <div class="container">
+                            <div class="row" style="justify-content: center;">
+                                <div class="col-md-6 m-3" *ngFor="let prof of profObjHtml">
+                                    <form [formGroup]="updateForm" >
+                                        <div class="mb-3">
+                                            <label for="field1">Vezetéknév</label>
+                                            <input formControlName="lastname" type="text" class="form-control"
+                                                id="field1" name="field1" [(ngModel)]="prof.last_name">
+                                        </div>
+                                        <div *ngIf="updateForm.get('lastname')?.errors?.['required'] && (updateForm.get('lastname')?.dirty || updateForm.get('lastname')?.touched)"
+                                            class="error-message mb-3">
+                                            Vezetéknév megadása kötelező
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="field2">Keresztnév</label>
+                                            <input formControlName="firstname" type="text" class="form-control"
+                                                id="field2" name="field2" [(ngModel)]="prof.first_name">
+                                        </div>
+                                        <div *ngIf="updateForm.get('firstname')?.errors?.['required'] && (updateForm.get('firstname')?.dirty || updateForm.get('firstname')?.touched)"
+                                            class="error-message mb-3">
+                                            Keresztnév megadása kötelező
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="field4">Sport</label>
+                                            <input formControlName="sport" type="text" class="form-control" id="field4"
+                                                name="field4" [(ngModel)]="prof.sport">
+                                        </div>
+                                        <div *ngIf="updateForm.get('sport')?.errors?.['required'] && (updateForm.get('sport')?.dirty || updateForm.get('sport')?.touched)"
+                                            class="error-message mb-3">
+                                            Sport megadása kötelező
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="field6">Email</label>
+                                            <input formControlName="email" type="text" class="form-control" id="field6"
+                                                name="field6" [(ngModel)]="prof.email">
+                                        </div>
+                                        <div *ngIf="updateForm.get('email')?.errors?.['required'] && (updateForm.get('email')?.dirty || updateForm.get('email')?.touched)"
+                                            class="error-message mb-3">
+                                            Email megadása kötelező
+                                        </div>
+                                        <div *ngIf="updateForm.get('email')?.errors?.['email'] && (updateForm.get('email')?.dirty || updateForm.get('email')?.touched)"
+                                            class="error-message mb-3">
+                                            Adj meg érvényes email címet
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="field7">Csapat</label>
+                                            <input formControlName="team" type="text" class="form-control"
+                                                id="field7" name="field7" [(ngModel)]="prof.team">
+                                        </div>
+                                        <div *ngIf="updateForm.get('team')?.errors?.['required'] && (updateForm.get('team')?.dirty || updateForm.get('team')?.touched)"
+                                            class="error-message mb-3">
+                                            Csapat megadása kötelező
+                                        </div>
+                                        <div class="text-center">
+                                            <button (click)="onUpdateProfile()" class="regist-button">Módosítás</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- End Contact Form -->
+
+                </div>
+
+            </div>
+        </section><!-- End Contact Section -->
+    </main>
+</body>

@@ -1,1 +1,160 @@
-<p>scout-profile works!</p>
+<body>
+    <main id="main">
+      <!-- ======= Breadcrumbs ======= -->
+      <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/assets/player-profile1.jpg');">
+        <div class="container position-relative d-flex flex-column align-items-center">
+  
+          <h2>Profil</h2>
+          <ol>
+            <li><a routerLink="/">Főoldal</a></li>
+            <li>Profil</li>
+          </ol>
+        </div>
+      </div><!-- End Breadcrumbs -->
+    </main>
+    <section class="m-3">
+      <div class="row">
+        <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100" *ngFor="let profile of profileDetails">
+          <div class="card mb-4">
+            <div class="p-3 text-end delete" (click)="deleteProfilePic()">
+              <fa-icon [icon]="faDelete"></fa-icon>
+            </div>
+            <div class="card-body text-center">
+              <img *ngIf="!image" src="assets/not-found.jpg" alt="avatar" class="rounded-circle img-fluid"
+                style="width: 150px;">
+              <img *ngIf="image" [src]="image" alt="pic" class="rounded-circle img-fluid" style="width: 150px;">
+              <h5 class="my-3">{{profile.name}}</h5>
+              <p class="text-muted mb-1">{{profile.sport}}</p>
+              <div class="d-flex justify-content-center mb-2">
+                <button type="button" class="btn btn-primary" (click)="openModal('files')">Fájlok</button>
+                <button type="button" class="btn btn-outline-primary ms-1">Üzenet küldés</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8" data-aos="zoom-in" data-aos-delay="100" *ngFor="let profile of profileDetails">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Teljes neve</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{profile.name}}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Email</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{profile.email}}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Csapat</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{profile.team}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mx-auto">
+              <div class="card mb-4 mb-md-0">
+                <div class="card-body" *ngFor="let profile of profileDetails">
+                  <p class="mb-4"><span class="text-primary font-italic me-1">{{profile.pos}}</span> Játékos stasztikája</p>
+                  <p class="mt-4 mb-1" style="font-size: .77rem;">PDF fájl</p>
+                  <div class="progress rounded mb-2">
+                    <div><a (click)="downloadPdf(profile.pdf_file_id)"> Kattins ide a videóhoz való megtekintéséhez, ha érdekel a játékosról feltöltött videó.</a></div>
+                  </div>
+                  <p class="mt-4 mb-1" style="font-size: .77rem;">Videó megtekintése</p>
+                  <div class="progress rounded mb-2">
+                    <div><a (click)="openModal('videos')"> Kattins ide a videóhoz való megtekintéséhez, ha érdekel a játékosról feltöltött videó.</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end mt-2">
+              <span class="me-2">
+                  <button class="btn btn-primary" [routerLink]="'/update-scout-profile'">
+                      Módosítás
+                  </button>
+              </span>
+              <span>
+                  <button class="btn btn-danger" (click)="deleteProfile()">
+                      Törlés
+                  </button>
+              </span>
+          </div>
+          
+          </div>
+        </div>
+        <div class="overlay" *ngIf="showModal" [@fadeInOut]></div>
+        <div class="modal fade modalc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+          id="exampleModal">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <form>
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{ modalTitle }}</h5>
+                  <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+                  </button>
+                </div>
+                <div class="modal-body d-flex justify-content-center">
+                  <div *ngIf="selectedPlatform==='videos'">
+                    <div *ngIf="videoUrl">
+                      <video width="480" height="240" controls>
+                        <source [src]="videoUrl" type="video/mp4">
+                        A böngésződ nem támogatja a videó lejátszását.
+                      </video>
+                    </div>
+                  </div>
+                  <form #myForm="ngForm" *ngIf="selectedPlatform === 'files'">
+                    <label for="options">Válassz egy elemet:</label>
+                    <select id="options" name="selectedOption" [(ngModel)]="selectedOption">
+                      <option value="pdf">PDF</option>
+                      <option value="profilpic">Profilkép</option>
+                      <option value="video">Videó</option>
+                    </select>
+                    <div [ngSwitch]="selectedOption">
+                      <div *ngSwitchCase="'pdf'" [@fadeInOut]>
+                        <label for="input1">PDF fájl feltöltése:</label>
+                        <div class="mb-3">
+                          <input id="input1" type="file" name="input1Value" accept="pdf" (change)="onFileChange($event)" />
+                        </div>
+                        <button type="button" class="btn btn-primary" (click)="uploadPdfFile()">PDF Feltöltés</button>
+                      </div>
+              
+                      <div *ngSwitchCase="'profilpic'" [@fadeInOut]>
+                        <label for="input2">Profilkép feltöltése:</label>
+                        <div class="mb-3">
+                          <input id="input2" type="file" name="input2Value" (change)="onFileChange($event)" />
+                        </div>
+                        <button type="button" class="btn btn-primary" (click)="uploadProfilpicFile()">Profilkép Feltöltés</button>
+                      </div>
+              
+                      <div *ngSwitchCase="'video'" [@fadeInOut]>
+                        <label for="input3">Videó feltöltése:</label>
+                        <div class="mb-3">
+                          <input id="input3" type="file" name="input3Value" (change)="onFileChange($event)" />
+                        </div>
+                        <button type="button" class="btn btn-primary" (click)="uploadVideoFile()">Videó Feltöltés</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Bezárás</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
