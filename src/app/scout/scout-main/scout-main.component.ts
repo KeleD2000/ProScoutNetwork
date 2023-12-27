@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { faClock,faLocationPin, faMagnifyingGlass, faMedal, faPeopleGroup, faPerson } from '@fortawesome/free-solid-svg-icons';
+import { faBackward, faClock,faLocationPin, faMagnifyingGlass, faMedal, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
@@ -18,10 +18,14 @@ export class ScoutMainComponent {
   faC = faClock;
   faPosition = faLocationPin;
   faSport = faMedal;
+  faBack = faBackward;
   playerAllAds: any[] = [];
+  searchPlayerAllAds: any[] = [];
   ownAds: boolean = false;
+  searchTerm: string = '';
   content = '';
   selectedFile: File | null = null;
+  isSearched: boolean = false;
 
   constructor(private scoutAdsService: ScoutAdsService, private fileService: FileService, 
     private playerAdsService: PlayerAdsService, private userService: UserService) {}
@@ -66,7 +70,6 @@ export class ScoutMainComponent {
 
     this.userService.getAllPlayer().subscribe(players => {
       for (const [key, value] of Object.entries(players)) {
-        console.log(key, value);
         
         const playerAds = [];
     
@@ -102,11 +105,57 @@ export class ScoutMainComponent {
     
         if (playerAds.length > 0) {
           this.playerAllAds.push(...playerAds);
-          console.log(this.playerAllAds);
         }
       }
     });
+  }
+
+  onSubmit(){
+    this.scoutAdsService.searchByScout(this.searchTerm).subscribe((res) => {
+      for(let i in res){
+        const playerAdsSearch = [];
+        console.log(res[i]);
+        for(let j in res[i].playerAds){
+          console.log(res[i].playerAds[j]);
+          const playerAdObj = {
+            name: res[i].last_name + " " + res[i].first_name,
+            position: res[i].position,
+            age: res[i].age,
+            location: res[i].location,
+            sport: res[i].sport,
+            hasAd: true,
+            content: res[i].playerAds[j].content,
+            image: '',
+            ad_id: res[i].playerAds[j].playerad_id
+          };
+          this.playerAdsService.getAdsPic(playerAdObj.ad_id).subscribe(
+            (response: any) => {
+              if (response) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  playerAdObj.image = reader.result as string;
+                };
+                reader.readAsDataURL(new Blob([response]));
+              }
+            },
+            (error) => {
+              console.error('Error fetching ad picture:', error);
+            }
+          );
+          playerAdsSearch.push(playerAdObj);
+        }
     
+        if (playerAdsSearch.length > 0) {
+          this.searchPlayerAllAds.push(...playerAdsSearch);
+        }
+        }
+        
+      });
+      this.isSearched = true;
+  }
+
+  onBack(){
+    window.location.reload();
   }
 
   ngAfterViewInit(){

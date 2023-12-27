@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { PlayerGuard } from './authguards/player.guard';
+import { ScoutGuard } from './authguards/scout.guard';
 
 
 const routes: Routes = [
   {path: '', loadChildren: () => import('./main/main.module').then((m) => m.MainModule)},
   {path: '', loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule)},
-  {path: '', loadChildren: () => import('./player/player.module').then((m) => m.PlayerModule)},
-  {path: '', loadChildren: () => import('./scout/scout.module').then((m) => m.ScoutModule)},
+  {path: '', loadChildren: () => import('./player/player.module').then((m) => m.PlayerModule), canActivate: [PlayerGuard]},
+  {path: '', loadChildren: () => import('./scout/scout.module').then((m) => m.ScoutModule), canActivate: [ScoutGuard]},
   {path: '**', component: NotFoundComponent}
 
 ];

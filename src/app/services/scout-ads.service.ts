@@ -33,4 +33,13 @@ export class ScoutAdsService {
 
     return this.http.get(imageUrl, { responseType: 'blob' });
   }
+
+  searchByScout(searchTerm: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/search-scout`, { params: { searchTerm: searchTerm } });
+  }
+
+  searchByPlayer(searchTerm: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/search-player`, { params: { searchTerm: searchTerm } });
+  }
+
 }
