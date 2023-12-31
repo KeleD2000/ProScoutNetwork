@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { faBackward, faClock,faLocationPin, faMagnifyingGlass, faMedal, faPerson } from '@fortawesome/free-solid-svg-icons';
+import { Router } from '@angular/router';
+import { faBackward, faClock, faLocationPin, faMagnifyingGlass, faMedal, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
@@ -27,8 +28,13 @@ export class ScoutMainComponent {
   selectedFile: File | null = null;
   isSearched: boolean = false;
 
-  constructor(private scoutAdsService: ScoutAdsService, private fileService: FileService, 
-    private playerAdsService: PlayerAdsService, private userService: UserService) {}
+  constructor(private scoutAdsService: ScoutAdsService, private fileService: FileService,
+    private playerAdsService: PlayerAdsService, private userService: UserService, private router: Router) { }
+
+  getUserDetails(username: string) {
+    this.router.navigate(['/user-details'], { queryParams: { name: username } });
+  }
+
 
   uploadAds() {
     if (!this.selectedFile) {
@@ -52,14 +58,14 @@ export class ScoutMainComponent {
     this.selectedFile = event.target.files[0];
   }
 
-  ngOnInit(){
+  ngOnInit() {
     const username = localStorage.getItem('isLoggedin');
     const converted = username?.replace(/"/g, '');
-    this.fileService.getCurrentUser(converted).subscribe( user => {
-      for(const [key, value] of Object.entries(user)){
-        if(key === 'scout'){
-          for(let i in value){
-            if(value.scoutAds.length > 0){
+    this.fileService.getCurrentUser(converted).subscribe(user => {
+      for (const [key, value] of Object.entries(user)) {
+        if (key === 'scout') {
+          for (let i in value) {
+            if (value.scoutAds.length > 0) {
               this.ownAds = true;
             }
           }
@@ -70,22 +76,22 @@ export class ScoutMainComponent {
 
     this.userService.getAllPlayer().subscribe(players => {
       for (const [key, value] of Object.entries(players)) {
-        
         const playerAds = [];
-    
-        for (let i in value.playerAds) {
+
+        for (let i in value.player.playerAds) {
           const playerAdObj = {
-            name: value.last_name + " " + value.first_name,
-            position: value.position,
-            age: value.age,
-            location: value.location,
-            sport: value.sport,
+            name: value.player.last_name + " " + value.player.first_name,
+            username: value.username,
+            position: value.player.position,
+            age: value.player.age,
+            location: value.player.location,
+            sport: value.player.sport,
             hasAd: true,
-            content: value.playerAds[i].content,
+            content: value.player.playerAds[i].content,
             image: '',
-            ad_id: value.playerAds[i].playerad_id
+            ad_id: value.player.playerAds[i].playerad_id
           };
-    
+
           this.playerAdsService.getAdsPic(playerAdObj.ad_id).subscribe(
             (response: any) => {
               if (response) {
@@ -102,7 +108,7 @@ export class ScoutMainComponent {
           );
           playerAds.push(playerAdObj);
         }
-    
+
         if (playerAds.length > 0) {
           this.playerAllAds.push(...playerAds);
         }
@@ -110,12 +116,12 @@ export class ScoutMainComponent {
     });
   }
 
-  onSubmit(){
+  onSubmit() {
     this.scoutAdsService.searchByScout(this.searchTerm).subscribe((res) => {
-      for(let i in res){
+      for (let i in res) {
         const playerAdsSearch = [];
         console.log(res[i]);
-        for(let j in res[i].playerAds){
+        for (let j in res[i].playerAds) {
           console.log(res[i].playerAds[j]);
           const playerAdObj = {
             name: res[i].last_name + " " + res[i].first_name,
@@ -144,24 +150,24 @@ export class ScoutMainComponent {
           );
           playerAdsSearch.push(playerAdObj);
         }
-    
+
         if (playerAdsSearch.length > 0) {
           this.searchPlayerAllAds.push(...playerAdsSearch);
         }
-        }
-        
-      });
-      this.isSearched = true;
+      }
+
+    });
+    this.isSearched = true;
   }
 
-  onBack(){
+  onBack() {
     window.location.reload();
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     AOS.init({
       once: true
     });
-   }
+  }
 }
 

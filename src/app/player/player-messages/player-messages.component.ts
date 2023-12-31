@@ -12,9 +12,12 @@ import { MessagesService } from 'src/app/services/messages.service';
 export class PlayerMessagesComponent {
   receiverId: number = 0;
   senderProfPic: string = '';
+  isItMessages: boolean = false;
   image: any;
   senderArray: any[] = [];
   senderObject: any = {};
+  sendMessageArray: any[] = [];
+  receiverMessageArray: any[] = [];
 
   constructor(private messageService: MessagesService,  private fileService: FileService){}
 
@@ -31,6 +34,8 @@ export class PlayerMessagesComponent {
       }
     });
   }
+
+
   
   getSendersWithDelay() {
     this.messageService.getSenders(this.receiverId)
@@ -40,6 +45,7 @@ export class PlayerMessagesComponent {
       .subscribe((receiver) => {
         for (let i in receiver) {
           const senderObject: any = {
+            id: receiver[i].id,
             name: receiver[i].username,
             content: receiver[i].message_content,
             image: ""
@@ -67,6 +73,66 @@ export class PlayerMessagesComponent {
       });
       
   }
+
+  getMessages(senderId: number){
+    this.sendMessageArray = [];
+    this.receiverMessageArray = [];
+
+    this.messageService.getMessages(senderId, this.receiverId).subscribe((mess) => {
+      mess.forEach((message: { senderUser: { id: number; username: any; }; dateTime: any; message_content: any; }) => {
+        console.log(message);
+        if(this.receiverId !== message.senderUser.id){
+          let sendMessageObject = {
+            date_time: message.dateTime,
+            content: message.message_content,
+            sender_username: message.senderUser.username,
+            image:""
+          };
+          this.fileService.getProfilePicBlob(sendMessageObject.sender_username).subscribe(
+            (response: any) => {
+              if (response) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  sendMessageObject.image = reader.result as string; 
+                  this.sendMessageArray.push(sendMessageObject);
+                  console.log(this.sendMessageArray);
+                };
+                reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+              }
+            },
+            (error) => {
+              console.error('Error fetching profile picture:', error);
+            }
+          );
+        }
+        if(this.receiverId === message.senderUser.id){
+          let receiverMessageObject = {
+            date_time: message.dateTime,
+            content: message.message_content,
+            receiver_username: message.senderUser.username,
+            image:""
+          };
+          this.fileService.getProfilePicBlob(receiverMessageObject.receiver_username).subscribe(
+            (response: any) => {
+              if (response) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  receiverMessageObject.image = reader.result as string; 
+                  this.receiverMessageArray.push(receiverMessageObject);
+                };
+                reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+              }
+            },
+            (error) => {
+              console.error('Error fetching profile picture:', error);
+            }
+          );
+        }
+      });
+    })
+    this.isItMessages = true;
+  }
+  
   
 
   ngAfterViewInit() {

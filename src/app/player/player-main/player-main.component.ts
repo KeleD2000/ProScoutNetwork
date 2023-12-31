@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { faBackward, faClock, faMagnifyingGlass, faMedal, faPeopleGroup, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
@@ -26,8 +27,12 @@ export class PlayerMainComponent {
   selectedFile: File | null = null;
   faBack = faBackward;
 
-  constructor(private playerAdsService: PlayerAdsService, private fileService: FileService, 
-    private userService: UserService, private scoutAdsService: ScoutAdsService) {}
+  constructor(private playerAdsService: PlayerAdsService, private fileService: FileService,
+    private userService: UserService, private scoutAdsService: ScoutAdsService, private router: Router) { }
+
+  getUserDetails(username: string) {
+    this.router.navigate(['/user-details'], { queryParams: { name: username } });
+  }
 
   uploadAds() {
     if (!this.selectedFile) {
@@ -51,14 +56,14 @@ export class PlayerMainComponent {
     this.selectedFile = event.target.files[0];
   }
 
-  ngOnInit(){
+  ngOnInit() {
     const username = localStorage.getItem('isLoggedin');
     const converted = username?.replace(/"/g, '');
-    this.fileService.getCurrentUser(converted).subscribe( user => {
-      for(const [key, value] of Object.entries(user)){
-        if(key === 'player'){
-          for(let i in value){
-            if(value.playerAds.length > 0){
+    this.fileService.getCurrentUser(converted).subscribe(user => {
+      for (const [key, value] of Object.entries(user)) {
+        if (key === 'player') {
+          for (let i in value) {
+            if (value.playerAds.length > 0) {
               this.ownAds = true;
             }
           }
@@ -68,21 +73,22 @@ export class PlayerMainComponent {
 
     this.userService.getAllScout().subscribe(scout => {
       for (const [key, value] of Object.entries(scout)) {
-        console.log(key, value);
-        
+        console.log(key, value.scout);
+
         const scoutAds = [];
-    
-        for (let i in value.scoutAds) {
+        for (let i in value.scout.scoutAds) {
           const scoutAdObj = {
-            name: value.last_name + " " + value.first_name,
-            sport: value.sport,
-            team: value.team,
+            id: value.scout.id,
+            name: value.scout.last_name + " " + value.scout.first_name,
+            username: value.username,
+            sport: value.scout.sport,
+            team: value.scout.team,
             hasAd: true,
-            content: value.scoutAds[i].content,
+            content: value.scout.scoutAds[i].content,
             image: '',
-            ad_id: value.scoutAds[i].scoutad_id
+            ad_id: value.scout.scoutAds[i].scoutad_id
           };
-    
+
           this.scoutAdsService.getAdsPic(scoutAdObj.ad_id).subscribe(
             (response: any) => {
               if (response) {
@@ -99,7 +105,7 @@ export class PlayerMainComponent {
           );
           scoutAds.push(scoutAdObj);
         }
-    
+
         if (scoutAds.length > 0) {
           this.scoutAllAds.push(...scoutAds);
           console.log(this.scoutAllAds);
@@ -108,12 +114,12 @@ export class PlayerMainComponent {
     });
   }
 
-  onSubmit(){
+  onSubmit() {
     this.scoutAdsService.searchByPlayer(this.searchTerm).subscribe((res) => {
-      for(let i in res){
+      for (let i in res) {
         const scoutAdsSearch = [];
         console.log(res[i]);
-        for(let j in res[i].scoutAds){
+        for (let j in res[i].scoutAds) {
           const playerAdObj = {
             name: res[i].last_name + " " + res[i].first_name,
             team: res[i].team,
@@ -139,23 +145,23 @@ export class PlayerMainComponent {
           );
           scoutAdsSearch.push(playerAdObj);
         }
-    
+
         if (scoutAdsSearch.length > 0) {
           this.searchScoutAllAds.push(...scoutAdsSearch);
         }
-        }
-        
-      });
-      this.isSearched = true;
+      }
+
+    });
+    this.isSearched = true;
   }
 
-  onBack(){
+  onBack() {
     window.location.reload();
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     AOS.init({
       once: true
     });
-   }
+  }
 }

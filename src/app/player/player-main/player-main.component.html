@@ -52,16 +52,16 @@
                                         <ul class="list-group">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faPeople"></fa-icon><a href="blog-details.html">{{scoutad.name}}</a></li>
+                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faPeople"></fa-icon><a>{{scoutad.name}}</a></li>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faTeam"></fa-icon><a href="blog-details.html">{{scoutad.team}}</a></li>
+                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faTeam"></fa-icon><a>{{scoutad.team}}</a></li>
                                                 </div>
                                             </div>
                                         
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faSport"></fa-icon><a href="blog-details.html">{{scoutad.sport}}</a></li>
+                                                    <li class="list-group-item d-flex align-items-center"><fa-icon [icon]="faSport"></fa-icon><a>{{scoutad.sport}}</a></li>
                                                 </div>
                                             </div>
                                         </ul>
@@ -71,7 +71,7 @@
                                         <p>{{ scoutad.content }}</p>
                                     </div>
                                     <div class="read-more mt-auto align-self-end">
-                                        <a href="blog-details.html">Érdekel<i class="bi bi-arrow-right"></i></a>
+                                        <a (click)="getUserDetails(scoutad.username)">Érdekel<i class="bi bi-arrow-right"></i></a>
                                     </div>
                                 </article>
                             </div><!-- End post list item -->

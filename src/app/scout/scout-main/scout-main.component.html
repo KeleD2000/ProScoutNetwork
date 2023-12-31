@@ -54,13 +54,13 @@
                                                 <div class="col-md-6">
                                                     <li class="list-group-item d-flex align-items-center">
                                                         <fa-icon [icon]="faPeople"></fa-icon>
-                                                        <a href="blog-details.html">{{ playerad.name }}</a>
+                                                        <a>{{ playerad.name }}</a>
                                                     </li>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <li class="list-group-item d-flex align-items-center">
                                                         <fa-icon [icon]="faPosition"></fa-icon>
-                                                        <a href="blog-details.html">{{ playerad.age }}</a>
+                                                        <a>{{ playerad.age }}</a>
                                                     </li>
                                                 </div>
                                             </div>
@@ -68,13 +68,13 @@
                                                 <div class="col-md-6">
                                                     <li class="list-group-item d-flex align-items-center">
                                                         <fa-icon [icon]="faPosition"></fa-icon>
-                                                        <a href="blog-details.html">{{ playerad.position }}</a>
+                                                        <a>{{ playerad.position }}</a>
                                                     </li>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <li class="list-group-item d-flex align-items-center">
                                                         <fa-icon [icon]="faSport"></fa-icon>
-                                                        <a href="blog-details.html">{{ playerad.sport }}</a>
+                                                        <a>{{ playerad.sport }}</a>
                                                     </li>
                                                 </div>
                                             </div>
@@ -84,7 +84,7 @@
                                         <p>{{ playerad.content }}</p>
                                     </div>
                                     <div class="read-more mt-auto align-self-end">
-                                        <a href="blog-details.html">Érdekel<i class="bi bi-arrow-right"></i></a>
+                                        <a (click)="getUserDetails(playerad.username)">Érdekel<i class="bi bi-arrow-right"></i></a>
                                     </div>
                                 </article>
                             </div>

@@ -12,6 +12,8 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { PlayerGuard} from './authguards/player.guard';
 import { ScoutGuard } from './authguards/scout.guard';
+import { UserDetailsComponent } from './components/user-details/user-details.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -20,7 +22,8 @@ import { ScoutGuard } from './authguards/scout.guard';
   declarations: [
     AppComponent,
     SpinnerComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    UserDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +32,9 @@ import { ScoutGuard } from './authguards/scout.guard';
     MainModule,
     MainRoutingModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule
   
   ],
   providers: [PlayerGuard, ScoutGuard],

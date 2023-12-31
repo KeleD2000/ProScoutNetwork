@@ -16,5 +16,8 @@ export class MessagesService {
     return this.http.get(`${this.baseUrl}/api/messages/latest/` + receiverId);
   }
 
+  getMessages(senderId: number, receiverId: number): Observable<any>{
+    return this.http.get(`${this.baseUrl}/api/conversation?senderId=`+ senderId + `&receiverId=` + receiverId);
+  }
 
 }

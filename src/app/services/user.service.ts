@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UpdatePlayer } from '../model/UpdatePlayer';
 import { UpdateScout } from '../model/UpdateScout';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,10 @@ export class UserService {
   getAllScout(){
     return this.http.get(`${this.baseUrl}/api/scouts`);
   }
+
+  getUserDetails(username: string): Observable<any>{
+    return this.http.get(`${this.baseUrl}/api/users/${username}`);
+  }
+
 
 }
