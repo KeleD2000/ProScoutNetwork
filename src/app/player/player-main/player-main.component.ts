@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faBackward, faClock, faMagnifyingGlass, faMedal, faPeopleGroup, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
@@ -23,12 +24,17 @@ export class PlayerMainComponent {
   searchScoutAllAds: any[] = [];
   searchTerm: string = '';
   isSearched: boolean = false;
-  content = '';
   selectedFile: File | null = null;
   faBack = faBackward;
+  adsForm: FormGroup
 
   constructor(private playerAdsService: PlayerAdsService, private fileService: FileService,
-    private userService: UserService, private scoutAdsService: ScoutAdsService, private router: Router) { }
+    private userService: UserService, private scoutAdsService: ScoutAdsService, private router: Router,
+    private formBuilder: FormBuilder) {
+      this.adsForm = this.formBuilder.group({
+        content : ['']
+      })
+     }
 
   getUserDetails(username: string) {
     this.router.navigate(['/user-details'], { queryParams: { name: username } });
@@ -43,7 +49,7 @@ export class PlayerMainComponent {
     console.log(converted);
     if (converted) {
       const data = new FormData();
-      data.append("content", this.content);
+      data.append("content", this.adsForm.get('content')?.value);
       data.append("file", this.selectedFile, this.selectedFile.name);
       this.playerAdsService.fileAdsUpload(data, converted).subscribe(p => {
         console.log(p, "Sikeres");

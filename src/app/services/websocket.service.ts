@@ -24,8 +24,8 @@ export class WebsocketService {
         if (converted) {
           setTimeout(() => {
             this.stompClient.subscribe(
-              `/queue/private/${converted.sub}`,
-              (message) => {
+              `/queue/private/${converted}`,
+              (message) => {;
                 this.messageSubject.next(JSON.parse(message.body));
               }
             );

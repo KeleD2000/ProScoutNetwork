@@ -36,6 +36,8 @@ export class UserDetailsComponent {
   image: any;
   isItPlayer: boolean = false;
   isItScout: boolean = false;
+  theSearcherIsScout: boolean = false;
+  theSearcherIsPlayer: boolean = false;
   videoFileId: number = 0;
   selectedPlatform: string = '';
   videoUrl?: SafeResourceUrl;
@@ -45,6 +47,10 @@ export class UserDetailsComponent {
     private router: Router, private route: ActivatedRoute
   ) {
 
+  }
+
+  checkLocalStorageForKey(key: string): boolean {
+    return localStorage.getItem(key) !== null;
   }
 
   openModal(platform: string) {
@@ -119,6 +125,15 @@ export class UserDetailsComponent {
   }
 
   ngOnInit() {
+    const keyExistsScout = this.checkLocalStorageForKey('isScout');
+    const keyExistsPlayer = this.checkLocalStorageForKey('isPlayer');
+
+    if(keyExistsScout){
+      this.theSearcherIsScout = true;
+    }else if(keyExistsPlayer){
+      this.theSearcherIsPlayer = true;
+    }
+
     this.route.queryParams.subscribe(params => {
       this.username = params['name'];
     });
@@ -153,11 +168,11 @@ export class UserDetailsComponent {
       };
 
       for (const [key, value] of Object.entries(user)) {
-        if(key === 'roles'){
-          if(value === 'PLAYER'){
+        if (key === 'roles') {
+          if (value === 'PLAYER') {
             this.isItPlayer = true;
           }
-          if(value === 'SCOUT'){
+          if (value === 'SCOUT') {
             this.isItScout = true;
           }
 
@@ -168,7 +183,7 @@ export class UserDetailsComponent {
           profilObj.sport = value.sport;
           profilObj.team = value.team;
 
-        }else if (key === 'player' && value) {
+        } else if (key === 'player' && value) {
           profilObj.name = value.last_name + ' ' + value.first_name;
           profilObj.email = value.email;
           profilObj.location = value.location;
@@ -176,7 +191,7 @@ export class UserDetailsComponent {
           profilObj.pos = value.position;
           profilObj.age = value.age;
         }
-        
+
         if (key === 'files') {
           console.log(value);
           for (let i in value) {

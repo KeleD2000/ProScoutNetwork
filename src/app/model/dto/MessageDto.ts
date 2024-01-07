@@ -4,11 +4,7 @@ export interface MessageDto{
     dateTime: string
     readed: boolean
     senderUserId: number
-    senderUserFirstName: string
-    senderUserLastName: string
+    senderUsername: string
     receiverUserId: number
-    receiverUserFirstName: string
-    receiverUserLastName: string
-    senderUserProfilePicture?: string
-    receiverUserProfilePicture?: string
+    receiverUsername: string
 }

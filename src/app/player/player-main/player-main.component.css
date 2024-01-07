@@ -160,7 +160,7 @@
     margin-top: 20px;
   }
   
-  .blog .posts-list .read-more a {
+  .read-more a {
     display: inline-block;
     color: #1f98d1;
     transition: 0.3s;
@@ -168,8 +168,9 @@
     font-weight: 500;
   }
   
-  .blog .posts-list .read-more a:hover {
+  .read-more a:hover {
     color: #56b8e6;
+    cursor: pointer;
   }
   
   /*--------------------------------------------------------------
@@ -540,4 +541,5 @@
 
   li{
     border: none;
+    color: #56b8e6;
   }

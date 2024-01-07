@@ -7,7 +7,8 @@
 
                 <h2>Profil</h2>
                 <ol>
-                    <li><a routerLink="/">Főoldal</a></li>
+                    <li *ngIf="theSearcherIsScout"><a routerLink="/scout-main">Főoldal</a></li>
+                    <li *ngIf="theSearcherIsPlayer"><a routerLink="/player-main">Főoldal</a></li>
                     <li>Profil</li>
                 </ol>
             </div>

@@ -21,11 +21,6 @@
     max-height: 40px;
     margin-right: 6px;
   }
-
-  img {
-    max-height: 90px;
-  }
-
   
   .footer .footer-content .footer-info .logo span {
     font-size: 30px;
@@ -131,3 +126,14 @@
     font-size: 13px;
     color: var(--color-secondary);
   }
+
+  .footer-contact {
+    display: flex;
+    justify-content: right; /* Horizontális középre igazítás */
+    align-items: right; /* Vertikális középre igazítás */
+}
+
+.footer-contact img {
+    max-width: 175px; /* A kép méretének korlátozása a tartály szélességéhez */
+    height: auto; /* A kép magasságának megőrzése az arányok szerint */
+}

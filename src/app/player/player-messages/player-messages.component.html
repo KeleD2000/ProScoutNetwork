@@ -5,7 +5,7 @@
 
                 <h2>Saját hirdetések</h2>
                 <ol>
-                    <li><a routerLink="/">Főoldal</a></li>
+                    <li><a routerLink="/player-main">Főoldal</a></li>
                     <li>Saját hirdetések</li>
                 </ol>
             </div>
@@ -84,10 +84,10 @@
                         </li>
                         <li class="bg-white mb-3">
                           <div class="form-outline">
-                            <textarea class="form-control" id="textAreaExample2" rows="4"></textarea>
+                            <textarea class="form-control" id="textAreaExample2" rows="4" [(ngModel)]="message"></textarea>
                           </div>
                         </li>
-                        <button type="button" class="btn btn-info btn-rounded float-end">Küldés</button>
+                        <button type="button" class="btn btn-info btn-rounded float-end" (click)="sendMessage()">Küldés</button>
                       </ul>
               
                     </div>
