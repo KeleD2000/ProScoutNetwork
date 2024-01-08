@@ -22,6 +22,7 @@ export class PlayerMessagesComponent {
   image: any;
   message: string = '';
   senderUser?: User;
+  combinedMessages: any[] = [];
   senderArray: any[] = [];
   senderObject: any = {};
   sendMessageArray: any[] = [];
@@ -52,9 +53,10 @@ export class PlayerMessagesComponent {
       console.log(mess);
       let sendMessageObject = {
         id: mess.id,
-        date_time: mess.dateTime,
+        date_time: mess.timestamp,
         content: mess.message_content,
         sender_username: mess.senderUsername,
+        user_type: 'sent',
         image:""
       };
       this.fileService.getProfilePicBlob(sendMessageObject.sender_username).subscribe(
@@ -63,8 +65,8 @@ export class PlayerMessagesComponent {
             const reader = new FileReader();
             reader.onload = () => {
               sendMessageObject.image = reader.result as string; 
-              this.sendMessageArray.push(sendMessageObject);
-              console.log(this.sendMessageArray);
+              this.combinedMessages.push(sendMessageObject);
+              console.log(this.combinedMessages);
             };
             reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
           }
@@ -78,64 +80,48 @@ export class PlayerMessagesComponent {
 
   getMessages(senderId: number){
     this.senderIdByWebSocket = senderId;
-    this.sendMessageArray = [];
-    this.receiverMessageArray = [];
-
-    this.messageService.getMessages(senderId, this.receiverId).subscribe((mess) => {
-      mess.forEach((message: { senderUser: { id: number; username: any; }; dateTime: any; message_content: any; }) => {
-        console.log(message);
-        if(this.receiverId !== message.senderUser.id){
-          let sendMessageObject = {
-            date_time: message.dateTime,
-            content: message.message_content,
-            sender_username: message.senderUser.username,
-            image:""
-          };
-          this.receiverUsernameByWebSocket = sendMessageObject.sender_username;
-          this.fileService.getProfilePicBlob(sendMessageObject.sender_username).subscribe(
-            (response: any) => {
-              if (response) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                  sendMessageObject.image = reader.result as string; 
-                  this.sendMessageArray.push(sendMessageObject);
-                  console.log(this.sendMessageArray);
-                };
-                reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
-              }
-            },
-            (error) => {
-              console.error('Error fetching profile picture:', error);
-            }
-          );
-        }
-        if(this.receiverId === message.senderUser.id){
-          let receiverMessageObject = {
-            date_time: message.dateTime,
-            content: message.message_content,
-            receiver_username: message.senderUser.username,
-            image:""
-          };
-          this.fileService.getProfilePicBlob(receiverMessageObject.receiver_username).subscribe(
-            (response: any) => {
-              if (response) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                  receiverMessageObject.image = reader.result as string; 
-                  this.receiverMessageArray.push(receiverMessageObject);
-                };
-                reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
-              }
-            },
-            (error) => {
-              console.error('Error fetching profile picture:', error);
-            }
-          );
-        }
+  
+    this.messageService.getMessages(senderId, this.receiverId).subscribe(async (mess) => {
+      let messagePromises = mess.map(async (message: any) => {
+        const sender_username = message.senderUser.username;
+        this.receiverUsernameByWebSocket = sender_username;
+        const image = await this.loadImage(sender_username); // Betöltjük a képet
+  
+        return {
+          timestamp: new Date(message.timestamp),
+          content: message.message_content,
+          sender_username: sender_username,
+          user_type: message.senderUser.id === this.receiverId ? 'received' : 'sent',
+          image: image
+        };
       });
-    })
-    this.isItMessages = true;
+  
+      // Várunk az összes kép betöltésére
+      this.combinedMessages = await Promise.all(messagePromises);
+      this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+      this.isItMessages = true;
+    });
   }
+  
+  // Segédfüggvény a kép betöltésére
+  private loadImage(username: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.fileService.getProfilePicBlob(username).subscribe(
+        (response: any) => {
+          if (response) {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+          }
+        },
+        (error) => {
+          console.error('Error fetching profile picture:', error);
+          reject(error);
+        }
+      );
+    });
+  }
+  
   
   getSendersWithDelay() {
     this.messageService.getSenders(this.receiverId)
@@ -177,15 +163,11 @@ export class PlayerMessagesComponent {
   sendMessage() {
     // Az időt most adjuk hozzá, itt azonosítási céllal
     const currentDateTime = new Date();
-    const year = currentDateTime.getFullYear();
-    const month = (currentDateTime.getMonth() + 1).toString().padStart(2, '0'); // Hónap 0-tól kezdődik, így adjunk hozzá 1-et és formázzuk két karakterre.
-    const day = currentDateTime.getDate().toString().padStart(2, '0');
 
-    const formattedDate = `${year}-${month}-${day}`;
-   
+  
     const messageToSend: MessageDto = {
       message_content: this.message,
-      dateTime: formattedDate,
+      timestamp: currentDateTime,
       senderUsername: this.senderUsernameByWebSocket,
       receiverUsername: this.receiverUsernameByWebSocket,
       readed: false,
