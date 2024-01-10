@@ -53,6 +53,14 @@ export class UserDetailsComponent {
     return localStorage.getItem(key) !== null;
   }
 
+  navigateWithParams(username: string, userId: number) {
+    if(this.theSearcherIsPlayer){
+      this.router.navigate(['/player-message'], { queryParams: { name: username, id: userId } });
+    }else if(this.theSearcherIsScout){
+      this.router.navigate(['/scout-message'], { queryParams: { name: username, id: userId } });
+    }
+  }
+
   openModal(platform: string) {
     this.selectedPlatform = platform;
     const modal = document.getElementById('exampleModal');
@@ -66,8 +74,8 @@ export class UserDetailsComponent {
     // Az adott platformnak megfelelő tartalom beállítása
     this.modalTitle = '';
     switch (platform) {
-      case 'files':
-        this.modalTitle = 'Fájlok';
+      case 'message':
+        this.modalTitle = 'Üzenet küldés felhasználónak';
         break;
       case 'videos':
         this.modalTitle = 'Játékos videója';
@@ -155,6 +163,8 @@ export class UserDetailsComponent {
 
     this.fileService.getCurrentUser(this.username).subscribe(user => {
       const profilObj = {
+        id: 0,
+        username: '',
         name: '',
         email: '',
         team: '',
@@ -167,7 +177,15 @@ export class UserDetailsComponent {
         video_file_id: 0,
       };
 
+      
       for (const [key, value] of Object.entries(user)) {
+        console.log(key, value);
+        if(key === 'id'){
+          profilObj.id = value;
+        }
+        if(key === 'username'){
+          profilObj.username = value;
+        }
         if (key === 'roles') {
           if (value === 'PLAYER') {
             this.isItPlayer = true;
@@ -217,8 +235,9 @@ export class UserDetailsComponent {
       this.profileDetails.push(profilObj);
     });
     console.log(this.profileDetails);
-    console.log(this.pdf_filename);
   }
+
+  
 
   ngAfterViewInit() {
     AOS.init({

@@ -5,13 +5,15 @@ import { ScoutOwnAdsComponent } from './scout-own-ads/scout-own-ads.component';
 import { UpdateScoutAdsComponent } from './update-scout-ads/update-scout-ads.component';
 import { ScoutProfileComponent } from './scout-profile/scout-profile.component';
 import { UpdateScoutProfileComponent } from './update-scout-profile/update-scout-profile.component';
+import { ScoutMessagesComponent } from './scout-messages/scout-messages.component';
 
 const routes: Routes = [
   {path: 'scout-main', component: ScoutMainComponent},
   {path: 'scout-own-ads', component: ScoutOwnAdsComponent},
   {path: 'update-scout-ads/:id', component: UpdateScoutAdsComponent},
   {path: 'update-scout-profile', component: UpdateScoutProfileComponent},
-  {path: 'scout-profile', component: ScoutProfileComponent}
+  {path: 'scout-profile', component: ScoutProfileComponent},
+  {path: 'scout-message', component: ScoutMessagesComponent}
 ];
 
 @NgModule({

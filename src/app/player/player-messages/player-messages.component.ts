@@ -1,16 +1,29 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Renderer2 } from '@angular/core';
 import { delay } from 'rxjs/operators';
 import { FileService } from 'src/app/services/file.service';
 import * as AOS from 'aos';
 import { MessagesService } from 'src/app/services/messages.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { MessageDto } from 'src/app/model/dto/MessageDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { User } from 'src/app/model/User';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-player-messages',
   templateUrl: './player-messages.component.html',
-  styleUrls: ['./player-messages.component.css']
+  styleUrls: ['./player-messages.component.css'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('300ms', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class PlayerMessagesComponent {
   receiverId: number = 0;
@@ -18,10 +31,16 @@ export class PlayerMessagesComponent {
   senderIdByWebSocket: number = 0;
   receiverUsernameByWebSocket: string = '';
   senderProfPic: string = '';
+  selectedPlatform: string = '';
+  showModal: boolean = false;
+  modalTitle: string = '';
   isItMessages: boolean = false;
   image: any;
   message: string = '';
+  searchMessage: string = '';
   rightNow: boolean = false;
+  searchUsername: string = '';
+  searchUserId: number = 0;
   senderUser?: User;
   combinedMessages: any[] = [];
   senderArray: any[] = [];
@@ -30,9 +49,17 @@ export class PlayerMessagesComponent {
   receiverMessageArray: any[] = [];
 
   constructor(private messageService: MessagesService, private fileService: FileService,
-    private websocketService: WebsocketService, private changeDetector: ChangeDetectorRef,) { }
+    private websocketService: WebsocketService, private changeDetector: ChangeDetectorRef,
+    private renderer: Renderer2, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.searchUsername = params['name'];
+      this.searchUserId = params['id'];
+      if (this.searchUsername && this.searchUserId) {
+        this.openModal('message');
+      }
+    });
 
     setInterval(() => {
       this.changeDetector.detectChanges();
@@ -81,6 +108,7 @@ export class PlayerMessagesComponent {
           console.error('Error fetching profile picture:', error);
         }
       );
+      this.changeDetector.detectChanges();
     });
   }
 
@@ -92,7 +120,7 @@ export class PlayerMessagesComponent {
         const sender_username = message.senderUser.username;
         this.receiverUsernameByWebSocket = sender_username;
         const image = await this.loadImage(sender_username); // Betöltjük a képet
-        
+
         return {
           timestamp: new Date(message.timestamp),
           content: message.message_content,
@@ -108,6 +136,7 @@ export class PlayerMessagesComponent {
       this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
       this.isItMessages = true;
     });
+
   }
 
   // Segédfüggvény a kép betöltésére
@@ -143,6 +172,7 @@ export class PlayerMessagesComponent {
             name: receiver[i].username,
             content: receiver[i].message_content,
             timestamp: receiver[i].timestamp,
+            isRightNow: false,
             image: ""
           };
 
@@ -217,27 +247,98 @@ export class PlayerMessagesComponent {
     this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
+  sendMessageFromSearch() {
+    // Az időt most adjuk hozzá, itt azonosítási céllal
+    const currentDateTime = new Date();
+    
+
+    console.log(this.message);
+    const messageToSend: MessageDto = {
+      message_content: this.searchMessage,
+      timestamp: currentDateTime,
+      senderUsername: this.senderUsernameByWebSocket,
+      receiverUsername: this.searchUsername,
+      readed: false,
+      senderUserId: this.receiverId,
+      receiverUserId: this.searchUserId,
+    };
+    console.log(messageToSend);
+    this.searchMessage = '';
+    this.websocketService.sendPrivateMessage(messageToSend);
+    this.addMessageToChatFromSearch(messageToSend);
+  }
+
+  addMessageToChatFromSearch(message: MessageDto) {
+    const chatMessage = {
+      timestamp: new Date(),
+      content: message.message_content,
+      sender_username: message.senderUsername,
+      user_type: 'received',
+      image: ""
+    };
+
+    this.combinedMessages.push(chatMessage);
+    this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+  }
+
   calculateElapsedTime(timestamp: Date): string {
     const now = new Date();
     const then = new Date(timestamp);
     const diff = now.getTime() - then.getTime();
 
     const minutes = Math.floor(diff / 60000); // milliszekundumok percben
-
-    if (minutes < 5) {
+    for (let i in this.senderArray) {
+      if (minutes < 5) {
+        this.senderArray[i].isRightNow = true;
         return "Éppen most";
-    } else if (minutes < 60) {
-        return `${minutes} perc ezelőtt`;
+      } else if (minutes < 60) {
+        return `${minutes} perccel ezelőtt`;
+      }
     }
-
     const hours = Math.floor(minutes / 60);
     if (hours < 24) {
-        return `${hours} óra ezelőtt`;
+      return `${hours} órával ezelőtt`;
+    }
+    const days = Math.floor(hours / 24);
+    return `${days} nappal ezelőtt`;
+  }
+
+
+  openModal(platform: string) {
+    this.selectedPlatform = platform;
+    const modal = document.getElementById('exampleModal');
+    if (modal) {
+      modal.style.display = 'block';
+      modal.classList.add('show');
+    }
+    this.showModal = true;
+    this.renderer.addClass(document.body, 'no-scroll');
+
+    // Az adott platformnak megfelelő tartalom beállítása
+    this.modalTitle = '';
+    switch (platform) {
+      case 'message':
+        this.modalTitle = `Üzenet a ${this.searchUsername}-nak.`;
+        break;
     }
 
-    const days = Math.floor(hours / 24);
-    return `${days} nap ezelőtt`;
-}
+    // A popup tartalom és cím beállítása
+    const modalTitleElement = document.querySelector('.modal-title');
+    if (modalTitleElement) {
+      modalTitleElement.innerHTML = this.modalTitle;
+    }
+  }
+
+  closeModal() {
+    const modal = document.getElementById('exampleModal');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('show');
+    }
+    this.showModal = false;
+    this.renderer.removeClass(document.body, 'no-scroll');
+  }
+
 
 
   ngAfterViewInit() {

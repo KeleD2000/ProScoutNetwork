@@ -20,7 +20,7 @@
           <li *ngIf="isItPlayer"><a routerLink="">Licitálás</a></li>
           <li *ngIf="isItScout"><a routerLink="/scout-main" >Főoldal</a></li>
           <li *ngIf="isItScout"><a routerLink="/scout-profile" >Profil</a></li>  
-          <li *ngIf="isItScout"><a routerLink="">Üzenet</a></li>     
+          <li *ngIf="isItScout"><a routerLink="/scout-message">Üzenet</a></li>     
           <li *ngIf="isItScout"><a routerLink="">Licitálás</a></li>                
           <li *ngIf="isItPlayer || isItScout"><a class="btn-get-started" routerLink="/" (click)="logout()">Kijelentkezés</a></li>
         </ul>
