@@ -182,7 +182,6 @@ export class ScoutMessagesComponent {
       timestamp: currentDateTime,
       senderUsername: this.senderUsernameByWebSocket,
       receiverUsername: this.receiverUsernameByWebSocket,
-      readed: false,
       senderUserId: this.receiverId,
       receiverUserId: this.senderIdByWebSocket,
     };

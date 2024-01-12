@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, Renderer2 } from '@angular/core';
 import { delay } from 'rxjs/operators';
 import { FileService } from 'src/app/services/file.service';
 import * as AOS from 'aos';
@@ -7,7 +7,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { MessageDto } from 'src/app/model/dto/MessageDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { User } from 'src/app/model/User';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-player-messages',
@@ -40,6 +40,8 @@ export class PlayerMessagesComponent {
   searchMessage: string = '';
   rightNow: boolean = false;
   searchUsername: string = '';
+  theSearcherIsScout: boolean = false;
+  theSearcherIsPlayer: boolean = false;
   searchUserId: number = 0;
   senderUser?: User;
   combinedMessages: any[] = [];
@@ -50,9 +52,20 @@ export class PlayerMessagesComponent {
 
   constructor(private messageService: MessagesService, private fileService: FileService,
     private websocketService: WebsocketService, private changeDetector: ChangeDetectorRef,
-    private renderer: Renderer2, private route: ActivatedRoute) { }
+    private renderer: Renderer2, private route: ActivatedRoute, private router: Router,
+    private ngZone: NgZone
+    ) { }
 
   ngOnInit() {
+    const keyExistsScout = this.checkLocalStorageForKey('isScout');
+    const keyExistsPlayer = this.checkLocalStorageForKey('isPlayer');
+
+    if (keyExistsScout) {
+      this.theSearcherIsScout = true;
+    } else if (keyExistsPlayer) {
+      this.theSearcherIsPlayer = true;
+    }
+
     this.route.queryParams.subscribe(params => {
       this.searchUsername = params['name'];
       this.searchUserId = params['id'];
@@ -108,8 +121,14 @@ export class PlayerMessagesComponent {
           console.error('Error fetching profile picture:', error);
         }
       );
-      this.changeDetector.detectChanges();
+      this.ngZone.run(() => {
+        this.changeDetector.detectChanges();
+      });
     });
+  }
+
+  checkLocalStorageForKey(key: string): boolean {
+    return localStorage.getItem(key) !== null;
   }
 
   getMessages(senderId: number) {
@@ -209,7 +228,6 @@ export class PlayerMessagesComponent {
       timestamp: currentDateTime,
       senderUsername: this.senderUsernameByWebSocket,
       receiverUsername: this.receiverUsernameByWebSocket,
-      readed: false,
       senderUserId: this.receiverId,
       receiverUserId: this.senderIdByWebSocket,
     };
@@ -250,7 +268,7 @@ export class PlayerMessagesComponent {
   sendMessageFromSearch() {
     // Az időt most adjuk hozzá, itt azonosítási céllal
     const currentDateTime = new Date();
-    
+
 
     console.log(this.message);
     const messageToSend: MessageDto = {
@@ -258,7 +276,6 @@ export class PlayerMessagesComponent {
       timestamp: currentDateTime,
       senderUsername: this.senderUsernameByWebSocket,
       receiverUsername: this.searchUsername,
-      readed: false,
       senderUserId: this.receiverId,
       receiverUserId: this.searchUserId,
     };
@@ -266,6 +283,12 @@ export class PlayerMessagesComponent {
     this.searchMessage = '';
     this.websocketService.sendPrivateMessage(messageToSend);
     this.addMessageToChatFromSearch(messageToSend);
+    if(this.theSearcherIsPlayer){
+      this.router.navigate(['/player-message']);
+    }else if(this.theSearcherIsScout){
+      this.router.navigate(['/scout-message']);
+    }
+ 
   }
 
   addMessageToChatFromSearch(message: MessageDto) {
@@ -309,6 +332,7 @@ export class PlayerMessagesComponent {
     const modal = document.getElementById('exampleModal');
     if (modal) {
       modal.style.display = 'block';
+      modal.style.overflow = 'hidden';
       modal.classList.add('show');
     }
     this.showModal = true;
@@ -342,8 +366,12 @@ export class PlayerMessagesComponent {
 
 
   ngAfterViewInit() {
-    AOS.init({
-      once: true
+    this.ngZone.runOutsideAngular(() => {
+      AOS.init({
+        once: true
+      });
+  
+      this.changeDetector.detectChanges();
     });
   }
 }

@@ -110,7 +110,7 @@
                 <div class="modal-body d-flex justify-content-center">
                   <div *ngIf="selectedPlatform==='message'">
                     <div class="form-outline">
-                        <textarea class="form-control" id="textAreaExample1" rows="4" cols="50" [(ngModel)]="searchMessage"></textarea>
+                        <textarea class="form-control" id="textAreaExample1" rows="4" cols="50" name="searchMessage" [(ngModel)]="searchMessage"></textarea>
                     </div>
                     <button type="button" class="btn btn-primary mt-2" (click)="sendMessageFromSearch()">Küldés</button>
                   </div>
