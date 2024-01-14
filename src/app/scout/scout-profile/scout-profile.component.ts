@@ -6,6 +6,9 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
 
 @Component({
   selector: 'app-scout-profile',
@@ -42,7 +45,7 @@ export class ScoutProfileComponent {
 
   constructor(private renderer: Renderer2, private fileService: FileService,
     private sanitizer: DomSanitizer, private userSerivce: UserService,
-    private router: Router
+    private router: Router, private websocketService: WebsocketService
   ) {
 
   }
@@ -202,6 +205,48 @@ export class ScoutProfileComponent {
   }
 
   ngOnInit() {
+    this.websocketService.initializeWebSocketConnection();
+
+    this.websocketService.getNotifications().subscribe((not: NotificationsBidDto) => {
+      console.log(not);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success m-1',
+          cancelButton: 'btn btn-danger m-1',
+        },
+        buttonsStyling: false,
+      });
+      
+      swalWithBootstrapButtons
+        .fire({
+          title: 'Licitálás értesítés',
+          text: not.message,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Elfogadom!',
+          cancelButtonText: 'Nem fogadom el!',
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+              title: 'Elfogadtad a licitálást',
+              text: 'Sikeresen elfogadtad a licitálást, átnavigálunk a licitáló felületre.',
+              icon: 'success',
+            });
+            this.router.navigate(['/scout-bid'])
+          } else if (
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire({
+              title: 'Nem fogadtad el a licitálást.',
+              text: 'Nem éltél a licitálás lehetőségével.',
+              icon: 'error',
+            });
+          }
+        });
+    });
+
     const username = localStorage.getItem('isLoggedin');
     let current = username?.replace(/"/g, '');
     console.log(current);

@@ -10,6 +10,7 @@ import { UpdateScoutAdsComponent } from './update-scout-ads/update-scout-ads.com
 import { UpdateScoutProfileComponent } from './update-scout-profile/update-scout-profile.component';
 import { ScoutMessagesComponent } from './scout-messages/scout-messages.component';
 import { ScoutProfileComponent } from './scout-profile/scout-profile.component';
+import { ScoutBidComponent } from './scout-bid/scout-bid.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ScoutProfileComponent } from './scout-profile/scout-profile.component';
     UpdateScoutAdsComponent,
     UpdateScoutProfileComponent,
     ScoutMessagesComponent,
-    ScoutProfileComponent
+    ScoutProfileComponent,
+    ScoutBidComponent
   ],
   imports: [
     CommonModule,

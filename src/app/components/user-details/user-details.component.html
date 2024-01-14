@@ -27,7 +27,8 @@
                         <p class="text-muted mb-1">{{profile.sport}}<span *ngIf="isItPlayer">, {{profile.pos}}</span></p>
                         <p class="text-muted mb-4" *ngIf="isItPlayer">Életkor: {{profile.age}}</p>
                         <div class="d-flex justify-content-center mb-2">
-                            <button type="button" class="btn btn-primary" (click)="navigateWithParams(profile.username, profile.id)">Üzenet küldés</button>
+                            <button type="button" class="btn btn-primary m-1" (click)="navigateWithParams(profile.username, profile.id)">Üzenet küldés</button>
+                            <button *ngIf="theSearcherIsPlayer" type="button" class="btn btn-primary m-1" (click)="sendNotification()">Licitálás indítása</button>
                         </div>
                     </div>
                 </div>

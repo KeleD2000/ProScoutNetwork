@@ -5,6 +5,8 @@ import * as AOS from 'aos';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FileService } from 'src/app/services/file.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
+import { WebsocketService } from 'src/app/services/websocket.service';
 
 @Component({
   selector: 'app-user-details',
@@ -44,7 +46,7 @@ export class UserDetailsComponent {
 
   constructor(private renderer: Renderer2, private fileService: FileService,
     private sanitizer: DomSanitizer, private userSerivce: UserService,
-    private router: Router, private route: ActivatedRoute
+    private router: Router, private route: ActivatedRoute, private websocketService: WebsocketService
   ) {
 
   }
@@ -123,7 +125,6 @@ export class UserDetailsComponent {
       (data: any) => {
         const blob = new Blob([data], { type: 'video/mp4' });
         this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
-        console.log(this.videoUrl);
       },
       error => {
         console.error('Hiba a videó letöltésekor', error);
@@ -133,6 +134,8 @@ export class UserDetailsComponent {
   }
 
   ngOnInit() {
+    this.websocketService.initializeWebSocketConnection();
+
     const keyExistsScout = this.checkLocalStorageForKey('isScout');
     const keyExistsPlayer = this.checkLocalStorageForKey('isPlayer');
 
@@ -179,7 +182,6 @@ export class UserDetailsComponent {
 
       
       for (const [key, value] of Object.entries(user)) {
-        console.log(key, value);
         if(key === 'id'){
           profilObj.id = value;
         }
@@ -211,11 +213,9 @@ export class UserDetailsComponent {
         }
 
         if (key === 'files') {
-          console.log(value);
           for (let i in value) {
-            console.log(value[i]);
             if (value[i].type === 'pdf') {
-              console.log(value[i].files_id);
+
               profilObj.pdf_file_id = value[i].files_id;
               const filePath = value[i].file_path;
               const parts = filePath.split('\\');
@@ -233,11 +233,22 @@ export class UserDetailsComponent {
       }
       this.videoFileId = profilObj.video_file_id;
       this.profileDetails.push(profilObj);
+      console.log(profilObj);
     });
-    console.log(this.profileDetails);
   }
 
-  
+  sendNotification(){
+    for(let i in this.profileDetails){
+      var usernameScout = this.profileDetails[i].username;
+    }
+    const usernamePlayer = localStorage.getItem('isLoggedin');
+    var current = usernamePlayer?.replace(/"/g, '');
+    const notification: NotificationsBidDto = {
+      username : usernameScout,
+      message: `${current} felhasználó licitálás kedvezményed feléd. Elfogadod?`
+    }
+    this.websocketService.sendNotification(notification)
+  }
 
   ngAfterViewInit() {
     AOS.init({

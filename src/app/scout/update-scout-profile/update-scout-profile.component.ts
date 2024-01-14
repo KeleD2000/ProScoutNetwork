@@ -3,8 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as AOS from 'aos';
 import { UpdateScout } from 'src/app/model/UpdateScout';
+import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
 import { FileService } from 'src/app/services/file.service';
 import { UserService } from 'src/app/services/user.service';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-update-scout-profile',
@@ -15,7 +18,8 @@ export class UpdateScoutProfileComponent {
   updateForm!: FormGroup;
   profObjHtml: any[] = [];
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router, private fileService: FileService){
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router, 
+    private fileService: FileService, private websocketService: WebsocketService){
     this.updateForm = this.formBuilder.group({
       firstname: ['', [Validators.required]],
       lastname : ['', [Validators.required]],
@@ -54,6 +58,48 @@ export class UpdateScoutProfileComponent {
   }
   
   ngOnInit(){
+    this.websocketService.initializeWebSocketConnection();
+
+    this.websocketService.getNotifications().subscribe((not: NotificationsBidDto) => {
+      console.log(not);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success m-1',
+          cancelButton: 'btn btn-danger m-1',
+        },
+        buttonsStyling: false,
+      });
+      
+      swalWithBootstrapButtons
+        .fire({
+          title: 'Licitálás értesítés',
+          text: not.message,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Elfogadom!',
+          cancelButtonText: 'Nem fogadom el!',
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+              title: 'Elfogadtad a licitálást',
+              text: 'Sikeresen elfogadtad a licitálást, átnavigálunk a licitáló felületre.',
+              icon: 'success',
+            });
+            this.router.navigate(['/scout-bid'])
+          } else if (
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire({
+              title: 'Nem fogadtad el a licitálást.',
+              text: 'Nem éltél a licitálás lehetőségével.',
+              icon: 'error',
+            });
+          }
+        });
+    });
+
     const username = localStorage.getItem('isLoggedin');
     const converted = username?.replace(/"/g, '');
     this.fileService.getCurrentUser(converted).subscribe( user => {

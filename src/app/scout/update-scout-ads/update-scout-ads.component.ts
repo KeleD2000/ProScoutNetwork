@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ScoutAdsService } from 'src/app/services/scout-ads.service';
 import * as AOS from 'aos';
+import Swal from 'sweetalert2';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
 
 @Component({
   selector: 'app-update-scout-ads',
@@ -15,14 +18,17 @@ export class UpdateScoutAdsComponent {
   adsUpdate !: FormGroup
   contentValue: string = '';
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private scoutAdsService: ScoutAdsService, private router: Router){
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder,
+    private scoutAdsService: ScoutAdsService, private router: Router,
+    private websocketService: WebsocketService
+  ) {
     this.adsUpdate = this.formBuilder.group({
-      content : ['']
+      content: ['']
     })
   }
 
-  modifyAds(){
-    if (!this.selectedFile){
+  modifyAds() {
+    if (!this.selectedFile) {
       return;
     }
 
@@ -31,14 +37,14 @@ export class UpdateScoutAdsComponent {
     formData.append('content', this.adsUpdate.get('content')?.value);
 
     this.scoutAdsService.modifyAds(formData, this.currentAdId).subscribe(
-        (response) => {
-            this.router.navigateByUrl("/scout-own-ads");
-            console.log(response);
-        },
-        (error) => {
-            // Hibakezelés
-            console.error(error);
-        }
+      (response) => {
+        this.router.navigateByUrl("/scout-own-ads");
+        console.log(response);
+      },
+      (error) => {
+        // Hibakezelés
+        console.error(error);
+      }
     );
   }
 
@@ -46,24 +52,67 @@ export class UpdateScoutAdsComponent {
     this.selectedFile = event.target.files[0];
   }
 
-  ngOnInit(){
+  ngOnInit() {
+    this.websocketService.initializeWebSocketConnection();
+
+    this.websocketService.getNotifications().subscribe((not: NotificationsBidDto) => {
+      console.log(not);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success m-1',
+          cancelButton: 'btn btn-danger m-1',
+        },
+        buttonsStyling: false,
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: 'Licitálás értesítés',
+          text: not.message,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Elfogadom!',
+          cancelButtonText: 'Nem fogadom el!',
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+              title: 'Elfogadtad a licitálást',
+              text: 'Sikeresen elfogadtad a licitálást, átnavigálunk a licitáló felületre.',
+              icon: 'success',
+            });
+            this.router.navigate(['/scout-bid'])
+          } else if (
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire({
+              title: 'Nem fogadtad el a licitálást.',
+              text: 'Nem éltél a licitálás lehetőségével.',
+              icon: 'error',
+            });
+          }
+        });
+    });
+
+
     this.route.params.subscribe(params => {
       this.currentAdId = +params['id'];
       // Itt a this.currentAdId változóban lesz az adott hirdetés azonosítója
       // Használd ezt az azonosítót az adatok betöltéséhez vagy más szükséges műveletekhez
       console.log(this.currentAdId);
-  });
-  this.scoutAdsService.getAllScoutAds().subscribe( ads =>{
-    for(const [key, value] of Object.entries(ads)){
-      console.log(value.scoutad_id);
-      if(value.scoutad_id === this.currentAdId){
+    });
+    this.scoutAdsService.getAllScoutAds().subscribe(ads => {
+      for (const [key, value] of Object.entries(ads)) {
+        console.log(value.scoutad_id);
+        if (value.scoutad_id === this.currentAdId) {
 
-        this.contentValue = value.content;
-        console.log(this.contentValue);
+          this.contentValue = value.content;
+          console.log(this.contentValue);
+        }
       }
-    }
-  })
-}
+    })
+  }
 
 
 

@@ -10,6 +10,7 @@ import { UpdateProfileComponent } from './update-profile/update-profile.componen
 import { UpdateAdsComponent } from './update-ads/update-ads.component';
 import { OwnAdsComponent } from './own-ads/own-ads.component';
 import { PlayerMessagesComponent } from './player-messages/player-messages.component';
+import { PlayerBidComponent } from './player-bid/player-bid.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { PlayerMessagesComponent } from './player-messages/player-messages.compo
     UpdateProfileComponent,
     UpdateAdsComponent,
     OwnAdsComponent,
-    PlayerMessagesComponent
+    PlayerMessagesComponent,
+    PlayerBidComponent
   ],
   imports: [
     CommonModule,
