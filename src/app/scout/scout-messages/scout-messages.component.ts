@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Renderer2 } from '@angular/core';
 import { delay } from 'rxjs/operators';
 import { FileService } from 'src/app/services/file.service';
 import * as AOS from 'aos';
@@ -6,6 +6,7 @@ import { MessagesService } from 'src/app/services/messages.service';
 import { MessageDto } from 'src/app/model/dto/MessageDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { User } from 'src/app/model/User';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-scout-messages',
@@ -20,6 +21,14 @@ export class ScoutMessagesComponent {
   senderProfPic: string = '';
   isItMessages: boolean = false;
   image: any;
+  selectedPlatform: string = '';
+  showModal: boolean = false;
+  modalTitle: string = '';
+  searchUsername: string = '';
+  searchUserId: number = 0;
+  searchMessage: string = '';
+  theSearcherIsScout: boolean = false;
+  theSearcherIsPlayer: boolean = false;
   message: string = '';
   rightNow: boolean = false;
   senderUser?: User;
@@ -30,7 +39,8 @@ export class ScoutMessagesComponent {
   receiverMessageArray: any[] = [];
 
   constructor(private messageService: MessagesService, private fileService: FileService,
-    private websocketService: WebsocketService, private changeDetector: ChangeDetectorRef,) { }
+    private websocketService: WebsocketService, private changeDetector: ChangeDetectorRef,
+    private renderer: Renderer2, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
 
@@ -52,6 +62,15 @@ export class ScoutMessagesComponent {
           this.receiverId = value;
           this.getSendersWithDelay();
         }
+      }
+    });
+
+
+    this.route.queryParams.subscribe(params => {
+      this.searchUsername = params['name'];
+      this.searchUserId = params['id'];
+      if (this.searchUsername && this.searchUserId) {
+        this.openModal('message');
       }
     });
 
@@ -93,7 +112,7 @@ export class ScoutMessagesComponent {
         const sender_username = message.senderUser.username;
         this.receiverUsernameByWebSocket = sender_username;
         const image = await this.loadImage(sender_username); // Betöltjük a képet
-        
+
         return {
           timestamp: new Date(message.timestamp),
           content: message.message_content,
@@ -109,7 +128,7 @@ export class ScoutMessagesComponent {
       this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
       this.isItMessages = true;
     });
-    
+
   }
 
   // Segédfüggvény a kép betöltésére
@@ -219,28 +238,102 @@ export class ScoutMessagesComponent {
     this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
+  sendMessageFromSearch() {
+    // Az időt most adjuk hozzá, itt azonosítási céllal
+    const currentDateTime = new Date();
+
+
+    console.log(this.message);
+    const messageToSend: MessageDto = {
+      message_content: this.searchMessage,
+      timestamp: currentDateTime,
+      senderUsername: this.senderUsernameByWebSocket,
+      receiverUsername: this.searchUsername,
+      senderUserId: this.receiverId,
+      receiverUserId: this.searchUserId,
+    };
+    console.log(messageToSend);
+    this.searchMessage = '';
+    this.websocketService.sendPrivateMessage(messageToSend);
+    this.addMessageToChatFromSearch(messageToSend);
+    if (this.theSearcherIsPlayer) {
+      this.router.navigate(['/player-message']);
+    } else if (this.theSearcherIsScout) {
+      this.router.navigate(['/scout-message']);
+    }
+
+  }
+
+  addMessageToChatFromSearch(message: MessageDto) {
+    const chatMessage = {
+      timestamp: new Date(),
+      content: message.message_content,
+      sender_username: message.senderUsername,
+      user_type: 'received',
+      image: ""
+    };
+
+    this.combinedMessages.push(chatMessage);
+    this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+  }
+
   calculateElapsedTime(timestamp: Date): string {
     const now = new Date();
     const then = new Date(timestamp);
     const diff = now.getTime() - then.getTime();
 
     const minutes = Math.floor(diff / 60000); // milliszekundumok percben
-    for(let i in this.senderArray){
+    for (let i in this.senderArray) {
       if (minutes < 5) {
         this.senderArray[i].isRightNow = true;
-          return "Éppen most";
+        return "Éppen most";
       } else if (minutes < 60) {
-          return `${minutes} perccel ezelőtt`;
+        return `${minutes} perccel ezelőtt`;
       }
     }
     const hours = Math.floor(minutes / 60);
-      if (hours < 24) {
-          return `${hours} órával ezelőtt`;
-      }
+    if (hours < 24) {
+      return `${hours} órával ezelőtt`;
+    }
     const days = Math.floor(hours / 24);
     return `${days} nappal ezelőtt`;
-}
+  }
 
+  openModal(platform: string) {
+    this.selectedPlatform = platform;
+    const modal = document.getElementById('exampleModal');
+    if (modal) {
+      modal.style.display = 'block';
+      modal.style.overflow = 'hidden';
+      modal.classList.add('show');
+    }
+    this.showModal = true;
+    this.renderer.addClass(document.body, 'no-scroll');
+
+    // Az adott platformnak megfelelő tartalom beállítása
+    this.modalTitle = '';
+    switch (platform) {
+      case 'message':
+        this.modalTitle = `Üzenet a ${this.searchUsername}-nak.`;
+        break;
+    }
+
+    // A popup tartalom és cím beállítása
+    const modalTitleElement = document.querySelector('.modal-title');
+    if (modalTitleElement) {
+      modalTitleElement.innerHTML = this.modalTitle;
+    }
+  }
+
+  closeModal() {
+    const modal = document.getElementById('exampleModal');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('show');
+    }
+    this.showModal = false;
+    this.renderer.removeClass(document.body, 'no-scroll');
+  }
 
   ngAfterViewInit() {
     AOS.init({

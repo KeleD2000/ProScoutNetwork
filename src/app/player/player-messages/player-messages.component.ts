@@ -363,8 +363,6 @@ export class PlayerMessagesComponent {
     this.renderer.removeClass(document.body, 'no-scroll');
   }
 
-
-
   ngAfterViewInit() {
     this.ngZone.runOutsideAngular(() => {
       AOS.init({

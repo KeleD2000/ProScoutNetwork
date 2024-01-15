@@ -99,19 +99,6 @@ export class ScoutMainComponent {
               icon: 'success',
             });
             this.router.navigate(['/scout-bid']);
-            const usernamePlayer = localStorage.getItem('isLoggedin');
-            var current = usernamePlayer?.replace(/"/g, '');
-            if(current){
-              this.bidService.connectUser(current).subscribe(
-                (response: any) => {
-                  console.log('Sikeres csatlakozás', response.message);
-                },
-                (error) => {
-                  console.error('Hiba történt a csatlakozás során', error.error);
-                }
-              );
-            }
-
           } else if (
             result.dismiss === Swal.DismissReason.cancel
           ) {

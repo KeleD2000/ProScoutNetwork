@@ -16,4 +16,8 @@ export class BidService {
 
     return this.http.post(url, {});
   }
+
+  getConnectUser(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/bid/connected`);
+  }
 }

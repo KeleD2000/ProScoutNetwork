@@ -99,6 +99,32 @@
             </div>
   
           </div>
+          <div class="overlay" *ngIf="showModal" [@fadeInOut]></div>
+          <div class="modal fade modalc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+            id="exampleModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form>
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ modalTitle }}</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+                    </button>
+                  </div>
+                  <div class="modal-body d-flex justify-content-center">
+                    <div *ngIf="selectedPlatform==='message'">
+                      <div class="form-outline">
+                          <textarea class="form-control" id="textAreaExample1" rows="4" cols="50" name="searchMessage" [(ngModel)]="searchMessage"></textarea>
+                      </div>
+                      <button type="button" class="btn btn-primary mt-2" (click)="sendMessageFromSearch()">Küldés</button>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Bezárás</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </section>
       </section>
     </main>

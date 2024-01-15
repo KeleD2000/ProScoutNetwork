@@ -7,6 +7,7 @@ import { MessageDto } from 'src/app/model/dto/MessageDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { User } from 'src/app/model/User';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BidService } from 'src/app/services/bid.service';
 
 @Component({
   selector: 'app-scout-bid',
@@ -41,10 +42,12 @@ export class ScoutBidComponent {
   constructor(private messageService: MessagesService, private fileService: FileService,
     private websocketService: WebsocketService, private changeDetector: ChangeDetectorRef,
     private renderer: Renderer2, private route: ActivatedRoute, private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone, private bidService: BidService
     ) { }
 
   ngOnInit() {
+    this.openModal('message');
+
     const keyExistsScout = this.checkLocalStorageForKey('isScout');
     const keyExistsPlayer = this.checkLocalStorageForKey('isPlayer');
 
@@ -53,14 +56,6 @@ export class ScoutBidComponent {
     } else if (keyExistsPlayer) {
       this.theSearcherIsPlayer = true;
     }
-
-    this.route.queryParams.subscribe(params => {
-      this.searchUsername = params['name'];
-      this.searchUserId = params['id'];
-      if (this.searchUsername && this.searchUserId) {
-        this.openModal('message');
-      }
-    });
 
     setInterval(() => {
       this.changeDetector.detectChanges();
@@ -72,6 +67,14 @@ export class ScoutBidComponent {
     let current = username?.replace(/"/g, '');
     if (current) {
       this.senderUsernameByWebSocket = current;
+      this.bidService.connectUser(current).subscribe(
+        (response: any) => {
+          console.log('Sikeres csatlakozás', response.message);
+        },
+        (error) => {
+          console.error('Hiba történt a csatlakozás során', error.error);
+        }
+      );
     }
 
     this.fileService.getCurrentUser(current).subscribe((prof) => {
@@ -113,6 +116,8 @@ export class ScoutBidComponent {
         this.changeDetector.detectChanges();
       });
     });
+
+
   }
 
   checkLocalStorageForKey(key: string): boolean {
@@ -172,6 +177,7 @@ export class ScoutBidComponent {
         delay(1000)
       )
       .subscribe((receiver) => {
+        console.log(receiver);
         for (let i in receiver) {
           console.log(receiver[i]);
           const senderObject: any = {
@@ -197,8 +203,14 @@ export class ScoutBidComponent {
               console.error('Error fetching profile picture:', error);
             }
           );
+          this.bidService.getConnectUser().subscribe( user => {
+            console.log(user);
+            if(user.username === senderObject.username){
+              this.senderArray.push(senderObject);
+            }
+          });
 
-          this.senderArray.push(senderObject);
+
         }
 
         console.log(this.senderArray);
@@ -330,7 +342,7 @@ export class ScoutBidComponent {
     this.modalTitle = '';
     switch (platform) {
       case 'message':
-        this.modalTitle = `Üzenet a ${this.searchUsername}-nak.`;
+        this.modalTitle = `${this.searchUsername}-nak a licitáláshoz kezdjen egy üzenettel.`;
         break;
     }
 
