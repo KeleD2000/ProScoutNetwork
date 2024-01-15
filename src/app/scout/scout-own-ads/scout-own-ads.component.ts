@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faClock, faLocationPin, faMagnifyingGlass, faMedal, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
+import { BidService } from 'src/app/services/bid.service';
 import { FileService } from 'src/app/services/file.service';
 import { ScoutAdsService } from 'src/app/services/scout-ads.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
@@ -23,7 +24,7 @@ export class ScoutOwnAdsComponent {
   ownAds: any[] = [];
 
   constructor(private fileService: FileService, private scoutAdService: ScoutAdsService, private router: Router,
-    private route: ActivatedRoute, private websocketService: WebsocketService){}
+    private route: ActivatedRoute, private websocketService: WebsocketService, private bidService: BidService){}
 
     ngOnInit() {
       this.websocketService.initializeWebSocketConnection();
@@ -55,7 +56,19 @@ export class ScoutOwnAdsComponent {
                 text: 'Sikeresen elfogadtad a licitálást, átnavigálunk a licitáló felületre.',
                 icon: 'success',
               });
-              this.router.navigate(['/scout-bid'])
+              this.router.navigate(['/scout-bid']);
+              const usernamePlayer = localStorage.getItem('isLoggedin');
+              var current = usernamePlayer?.replace(/"/g, '');
+              if(current){
+                this.bidService.connectUser(current).subscribe(
+                  (response: any) => {
+                    console.log('Sikeres csatlakozás', response.message);
+                  },
+                  (error) => {
+                    console.error('Hiba történt a csatlakozás során', error.error);
+                  }
+                );
+              }
             } else if (
               result.dismiss === Swal.DismissReason.cancel
             ) {

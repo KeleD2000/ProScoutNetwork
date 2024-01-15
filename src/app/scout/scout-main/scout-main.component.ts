@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { faBackward, faClock, faLocationPin, faMagnifyingGlass, faMedal, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
+import { BidService } from 'src/app/services/bid.service';
 import { FileService } from 'src/app/services/file.service';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
 import { ScoutAdsService } from 'src/app/services/scout-ads.service';
@@ -34,7 +35,7 @@ export class ScoutMainComponent {
 
   constructor(private scoutAdsService: ScoutAdsService, private fileService: FileService,
     private playerAdsService: PlayerAdsService, private userService: UserService, private router: Router, 
-    private formBuilder: FormBuilder, private websocketService: WebsocketService) {
+    private formBuilder: FormBuilder, private websocketService: WebsocketService, private bidService: BidService) {
       this.adsForm = this.formBuilder.group({
         content : ['']
       })
@@ -97,7 +98,20 @@ export class ScoutMainComponent {
               text: 'Sikeresen elfogadtad a licitálást, átnavigálunk a licitáló felületre.',
               icon: 'success',
             });
-            this.router.navigate(['/scout-bid'])
+            this.router.navigate(['/scout-bid']);
+            const usernamePlayer = localStorage.getItem('isLoggedin');
+            var current = usernamePlayer?.replace(/"/g, '');
+            if(current){
+              this.bidService.connectUser(current).subscribe(
+                (response: any) => {
+                  console.log('Sikeres csatlakozás', response.message);
+                },
+                (error) => {
+                  console.error('Hiba történt a csatlakozás során', error.error);
+                }
+              );
+            }
+
           } else if (
             result.dismiss === Swal.DismissReason.cancel
           ) {

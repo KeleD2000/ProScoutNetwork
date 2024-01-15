@@ -3,7 +3,6 @@ import { delay } from 'rxjs/operators';
 import { FileService } from 'src/app/services/file.service';
 import * as AOS from 'aos';
 import { MessagesService } from 'src/app/services/messages.service';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { MessageDto } from 'src/app/model/dto/MessageDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { User } from 'src/app/model/User';
@@ -12,18 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-player-bid',
   templateUrl: './player-bid.component.html',
-  styleUrls: ['./player-bid.component.css'],
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('300ms', style({ opacity: 1 })),
-      ]),
-      transition(':leave', [
-        animate('300ms', style({ opacity: 0 })),
-      ]),
-    ]),
-  ],
+  styleUrls: ['./player-bid.component.css']
 })
 export class PlayerBidComponent {
   receiverId: number = 0;

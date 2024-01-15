@@ -6,6 +6,7 @@ import * as AOS from 'aos';
 import Swal from 'sweetalert2';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
+import { BidService } from 'src/app/services/bid.service';
 
 @Component({
   selector: 'app-update-scout-ads',
@@ -20,7 +21,7 @@ export class UpdateScoutAdsComponent {
 
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder,
     private scoutAdsService: ScoutAdsService, private router: Router,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService, private bidService: BidService
   ) {
     this.adsUpdate = this.formBuilder.group({
       content: ['']
@@ -82,7 +83,19 @@ export class UpdateScoutAdsComponent {
               text: 'Sikeresen elfogadtad a licitálást, átnavigálunk a licitáló felületre.',
               icon: 'success',
             });
-            this.router.navigate(['/scout-bid'])
+            this.router.navigate(['/scout-bid']);
+            const usernamePlayer = localStorage.getItem('isLoggedin');
+            var current = usernamePlayer?.replace(/"/g, '');
+            if(current){
+              this.bidService.connectUser(current).subscribe(
+                (response: any) => {
+                  console.log('Sikeres csatlakozás', response.message);
+                },
+                (error) => {
+                  console.error('Hiba történt a csatlakozás során', error.error);
+                }
+              );
+            }
           } else if (
             result.dismiss === Swal.DismissReason.cancel
           ) {
