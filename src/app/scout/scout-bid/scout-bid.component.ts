@@ -8,6 +8,7 @@ import { WebsocketService } from 'src/app/services/websocket.service';
 import { User } from 'src/app/model/User';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BidService } from 'src/app/services/bid.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-scout-bid',
@@ -37,6 +38,7 @@ export class ScoutBidComponent {
   senderArray: any[] = [];
   senderObject: any = {};
   sendMessageArray: any[] = [];
+  connectReceiverId: number = 0;
   receiverMessageArray: any[] = [];
 
   constructor(private messageService: MessagesService, private fileService: FileService,
@@ -46,7 +48,23 @@ export class ScoutBidComponent {
     ) { }
 
   ngOnInit() {
-    this.openModal('message');
+    const username = localStorage.getItem('isLoggedin');
+    let current = username?.replace(/"/g, '');
+
+    this.bidService.getConnectUser().subscribe( user => {
+      console.log(user);
+      for(let i in user){
+        if(user[i].username !== current){
+          this.connectReceiverId = user[i].id;
+        }
+      }
+
+    })
+
+    this.route.queryParams.subscribe(params => {
+      this.searchUsername = params['senderUsername'];
+      this.searchUserId = params['senderId'];
+    });
 
     const keyExistsScout = this.checkLocalStorageForKey('isScout');
     const keyExistsPlayer = this.checkLocalStorageForKey('isPlayer');
@@ -63,8 +81,6 @@ export class ScoutBidComponent {
 
     console.log(this.senderUser);
     this.websocketService.initializeWebSocketConnection();
-    const username = localStorage.getItem('isLoggedin');
-    let current = username?.replace(/"/g, '');
     if (current) {
       this.senderUsernameByWebSocket = current;
       this.bidService.connectUser(current).subscribe(
@@ -86,7 +102,7 @@ export class ScoutBidComponent {
       }
     });
 
-    this.websocketService.getMessages().subscribe((mess: MessageDto) => {
+    this.websocketService.getGroupMessage().subscribe((mess: MessageDto) => {
       console.log(mess);
       let sendMessageObject = {
         id: mess.id,
@@ -203,14 +219,6 @@ export class ScoutBidComponent {
               console.error('Error fetching profile picture:', error);
             }
           );
-          this.bidService.getConnectUser().subscribe( user => {
-            console.log(user);
-            if(user.username === senderObject.username){
-              this.senderArray.push(senderObject);
-            }
-          });
-
-
         }
 
         console.log(this.senderArray);
@@ -265,29 +273,31 @@ export class ScoutBidComponent {
     this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
-  sendMessageFromSearch() {
+  sendMessageFromSearch(text: string) {
     // Az időt most adjuk hozzá, itt azonosítási céllal
     const currentDateTime = new Date();
 
 
     console.log(this.message);
+    console.log(this.searchUserId)
     const messageToSend: MessageDto = {
-      message_content: this.searchMessage,
+      message_content: text,
       timestamp: currentDateTime,
       senderUsername: this.senderUsernameByWebSocket,
       receiverUsername: this.searchUsername,
       senderUserId: this.receiverId,
       receiverUserId: this.searchUserId,
+      anotherReceiverUserId: this.connectReceiverId
     };
     console.log(messageToSend);
     this.searchMessage = '';
-    this.websocketService.sendPrivateMessage(messageToSend);
+    this.websocketService.sendGroupMessage(messageToSend);
     this.addMessageToChatFromSearch(messageToSend);
-    if(this.theSearcherIsPlayer){
+    /*if(this.theSearcherIsPlayer){
       this.router.navigate(['/player-message']);
     }else if(this.theSearcherIsScout){
       this.router.navigate(['/scout-message']);
-    }
+    }*/
  
   }
 
@@ -326,52 +336,61 @@ export class ScoutBidComponent {
     return `${days} nappal ezelőtt`;
   }
 
+  openSweetAlertOnLoad() {
+    this.route.queryParams.subscribe(params => {
+      const name = params['senderUsername'];
+      const id = params['senderId'];
 
-  openModal(platform: string) {
-    this.selectedPlatform = platform;
-    const modal = document.getElementById('exampleModal');
-    if (modal) {
-      modal.style.display = 'block';
-      modal.style.overflow = 'hidden';
-      modal.classList.add('show');
-    }
-    this.showModal = true;
-    this.renderer.addClass(document.body, 'no-scroll');
+      if (name && id) {
+        this.showSweetAlert();
+      }
+    });
+  }
 
-    // Az adott platformnak megfelelő tartalom beállítása
-    this.modalTitle = '';
-    switch (platform) {
-      case 'message':
-        this.modalTitle = `${this.searchUsername}-nak a licitáláshoz kezdjen egy üzenettel.`;
-        break;
-    }
-
-    // A popup tartalom és cím beállítása
-    const modalTitleElement = document.querySelector('.modal-title');
-    if (modalTitleElement) {
-      modalTitleElement.innerHTML = this.modalTitle;
+  async showSweetAlert(){
+    const { value: text, isConfirmed } = await Swal.fire({
+      input: "textarea",
+      inputLabel: `Üzenet küldés ${this.searchUsername} felhasználónak a licitáláshoz`,
+      inputPlaceholder: "Ide írja az üzenetét...",
+      inputAttributes: {
+        "aria-label": "Ide írja az üzenetét..."
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Küldés',  
+      cancelButtonText: 'Mégsem', 
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: 'btn btn-success',  
+        cancelButton: 'btn btn-danger',
+      },
+      didOpen: () => {
+        // Az üzenetküldés gomb stílusainak felülírása
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.style.backgroundColor = '#28a745';
+          confirmButton.style.color = '#fff';
+          confirmButton.style.marginRight = '5px';
+        }
+    
+        // A Mégsem gomb stílusainak felülírása
+        const cancelButton = Swal.getCancelButton();
+        if (cancelButton) {
+          cancelButton.style.backgroundColor = '#dc3545';
+          cancelButton.style.color = '#fff';
+          cancelButton.style.marginLeft = '5px';
+        }
+      }
+    });
+    
+    if (isConfirmed && text) {
+      this.sendMessageFromSearch(text);
     }
   }
 
-  closeModal() {
-    const modal = document.getElementById('exampleModal');
-    if (modal) {
-      modal.style.display = 'none';
-      modal.classList.remove('show');
-    }
-    this.showModal = false;
-    this.renderer.removeClass(document.body, 'no-scroll');
-  }
-
-
-
-  ngAfterViewInit() {
-    this.ngZone.runOutsideAngular(() => {
+  async ngAfterViewInit() {
       AOS.init({
         once: true
       });
-  
-      this.changeDetector.detectChanges();
-    });
+      this.openSweetAlertOnLoad();
   }
 }

@@ -7,6 +7,8 @@ import { MessageDto } from 'src/app/model/dto/MessageDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { User } from 'src/app/model/User';
 import { ActivatedRoute, Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-scout-messages',
@@ -69,9 +71,6 @@ export class ScoutMessagesComponent {
     this.route.queryParams.subscribe(params => {
       this.searchUsername = params['name'];
       this.searchUserId = params['id'];
-      if (this.searchUsername && this.searchUserId) {
-        this.openModal('message');
-      }
     });
 
     this.websocketService.getMessages().subscribe((mess: MessageDto) => {
@@ -238,14 +237,12 @@ export class ScoutMessagesComponent {
     this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
-  sendMessageFromSearch() {
+  sendMessageFromSearch(text: string) {
     // Az időt most adjuk hozzá, itt azonosítási céllal
     const currentDateTime = new Date();
 
-
-    console.log(this.message);
     const messageToSend: MessageDto = {
-      message_content: this.searchMessage,
+      message_content: text,
       timestamp: currentDateTime,
       senderUsername: this.senderUsernameByWebSocket,
       receiverUsername: this.searchUsername,
@@ -299,46 +296,61 @@ export class ScoutMessagesComponent {
     return `${days} nappal ezelőtt`;
   }
 
-  openModal(platform: string) {
-    this.selectedPlatform = platform;
-    const modal = document.getElementById('exampleModal');
-    if (modal) {
-      modal.style.display = 'block';
-      modal.style.overflow = 'hidden';
-      modal.classList.add('show');
-    }
-    this.showModal = true;
-    this.renderer.addClass(document.body, 'no-scroll');
+  openSweetAlertOnLoad() {
+    this.route.queryParams.subscribe(params => {
+      const name = params['name'];
+      const id = params['id'];
 
-    // Az adott platformnak megfelelő tartalom beállítása
-    this.modalTitle = '';
-    switch (platform) {
-      case 'message':
-        this.modalTitle = `Üzenet a ${this.searchUsername}-nak.`;
-        break;
-    }
-
-    // A popup tartalom és cím beállítása
-    const modalTitleElement = document.querySelector('.modal-title');
-    if (modalTitleElement) {
-      modalTitleElement.innerHTML = this.modalTitle;
-    }
-  }
-
-  closeModal() {
-    const modal = document.getElementById('exampleModal');
-    if (modal) {
-      modal.style.display = 'none';
-      modal.classList.remove('show');
-    }
-    this.showModal = false;
-    this.renderer.removeClass(document.body, 'no-scroll');
-  }
-
-  ngAfterViewInit() {
-    AOS.init({
-      once: true
+      if (name && id) {
+        this.showSweetAlert();
+      }
     });
   }
 
+  async showSweetAlert(){
+    const { value: text, isConfirmed } = await Swal.fire({
+      input: "textarea",
+      inputLabel: `Üzenet küldés ${this.searchUsername} felhasználónak`,
+      inputPlaceholder: "Ide írja az üzenetét...",
+      inputAttributes: {
+        "aria-label": "Ide írja az üzenetét..."
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Küldés',  
+      cancelButtonText: 'Mégsem', 
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: 'btn btn-success',  
+        cancelButton: 'btn btn-danger',
+      },
+      didOpen: () => {
+        // Az üzenetküldés gomb stílusainak felülírása
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.style.backgroundColor = '#28a745';
+          confirmButton.style.color = '#fff';
+          confirmButton.style.marginRight = '5px';
+        }
+    
+        // A Mégsem gomb stílusainak felülírása
+        const cancelButton = Swal.getCancelButton();
+        if (cancelButton) {
+          cancelButton.style.backgroundColor = '#dc3545';
+          cancelButton.style.color = '#fff';
+          cancelButton.style.marginLeft = '5px';
+        }
+      }
+    });
+    
+    if (isConfirmed && text) {
+      this.sendMessageFromSearch(text);
+    }
+  }
+
+  async ngAfterViewInit() {
+    AOS.init({
+      once: true
+    });
+    this.openSweetAlertOnLoad();
+  }
 }

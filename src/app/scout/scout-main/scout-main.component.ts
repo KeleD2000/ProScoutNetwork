@@ -73,6 +73,10 @@ export class ScoutMainComponent {
 
     this.websocketService.getNotifications().subscribe((not: NotificationsBidDto) => {
       console.log(not);
+      const queryParams = {
+        senderId: not.senderId,
+        senderUsername: not.senderUsername
+      };
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: 'btn btn-success m-1',
@@ -98,7 +102,7 @@ export class ScoutMainComponent {
               text: 'Sikeresen elfogadtad a licitálást, átnavigálunk a licitáló felületre.',
               icon: 'success',
             });
-            this.router.navigate(['/scout-bid']);
+            this.router.navigate(['/scout-bid'], {queryParams});
           } else if (
             result.dismiss === Swal.DismissReason.cancel
           ) {

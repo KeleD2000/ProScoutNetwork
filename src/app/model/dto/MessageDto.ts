@@ -5,5 +5,6 @@ export interface MessageDto{
     senderUserId: number
     senderUsername: string
     receiverUserId: number
+    anotherReceiverUserId?: number
     receiverUsername: string
 }

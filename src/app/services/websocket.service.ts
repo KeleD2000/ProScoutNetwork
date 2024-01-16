@@ -10,6 +10,7 @@ import { NotificationsBidDto } from '../model/dto/NotificationsBidDto';
 export class WebsocketService {
   private stompClient: Client = new Client();
   private messageSubject: Subject<MessageDto> = new Subject<MessageDto>;
+  private messageGroupSubject: Subject<MessageDto> = new Subject<MessageDto>;
   private notificationSubject: Subject<NotificationsBidDto> = new Subject<NotificationsBidDto>;
 
   constructor() { }
@@ -33,6 +34,12 @@ export class WebsocketService {
             );
             this.stompClient.subscribe(
               `/queue/notify/${converted}`,
+              (message) => {
+                this.notificationSubject.next(JSON.parse(message.body));
+              }
+            );
+            this.stompClient.subscribe(
+              `/queue/group/${converted}`,
               (message) => {
                 this.notificationSubject.next(JSON.parse(message.body));
               }
@@ -65,6 +72,17 @@ export class WebsocketService {
 
   getMessages(): Observable<MessageDto> {
     return this.messageSubject.asObservable();
+  }
+
+  sendGroupMessage(message: MessageDto){
+    this.stompClient.publish({
+      destination: `/app/chat.sendPrivateMessageToUsers/${message.receiverUserId}/${message.anotherReceiverUserId}`,
+      body: JSON.stringify(message),
+    });
+  }
+
+  getGroupMessage(): Observable<MessageDto> {
+    return this.messageGroupSubject.asObservable();
   }
 
 }

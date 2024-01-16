@@ -36,6 +36,8 @@ export class UserDetailsComponent {
   profileDetails: any[] = [];
   selectedFile?: File;
   image: any;
+  notSenderId: number = 0;
+  notSenderUsername: string = '';
   isItPlayer: boolean = false;
   isItScout: boolean = false;
   theSearcherIsScout: boolean = false;
@@ -238,16 +240,34 @@ export class UserDetailsComponent {
   }
 
   sendNotification(){
-    for(let i in this.profileDetails){
-      var usernameScout = this.profileDetails[i].username;
-    }
-    const usernamePlayer = localStorage.getItem('isLoggedin');
-    var current = usernamePlayer?.replace(/"/g, '');
-    const notification: NotificationsBidDto = {
-      username : usernameScout,
-      message: `${current} felhasználó licitálás kedvezményed feléd. Elfogadod?`
-    }
-    this.websocketService.sendNotification(notification)
+    const username = localStorage.getItem('isLoggedin');
+    let currentUser = username?.replace(/"/g, '');
+    this.fileService.getCurrentUser(currentUser).subscribe( user => {
+      for(const [key, value] of Object.entries(user)){
+        console.log(key, value);
+        if(key === 'id'){
+          this.notSenderId = value;
+
+        }
+        if(key === 'username'){
+          this.notSenderUsername = value;
+
+        }
+      }
+      console.log(this.notSenderId, this.notSenderUsername);
+      for(let i in this.profileDetails){
+        var usernameScout = this.profileDetails[i].username;
+      }
+      const notification: NotificationsBidDto = {
+        senderId: this.notSenderId,
+        senderUsername: this.notSenderUsername,
+        username : usernameScout,
+        message: `${currentUser} felhasználó licitálás kedvezményed feléd. Elfogadod?`
+      }
+      this.websocketService.sendNotification(notification)
+    });
+
+
   }
 
   ngAfterViewInit() {
