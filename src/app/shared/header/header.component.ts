@@ -34,9 +34,11 @@ export class HeaderComponent {
   logout(){
     if(localStorage.getItem('isPlayer')){
       localStorage.removeItem('isPlayer');
+      localStorage.removeItem('isBid');
       this.isItPlayer = false;
     }else if(localStorage.getItem('isScout')){
       localStorage.removeItem('isScout');
+      localStorage.removeItem('isBid');
       this.isItScout = false;
     }
     localStorage.removeItem('isLoggedin');

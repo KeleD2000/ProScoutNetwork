@@ -7,4 +7,5 @@ export interface MessageDto{
     receiverUserId: number
     anotherReceiverUserId?: number
     receiverUsername: string
+    groupChat?: number;
 }

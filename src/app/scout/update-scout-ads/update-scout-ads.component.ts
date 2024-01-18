@@ -84,6 +84,7 @@ export class UpdateScoutAdsComponent {
               icon: 'success',
             });
             this.router.navigate(['/scout-bid']);
+            localStorage.setItem('isBid', JSON.stringify(true));
             const usernamePlayer = localStorage.getItem('isLoggedin');
             var current = usernamePlayer?.replace(/"/g, '');
             if(current){

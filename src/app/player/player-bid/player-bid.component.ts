@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, Renderer2 } from '@angular/core';
-import { delay } from 'rxjs/operators';
+import { forkJoin, from } from 'rxjs';
+import { filter, delay, map, switchMap } from 'rxjs/operators';
 import { FileService } from 'src/app/services/file.service';
 import * as AOS from 'aos';
 import { MessagesService } from 'src/app/services/messages.service';
@@ -7,6 +8,8 @@ import { MessageDto } from 'src/app/model/dto/MessageDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { User } from 'src/app/model/User';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BidService } from 'src/app/services/bid.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-player-bid',
@@ -22,7 +25,7 @@ export class PlayerBidComponent {
   selectedPlatform: string = '';
   showModal: boolean = false;
   modalTitle: string = '';
-  isItMessages: boolean = false;
+  //isItMessages: boolean = false;
   image: any;
   message: string = '';
   searchMessage: string = '';
@@ -35,16 +38,37 @@ export class PlayerBidComponent {
   combinedMessages: any[] = [];
   senderArray: any[] = [];
   senderObject: any = {};
-  sendMessageArray: any[] = [];
+  groupChatArray: any[] = [];
+  connectReceiverId: number = 0;
   receiverMessageArray: any[] = [];
+  receivedData: any;
+  keyExistsPlayer: string = '';
+  isBid: boolean = false;
+  scoutId1: number = 0;
+  scoutId2: number = 0;
 
   constructor(private messageService: MessagesService, private fileService: FileService,
     private websocketService: WebsocketService, private changeDetector: ChangeDetectorRef,
     private renderer: Renderer2, private route: ActivatedRoute, private router: Router,
-    private ngZone: NgZone
-    ) { }
+    private ngZone: NgZone, private bidService: BidService
+  ) { }
 
   ngOnInit() {
+    const isBidValue = localStorage.getItem('isBid');
+
+    this.isBid = isBidValue ? JSON.parse(isBidValue) : null;
+
+    const username = localStorage.getItem('isLoggedin');
+    let current = username?.replace(/"/g, '');
+
+    this.fileService.getCurrentUser(current).subscribe((prof) => {
+      for (const [key, value] of Object.entries(prof)) {
+        if (key === 'id') {
+          this.receiverId = value;
+        }
+      }
+    });
+
     const keyExistsScout = this.checkLocalStorageForKey('isScout');
     const keyExistsPlayer = this.checkLocalStorageForKey('isPlayer');
 
@@ -54,36 +78,13 @@ export class PlayerBidComponent {
       this.theSearcherIsPlayer = true;
     }
 
-    this.route.queryParams.subscribe(params => {
-      this.searchUsername = params['name'];
-      this.searchUserId = params['id'];
-      if (this.searchUsername && this.searchUserId) {
-        this.openModal('message');
-      }
-    });
-
-    setInterval(() => {
-      this.changeDetector.detectChanges();
-    }, 60000);
-
     console.log(this.senderUser);
     this.websocketService.initializeWebSocketConnection();
-    const username = localStorage.getItem('isLoggedin');
-    let current = username?.replace(/"/g, '');
     if (current) {
       this.senderUsernameByWebSocket = current;
     }
 
-    this.fileService.getCurrentUser(current).subscribe((prof) => {
-      for (const [key, value] of Object.entries(prof)) {
-        if (key === 'id') {
-          this.receiverId = value;
-          this.getSendersWithDelay();
-        }
-      }
-    });
-
-    this.websocketService.getMessages().subscribe((mess: MessageDto) => {
+    this.websocketService.getGroupMessage().subscribe((mess: MessageDto) => {
       console.log(mess);
       let sendMessageObject = {
         id: mess.id,
@@ -93,14 +94,15 @@ export class PlayerBidComponent {
         user_type: 'sent',
         image: ""
       };
+      console.log(sendMessageObject);
       this.fileService.getProfilePicBlob(sendMessageObject.sender_username).subscribe(
         (response: any) => {
           if (response) {
             const reader = new FileReader();
             reader.onload = () => {
               sendMessageObject.image = reader.result as string;
-              this.combinedMessages.push(sendMessageObject);
-              console.log(this.combinedMessages);
+              this.groupChatArray.push(sendMessageObject);
+              console.log(this.groupChatArray);
             };
             reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
           }
@@ -113,115 +115,179 @@ export class PlayerBidComponent {
         this.changeDetector.detectChanges();
       });
     });
+
+    this.getSendersWithDelay();
+    this.getGroupMessages();
   }
 
   checkLocalStorageForKey(key: string): boolean {
     return localStorage.getItem(key) !== null;
   }
 
-  getMessages(senderId: number) {
-    this.senderIdByWebSocket = senderId;
-
-    this.messageService.getMessages(senderId, this.receiverId).subscribe(async (mess) => {
-      let messagePromises = mess.map(async (message: any) => {
-        const sender_username = message.senderUser.username;
-        this.receiverUsernameByWebSocket = sender_username;
-        const image = await this.loadImage(sender_username); // Betöltjük a képet
-
-        return {
-          timestamp: new Date(message.timestamp),
-          content: message.message_content,
-          sender_username: sender_username,
-          receiver_username: this.senderUsernameByWebSocket,
-          user_type: message.senderUser.id === this.receiverId ? 'received' : 'sent',
-          image: image
-        };
-      });
-
-      // Várunk az összes kép betöltésére
-      this.combinedMessages = await Promise.all(messagePromises);
-      this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-      this.isItMessages = true;
-    });
-
-  }
-
-  // Segédfüggvény a kép betöltésére
-  private loadImage(username: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.fileService.getProfilePicBlob(username).subscribe(
-        (response: any) => {
-          if (response) {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
-          }
-        },
-        (error) => {
-          console.error('Error fetching profile picture:', error);
-          reject(error);
-        }
-      );
-    });
-  }
-
-
   getSendersWithDelay() {
-    this.messageService.getSenders(this.receiverId)
-      .pipe(
-        delay(1000)
-      )
-      .subscribe((receiver) => {
-        for (let i in receiver) {
-          console.log(receiver[i]);
-          const senderObject: any = {
-            id: receiver[i].id,
-            name: receiver[i].username,
-            content: receiver[i].message_content,
-            timestamp: receiver[i].timestamp,
-            isRightNow: false,
-            image: ""
-          };
-
-          this.fileService.getProfilePicBlob(senderObject.name).subscribe(
-            (response: any) => {
-              if (response) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                  senderObject.image = reader.result as string;
+    this.bidService.getConnectUser().subscribe(users => {
+      const username = localStorage.getItem('isLoggedin');
+      let current = username?.replace(/"/g, '');
+      console.log(users);
+      this.scoutId1 = users[0].id;
+      this.scoutId2 = users[1].id;
+      this.bidService.getGroupMessages(this.scoutId1, this.scoutId2)
+        .subscribe((receiver) => {
+          console.log(receiver);
+          this.receivedData = receiver;
+          for (let i in this.receivedData) {
+            if (this.receivedData && this.receivedData[i].messages) {
+              for (let j in this.receivedData[i].messages) {
+                const existingSender = this.senderArray.find(sender => sender.user_id === this.receivedData[i].messages[j].receiverId);
+                const messageObject: any = {
+                  message_id: this.receivedData[i].messages[j].messageId,
+                  message_content: this.receivedData[i].messages[j].content,
+                  timestamp: this.receivedData[i].messages[j].timestamp,
+                  sender_id: this.receivedData[i].messages[j].senderId,
+                  sender_username: this.receivedData[i].messages[j].senderUsername
                 };
-                reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
-              }
-            },
-            (error) => {
-              console.error('Error fetching profile picture:', error);
-            }
-          );
 
-          this.senderArray.push(senderObject);
+                if (!existingSender) {
+                  const senderObject: any = {
+                    name: this.receivedData[i].receiverUsername,
+                    user_id: this.receivedData[i].messages[j].receiverId,
+                    image: "",
+                    messages: [messageObject]
+                  };
+                  this.fileService.getProfilePicBlob(senderObject.name).subscribe(
+                    (response: any) => {
+                      if (response) {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          senderObject.image = reader.result as string;
+                        };
+                        reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+                      }
+                    },
+                    (error) => {
+                      console.error('Error fetching profile picture:', error);
+                    }
+                  );
+                  this.senderArray.push(senderObject);
+                } else {
+                  existingSender.messages.push(messageObject);
+                }
+              }
+
+            }
+          }
+        });
+    });
+  }
+
+  async getGroupMessages() {
+    try {
+      const users = await this.bidService.getConnectUser().toPromise();
+      const username = localStorage.getItem('isLoggedin');
+      const current = username?.replace(/"/g, '');
+
+      for (const user of users) {
+        if (user.username !== current) {
+          this.connectReceiverId = user.id;
+        }
+      }
+
+      const mess = await this.bidService.getGroupMessages(this.scoutId1, this.scoutId2).toPromise();
+      console.log(mess);
+
+      const messagePromises = mess.map(async (message: any) => {
+        const transformedMessages: any[] = [];
+
+        for (const [key, value] of Object.entries<any>(message)) {
+          console.log(key, value);
+          if (key === 'messages' && Array.isArray(value)) {
+            console.log(value);
+            for (const i in value) {
+              console.log(value[i]);
+              const sender_username = value[i].senderUsername;
+
+              if (value[i].content && value[i].timestamp && value[i].senderId) {
+                const image = await this.loadImage(sender_username);
+
+                const uniqueId = `${value[i].content}_${sender_username}_${value[i].timestamp}`;
+
+                const newMessage = {
+                  uniqueId: uniqueId,
+                  message_id: value[i].messageId,
+                  timestamp: new Date(value[i].timestamp),
+                  content: value[i].content,
+                  sender_username: sender_username,
+                  receiver_username: this.senderUsernameByWebSocket,
+                  user_type: value[i].senderId === this.receiverId ? 'received' : 'sent',
+                  image: image
+                };
+
+                transformedMessages.push(newMessage);
+              }
+            }
+          }
         }
 
-        console.log(this.senderArray);
+        return transformedMessages;
       });
 
+      console.log(messagePromises);
+      const combinedMessages = await Promise.all(messagePromises.map(async (promise: any) => await promise));
+      console.log(combinedMessages);
+      const uniqueMessages = Array.from(new Set(combinedMessages.flat().map((msg: any) => msg.uniqueId)))
+        .map(uniqueId => combinedMessages.flat().find((msg: any) => msg.uniqueId === uniqueId));
+
+      const sortedMessages = uniqueMessages
+        .filter(message => message !== null)
+        .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
+      this.groupChatArray.push(...sortedMessages);
+      console.log(this.groupChatArray);
+
+      return sortedMessages;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+
+  private async loadImage(username: string): Promise<string | null> {
+    try {
+      const response: any = await this.fileService.getProfilePicBlob(username).toPromise();
+
+      if (response) {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+        });
+      } else {
+        return Promise.resolve(null);
+      }
+    } catch (error) {
+      console.error('Error fetching profile picture:', error);
+      return Promise.resolve(null);
+    }
   }
 
   sendMessage() {
     // Az időt most adjuk hozzá, itt azonosítási céllal
     const currentDateTime = new Date();
-
-
     const messageToSend: MessageDto = {
       message_content: this.message,
       timestamp: currentDateTime,
       senderUsername: this.senderUsernameByWebSocket,
-      receiverUsername: this.receiverUsernameByWebSocket,
+      receiverUsername: this.searchUsername,
       senderUserId: this.receiverId,
-      receiverUserId: this.senderIdByWebSocket,
+      receiverUserId: this.scoutId1,
+      anotherReceiverUserId: this.scoutId2,
+      groupChat: 1
     };
-    this.message = '';
-    this.websocketService.sendPrivateMessage(messageToSend);
-    this.addMessageToChat(messageToSend);
+    console.log(messageToSend);
+    this.searchMessage = '';
+    this.websocketService.sendGroupMessage(messageToSend);
+    this.addMessageToChatFromSearch(messageToSend);
   }
 
   addMessageToChat(message: MessageDto) {
@@ -249,34 +315,28 @@ export class PlayerBidComponent {
     );
 
 
-    this.combinedMessages.push(chatMessage);
-    this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+    this.groupChatArray.push(chatMessage);
+    this.groupChatArray.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
-  sendMessageFromSearch() {
+  sendMessageFromSearch(text: string) {
     // Az időt most adjuk hozzá, itt azonosítási céllal
     const currentDateTime = new Date();
-
-
-    console.log(this.message);
     const messageToSend: MessageDto = {
-      message_content: this.searchMessage,
+      message_content: text,
       timestamp: currentDateTime,
       senderUsername: this.senderUsernameByWebSocket,
       receiverUsername: this.searchUsername,
       senderUserId: this.receiverId,
-      receiverUserId: this.searchUserId,
+      receiverUserId: this.scoutId1,
+      anotherReceiverUserId: this.scoutId2,
+      groupChat: 1
     };
     console.log(messageToSend);
     this.searchMessage = '';
-    this.websocketService.sendPrivateMessage(messageToSend);
+    this.websocketService.sendGroupMessage(messageToSend);
     this.addMessageToChatFromSearch(messageToSend);
-    if(this.theSearcherIsPlayer){
-      this.router.navigate(['/player-message']);
-    }else if(this.theSearcherIsScout){
-      this.router.navigate(['/scout-message']);
-    }
- 
+
   }
 
   addMessageToChatFromSearch(message: MessageDto) {
@@ -288,8 +348,23 @@ export class PlayerBidComponent {
       image: ""
     };
 
-    this.combinedMessages.push(chatMessage);
-    this.combinedMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+    this.fileService.getProfilePicBlob(message.senderUsername).subscribe(
+      (response: any) => {
+        if (response) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            chatMessage.image = reader.result as string;
+          };
+          reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
+        }
+      },
+      (error) => {
+        console.error('Error fetching profile picture:', error);
+      }
+    );
+
+    this.groupChatArray.push(chatMessage);
+    this.groupChatArray.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
   calculateElapsedTime(timestamp: Date): string {
@@ -314,53 +389,145 @@ export class PlayerBidComponent {
     return `${days} nappal ezelőtt`;
   }
 
+  openSweetAlertOnLoad() {
+    this.route.queryParams.subscribe(params => {
+      const name = params['senderUsername'];
+      const id = params['senderId'];
 
-  openModal(platform: string) {
-    this.selectedPlatform = platform;
-    const modal = document.getElementById('exampleModal');
-    if (modal) {
-      modal.style.display = 'block';
-      modal.style.overflow = 'hidden';
-      modal.classList.add('show');
-    }
-    this.showModal = true;
-    this.renderer.addClass(document.body, 'no-scroll');
-
-    // Az adott platformnak megfelelő tartalom beállítása
-    this.modalTitle = '';
-    switch (platform) {
-      case 'message':
-        this.modalTitle = `Üzenet a ${this.searchUsername}-nak.`;
-        break;
-    }
-
-    // A popup tartalom és cím beállítása
-    const modalTitleElement = document.querySelector('.modal-title');
-    if (modalTitleElement) {
-      modalTitleElement.innerHTML = this.modalTitle;
-    }
-  }
-
-  closeModal() {
-    const modal = document.getElementById('exampleModal');
-    if (modal) {
-      modal.style.display = 'none';
-      modal.classList.remove('show');
-    }
-    this.showModal = false;
-    this.renderer.removeClass(document.body, 'no-scroll');
-  }
-
-
-
-  ngAfterViewInit() {
-    this.ngZone.runOutsideAngular(() => {
-      AOS.init({
-        once: true
-      });
-  
-      this.changeDetector.detectChanges();
+      if (name && id) {
+        this.showSweetAlert();
+      }
     });
   }
-}
 
+  async showSweetAlert() {
+    const { value: text, isConfirmed } = await Swal.fire({
+      input: "textarea",
+      inputLabel: `Üzenet küldés ${this.searchUsername} felhasználónak a licitáláshoz`,
+      inputPlaceholder: "Ide írja az üzenetét...",
+      inputAttributes: {
+        "aria-label": "Ide írja az üzenetét..."
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Küldés',
+      cancelButtonText: 'Mégsem',
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger',
+      },
+      didOpen: () => {
+        // Az üzenetküldés gomb stílusainak felülírása
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.style.backgroundColor = '#28a745';
+          confirmButton.style.color = '#fff';
+          confirmButton.style.marginRight = '5px';
+        }
+
+        // A Mégsem gomb stílusainak felülírása
+        const cancelButton = Swal.getCancelButton();
+        if (cancelButton) {
+          cancelButton.style.backgroundColor = '#dc3545';
+          cancelButton.style.color = '#fff';
+          cancelButton.style.marginLeft = '5px';
+        }
+      }
+    });
+
+    if (isConfirmed && text) {
+      this.sendMessageFromSearch(text);
+    }
+  }
+
+  acceptPlayer() {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success m-1',
+        cancelButton: 'btn btn-danger m-1',
+      },
+      buttonsStyling: false,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Játékos felé érdeklődés',
+        text: 'Biztosan érdekli ez a játékos? Ha igen, akkor kattintson az Igen gombra, és vegye fel vele a kapcsolatot privátba. Ha mégse, akkor Nem érdekel-re kattintva visszanavigáljuk a hirdetésre.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Érdekel!',
+        cancelButtonText: 'Nem érdekel!',
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire({
+            title: 'Elfogadtad az érdeklődést',
+            text: 'Sikeresen elfogadtad a érdeklődést, átnavigálunk a hirdetés felületre, ahol megtalálod a játékost.',
+            icon: 'success',
+          });
+          this.router.navigate(['/scout-main']);
+          localStorage.setItem('isBid', JSON.stringify(false));
+        } else if (
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire({
+            title: 'Nem fogadtad el a érdeklődést.',
+            text: 'Nem éltél a érdeklődést lehetőségével, átnavigálunk a hirdetés felületre, ahol tovább keresgélhetsz.',
+            icon: 'error',
+          });
+          this.router.navigate(['/scout-main']);
+          localStorage.setItem('isBid', JSON.stringify(false));
+        }
+      });
+  }
+
+  acceptBid() {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success m-1',
+        cancelButton: 'btn btn-danger m-1',
+      },
+      buttonsStyling: false,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Ajánlat felé érdeklődés',
+        text: 'Biztosan érdekli az egyik ajánlat? Ha igen, akkor kattintson az Igen gombra, és vegye fel vele a kapcsolatot privátba. Ha mégse, akkor Nem érdekel-re kattintva visszanavigáljuk a hirdetésre.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Érdekel!',
+        cancelButtonText: 'Nem érdekel!',
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire({
+            title: 'Elfogadtad az érdeklődést',
+            text: 'Sikeresen elfogadtad a érdeklődést, átnavigálunk a hirdetés felületre, ahol megtalálod a játékoskeresőt.',
+            icon: 'success',
+          });
+          this.router.navigate(['/player-main']);
+          localStorage.setItem('isBid', JSON.stringify(false));
+        } else if (
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire({
+            title: 'Nem fogadtad el a érdeklődést.',
+            text: 'Nem éltél a érdeklődést lehetőségével, átnavigálunk a hirdetés felületre, ahol tovább keresgélhetsz.',
+            icon: 'error',
+          });
+          this.router.navigate(['/player-main']);
+          localStorage.setItem('isBid', JSON.stringify(false));
+        }
+      });
+  }
+
+  async ngAfterViewInit() {
+    AOS.init({
+      once: true
+    });
+    this.openSweetAlertOnLoad();
+  }
+}

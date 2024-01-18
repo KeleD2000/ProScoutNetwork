@@ -41,7 +41,7 @@ export class WebsocketService {
             this.stompClient.subscribe(
               `/queue/group/${converted}`,
               (message) => {
-                this.notificationSubject.next(JSON.parse(message.body));
+                this.messageGroupSubject.next(JSON.parse(message.body));
               }
             )
           }, 1000);

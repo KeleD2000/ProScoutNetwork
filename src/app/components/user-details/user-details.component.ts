@@ -264,7 +264,8 @@ export class UserDetailsComponent {
         username : usernameScout,
         message: `${currentUser} felhasználó licitálás kedvezményed feléd. Elfogadod?`
       }
-      this.websocketService.sendNotification(notification)
+      this.websocketService.sendNotification(notification);
+      localStorage.setItem('isBid', JSON.stringify(true));
     });
 
 

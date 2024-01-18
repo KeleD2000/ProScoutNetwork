@@ -31,6 +31,7 @@ export class SigninComponent {
       };
       this.authService.login(loginUser).subscribe( (p : LoginResponse) => {
         localStorage.setItem('isLoggedin', JSON.stringify(p.username));
+        localStorage.setItem('isBid', JSON.stringify(false));
         for(const [key, value] of Object.entries(p)){
           for(let i in value){
             if(value[i].authority === 'PLAYER'){

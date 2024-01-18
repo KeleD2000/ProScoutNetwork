@@ -103,6 +103,7 @@ export class ScoutMainComponent {
               icon: 'success',
             });
             this.router.navigate(['/scout-bid'], {queryParams});
+            localStorage.setItem('isBid', JSON.stringify(true));
           } else if (
             result.dismiss === Swal.DismissReason.cancel
           ) {

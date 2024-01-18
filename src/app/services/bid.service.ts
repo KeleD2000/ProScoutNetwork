@@ -20,4 +20,8 @@ export class BidService {
   getConnectUser(): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/bid/connected`);
   }
+
+  getGroupMessages(receiverUserId1: number, receiverUserId2: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/groupChatMessages/${receiverUserId1}/${receiverUserId2}`);
+  }
 }
