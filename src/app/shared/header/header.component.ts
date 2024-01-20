@@ -13,6 +13,7 @@ export class HeaderComponent {
   isMobileNavActive: boolean = false;
   isItPlayer: boolean = false;
   isItScout: boolean = false;
+  isItAdmin: boolean = false;
 
 
   @HostListener('window:scroll', ['$event'])
@@ -40,6 +41,10 @@ export class HeaderComponent {
       localStorage.removeItem('isScout');
       localStorage.removeItem('isBid');
       this.isItScout = false;
+    }else if(localStorage.getItem('isAdmin')){
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('isBid');
+      this.isItAdmin = false;
     }
     localStorage.removeItem('isLoggedin');
   }
@@ -49,6 +54,8 @@ export class HeaderComponent {
       this.isItPlayer = true;
     }else if(localStorage.getItem('isScout')){
       this.isItScout = true;
+    }else if(localStorage.getItem('isAdmin')){
+      this.isItAdmin = true;
     }
   }
 

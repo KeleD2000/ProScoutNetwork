@@ -41,5 +41,8 @@ export class UserService {
     return this.http.get(`${this.baseUrl}/api/users/${username}`);
   }
 
+  getAllUsers(){
+    return this.http.get(`${this.baseUrl}/api/users`);
+  }
 
 }

@@ -15,6 +15,7 @@ export class SigninComponent {
   loginForm!: FormGroup
   isItPlayer: boolean = false;
   isItScout: boolean = false;
+  isItAdmin: boolean = false;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router){
     this.loginForm = this.fb.group({
@@ -34,6 +35,7 @@ export class SigninComponent {
         localStorage.setItem('isBid', JSON.stringify(false));
         for(const [key, value] of Object.entries(p)){
           for(let i in value){
+            console.log(value[i]);
             if(value[i].authority === 'PLAYER'){
               this.isItPlayer = true;
               localStorage.setItem('isPlayer', JSON.stringify(this.isItPlayer));
@@ -42,6 +44,10 @@ export class SigninComponent {
               this.isItScout = true;
               localStorage.setItem('isScout', JSON.stringify(this.isItScout));
               this.router.navigate(['scout-main']);
+            }else if(value[i].authority === 'ADMIN'){
+              this.isItAdmin = true;
+              localStorage.setItem('isAdmin', JSON.stringify(this.isItAdmin));
+              this.router.navigate(['admin-main']);
             }
           }
         }

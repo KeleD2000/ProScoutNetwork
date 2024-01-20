@@ -3,6 +3,7 @@ import { Client, StompConfig } from '@stomp/stompjs';
 import { Observable, Subject } from 'rxjs';
 import { MessageDto } from '../model/dto/MessageDto';
 import { NotificationsBidDto } from '../model/dto/NotificationsBidDto';
+import { ReportDto } from '../model/dto/ReportDto';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class WebsocketService {
   private messageSubject: Subject<MessageDto> = new Subject<MessageDto>;
   private messageGroupSubject: Subject<MessageDto> = new Subject<MessageDto>;
   private notificationSubject: Subject<NotificationsBidDto> = new Subject<NotificationsBidDto>;
+  private reportSubject: Subject<ReportDto> = new Subject<ReportDto>;
 
   constructor() { }
 
@@ -43,13 +45,30 @@ export class WebsocketService {
               (message) => {
                 this.messageGroupSubject.next(JSON.parse(message.body));
               }
-            )
+            );
+            this.stompClient.subscribe(
+              `/queue/report/${converted}`,
+              (message) => {
+                this.reportSubject.next(JSON.parse(message.body));
+              }
+            );
           }, 1000);
         }
       },
     };
     this.stompClient = new Client(stompConfig);
     this.stompClient.activate();
+  }
+
+  sendReport(message: ReportDto) {
+    this.stompClient.publish({
+      destination: `/app/report/${message.receiverUserId}`,
+      body: JSON.stringify(message),
+    });
+  }
+
+  getReports(): Observable<ReportDto> {
+    return this.reportSubject.asObservable();
   }
 
   sendNotification(message: NotificationsBidDto) {

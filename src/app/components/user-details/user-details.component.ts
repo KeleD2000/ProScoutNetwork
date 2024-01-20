@@ -7,6 +7,8 @@ import { FileService } from 'src/app/services/file.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
+import Swal from 'sweetalert2';
+import { ReportDto } from 'src/app/model/dto/ReportDto';
 
 @Component({
   selector: 'app-user-details',
@@ -42,8 +44,11 @@ export class UserDetailsComponent {
   isItScout: boolean = false;
   theSearcherIsScout: boolean = false;
   theSearcherIsPlayer: boolean = false;
+  reportSenderId: number = 0;
+  reportSenderUsername: string = '';
   videoFileId: number = 0;
   selectedPlatform: string = '';
+  reportName: string = '';
   videoUrl?: SafeResourceUrl;
 
   constructor(private renderer: Renderer2, private fileService: FileService,
@@ -58,9 +63,9 @@ export class UserDetailsComponent {
   }
 
   navigateWithParams(username: string, userId: number) {
-    if(this.theSearcherIsPlayer){
+    if (this.theSearcherIsPlayer) {
       this.router.navigate(['/player-message'], { queryParams: { name: username, id: userId } });
-    }else if(this.theSearcherIsScout){
+    } else if (this.theSearcherIsScout) {
       this.router.navigate(['/scout-message'], { queryParams: { name: username, id: userId } });
     }
   }
@@ -136,14 +141,19 @@ export class UserDetailsComponent {
   }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.reportName = params['name'];
+
+    });
+
     this.websocketService.initializeWebSocketConnection();
 
     const keyExistsScout = this.checkLocalStorageForKey('isScout');
     const keyExistsPlayer = this.checkLocalStorageForKey('isPlayer');
 
-    if(keyExistsScout){
+    if (keyExistsScout) {
       this.theSearcherIsScout = true;
-    }else if(keyExistsPlayer){
+    } else if (keyExistsPlayer) {
       this.theSearcherIsPlayer = true;
     }
 
@@ -182,12 +192,12 @@ export class UserDetailsComponent {
         video_file_id: 0,
       };
 
-      
+
       for (const [key, value] of Object.entries(user)) {
-        if(key === 'id'){
+        if (key === 'id') {
           profilObj.id = value;
         }
-        if(key === 'username'){
+        if (key === 'username') {
           profilObj.username = value;
         }
         if (key === 'roles') {
@@ -239,39 +249,111 @@ export class UserDetailsComponent {
     });
   }
 
-  sendNotification(){
+  sendNotification() {
     const username = localStorage.getItem('isLoggedin');
     let currentUser = username?.replace(/"/g, '');
-    this.fileService.getCurrentUser(currentUser).subscribe( user => {
-      for(const [key, value] of Object.entries(user)){
+    this.fileService.getCurrentUser(currentUser).subscribe(user => {
+      for (const [key, value] of Object.entries(user)) {
         console.log(key, value);
-        if(key === 'id'){
+        if (key === 'id') {
           this.notSenderId = value;
 
         }
-        if(key === 'username'){
+        if (key === 'username') {
           this.notSenderUsername = value;
 
         }
       }
       console.log(this.notSenderId, this.notSenderUsername);
-      for(let i in this.profileDetails){
+      for (let i in this.profileDetails) {
         var usernameScout = this.profileDetails[i].username;
       }
       const notification: NotificationsBidDto = {
         senderId: this.notSenderId,
         senderUsername: this.notSenderUsername,
-        username : usernameScout,
+        username: usernameScout,
         message: `${currentUser} felhasználó licitálás kedvezményed feléd. Elfogadod?`
       }
       this.websocketService.sendNotification(notification);
       localStorage.setItem('isBid', JSON.stringify(true));
     });
-
-
   }
 
-  ngAfterViewInit() {
+  sendReport(text: string) {
+    const username = localStorage.getItem('isLoggedin');
+    let currentUser = username?.replace(/"/g, '');
+    this.fileService.getCurrentUser(currentUser).subscribe(user => {
+      for (const [key, value] of Object.entries(user)) {
+        console.log(key, value);
+        if (key === 'id') {
+          this.reportSenderId = value;
+
+        }
+        if (key === 'username') {
+          this.reportSenderUsername = value;
+
+        }
+      }
+      console.log(this.notSenderId, this.notSenderUsername);
+      // Az időt most adjuk hozzá, itt azonosítási céllal
+      const currentDateTime = new Date();
+
+      const reportToSend: ReportDto = {
+        report_content: text,
+        timestamp: currentDateTime,
+        report_username: this.reportName,
+        senderUsername: this.reportSenderUsername,
+        receiverUsername: "admin",
+        senderUserId: this.reportSenderId,
+        receiverUserId: 8,
+      };
+      console.log(reportToSend);
+      this.websocketService.sendReport(reportToSend);
+    });
+  }
+
+
+  async showSweetAlert() {
+    const { value: text, isConfirmed } = await Swal.fire({
+      input: "textarea",
+      inputLabel: `${this.reportName} felhasználó jelentése`,
+      inputPlaceholder: "Ide írja a jelentés okát...",
+      inputAttributes: {
+        "aria-label": "Ide írja a jelentés okát..."
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Küldés',
+      cancelButtonText: 'Mégsem',
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger',
+      },
+      didOpen: () => {
+        // Az üzenetküldés gomb stílusainak felülírása
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.style.backgroundColor = '#28a745';
+          confirmButton.style.color = '#fff';
+          confirmButton.style.marginRight = '5px';
+        }
+
+        // A Mégsem gomb stílusainak felülírása
+        const cancelButton = Swal.getCancelButton();
+        if (cancelButton) {
+          cancelButton.style.backgroundColor = '#dc3545';
+          cancelButton.style.color = '#fff';
+          cancelButton.style.marginLeft = '5px';
+        }
+      }
+    });
+
+    if (isConfirmed && text) {
+      this.sendReport(text);
+    }
+  }
+
+  async ngAfterViewInit() {
     AOS.init({
       once: true
     });

@@ -29,6 +29,7 @@
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" class="btn btn-primary m-1" (click)="navigateWithParams(profile.username, profile.id)">Üzenet küldés</button>
                             <button *ngIf="theSearcherIsPlayer" type="button" class="btn btn-primary m-1" (click)="sendNotification()">Licitálás indítása</button>
+                            <button *ngIf="theSearcherIsScout" type="button" class="btn btn-danger m-1" (click)="this.showSweetAlert()">Játékos jelentése</button>
                         </div>
                     </div>
                 </div>

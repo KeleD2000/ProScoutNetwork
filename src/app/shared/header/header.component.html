@@ -10,10 +10,10 @@
   
       <nav id="navbar" class="navbar" [ngClass]="{'mobile-nav-active': isMobileNavActive}">
         <ul>
-          <li><a *ngIf="!isItPlayer && !isItScout" routerLink="/" class="active">Főoldal</a></li>
-          <li *ngIf="!isItPlayer && !isItScout"><a routerLink="/us" >Rólunk</a></li>
-          <li *ngIf="!isItPlayer && !isItScout"><a href="services.html">Statisztikák</a></li>
-          <li *ngIf="!isItPlayer && !isItScout"><a class="btn-get-started" routerLink="/signin" (click)="toggleMobileNav()">Bejelentkezés</a></li>
+          <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a routerLink="/" class="active">Főoldal</a></li>
+          <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a routerLink="/us" >Rólunk</a></li>
+          <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a href="services.html">Statisztikák</a></li>
+          <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a class="btn-get-started" routerLink="/signin" (click)="toggleMobileNav()">Bejelentkezés</a></li>
           <li *ngIf="isItPlayer"><a routerLink="/player-main" >Főoldal</a></li>
           <li *ngIf="isItPlayer"><a routerLink="/player-profile" >Profil</a></li>  
           <li *ngIf="isItPlayer"><a routerLink="/player-message">Üzenet</a></li>     
@@ -21,8 +21,11 @@
           <li *ngIf="isItScout"><a routerLink="/scout-main" >Főoldal</a></li>
           <li *ngIf="isItScout"><a routerLink="/scout-profile" >Profil</a></li>  
           <li *ngIf="isItScout"><a routerLink="/scout-message">Üzenet</a></li>     
-          <li *ngIf="isItScout"><a routerLink="/scout-bid">Licitálás</a></li>                
-          <li *ngIf="isItPlayer || isItScout"><a class="btn-get-started" routerLink="/" (click)="logout()">Kijelentkezés</a></li>
+          <li *ngIf="isItScout"><a routerLink="/scout-bid">Licitálás</a></li>
+          <li *ngIf="isItAdmin"><a routerLink="/admin-main">Főoldal</a></li>  
+          <li *ngIf="isItAdmin"><a routerLink="/admin-report">Jelentések</a></li> 
+          <li *ngIf="isItAdmin"><a routerLink="/admin-userlist">Felhasználók</a></li>               
+          <li *ngIf="isItPlayer || isItScout || isItAdmin"><a class="btn-get-started" routerLink="/" (click)="logout()">Kijelentkezés</a></li>
         </ul>
       </nav>
     </div>

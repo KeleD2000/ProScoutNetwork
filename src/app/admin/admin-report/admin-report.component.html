@@ -1,0 +1,39 @@
+<body class="page-index">
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/assets/admin-report.jpg');">
+        <div class="container position-relative d-flex flex-column align-items-center">
+            <h2>Jelentések</h2>
+        </div>
+    </div>
+    <main id="main">
+        <section id="why-us" class="why-us">
+            <div class="container" data-aos="fade-up">
+                <div class="section-header">
+                    <h2>Jelentések táblába foglalva</h2>
+                </div>
+                <div>
+                    <div class="table-responsive table--no-card m-b-40" >
+                        <table class="table table-borderless table-striped table-earning">
+                            <thead>
+                                <tr>
+                                    <th>Dátum</th>
+                                    <th>Jelentés ID</th>
+                                    <th>Jelentés oka</th>
+                                    <th>Jelentett személy</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let report of reportArray">
+                                <tr>
+                                    <td>{{report.timestamp}}</td>
+                                    <td>{{report.report_id}}</td>
+                                    <td>{{report.report_content}}</td>
+                                    <td>{{report.report_username}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section><!-- End Why Choose Us Section -->
+    </main><!-- End #main -->
+
+</body>
