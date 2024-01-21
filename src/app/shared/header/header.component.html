@@ -12,7 +12,7 @@
         <ul>
           <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a routerLink="/" class="active">Főoldal</a></li>
           <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a routerLink="/us" >Rólunk</a></li>
-          <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a href="services.html">Statisztikák</a></li>
+          <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a routerLink="/statics" >Statisztikák</a></li>
           <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a class="btn-get-started" routerLink="/signin" (click)="toggleMobileNav()">Bejelentkezés</a></li>
           <li *ngIf="isItPlayer"><a routerLink="/player-main" >Főoldal</a></li>
           <li *ngIf="isItPlayer"><a routerLink="/player-profile" >Profil</a></li>  

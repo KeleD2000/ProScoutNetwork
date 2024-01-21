@@ -17,8 +17,9 @@ export class UserService {
     return this.http.patch(`${this.baseUrl}/api/update_profile`, updateData);
   }
 
-  deletePlayer(username: any){
-    return this.http.delete(`${this.baseUrl}/api/delete_player_profile/${username}`);
+  deletePlayerProfile(username: string): Observable<string> {
+    const url = `${this.baseUrl}/api/delete_player_profile/${username}`;
+    return this.http.delete(url, { responseType: 'text' });
   }
 
   updateScout(updateData: UpdateScout){

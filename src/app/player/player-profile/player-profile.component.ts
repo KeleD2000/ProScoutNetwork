@@ -82,12 +82,16 @@ export class PlayerProfileComponent {
 
     if (user) {
       username = user.replace(/"/g, '');
+      this.userSerivce.deletePlayerProfile(username).subscribe(
+        response => {
+          console.log('Sikeres válasz:', response);
+          this.router.navigateByUrl('/');
+        },
+        error => {
+          console.error('Hiba történt:', error);
+        }
+      );
     }
-
-    this.userSerivce.deletePlayer(username).subscribe(user => {
-      console.log(user);
-      this.router.navigateByUrl('/');
-    })
   }
 
 

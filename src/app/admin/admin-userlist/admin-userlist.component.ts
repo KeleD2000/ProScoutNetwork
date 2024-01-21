@@ -65,9 +65,16 @@ export class AdminUserlistComponent {
   }
 
   deletePlayer(username: string){
-    this.userService.deletePlayer(username).subscribe(d => {
-      window.location.reload();
-    })
+    this.userService.deletePlayerProfile(username).subscribe(
+      response => {
+        console.log('Sikeres válasz:', response);
+        window.location.reload();
+      },
+      error => {
+        console.error('Hiba történt:', error);
+      }
+    );
+    
   }
 
   ngAfterViewInit() {
