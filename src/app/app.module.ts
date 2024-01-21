@@ -14,6 +14,7 @@ import { PlayerGuard} from './authguards/player.guard';
 import { ScoutGuard } from './authguards/scout.guard';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgChartsModule } from 'ng2-charts';
 
 
 
@@ -34,7 +35,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgChartsModule
   
   ],
   providers: [PlayerGuard, ScoutGuard],

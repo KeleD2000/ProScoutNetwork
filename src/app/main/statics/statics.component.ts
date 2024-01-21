@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { Chart, ChartConfiguration, ChartType, ChartEvent } from 'chart.js';
+// statics.component.ts
 
+import { Component, Input, ViewChild } from '@angular/core';
+import {Chart} from 'chart.js';
 
 @Component({
   selector: 'app-statics',
@@ -8,20 +9,42 @@ import { Chart, ChartConfiguration, ChartType, ChartEvent } from 'chart.js';
   styleUrls: ['./statics.component.css']
 })
 export class StaticsComponent {
-  ngOnInit() {
-    // Chart.js kód itt
-    const ctx = document.getElementById('myChart') as HTMLCanvasElement;
-    const myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-        datasets: [{
-          label: 'Monthly Sales',
-          data: [10, 25, 18, 30, 22],
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1
-        }]
+  public chart: any;
+
+  createChart(){
+  
+    this.chart = new Chart("MyChart", {
+      type: 'bar', //this denotes tha type of chart
+
+      data: {// values on X-Axis
+        labels: ['2022-05-10', '2022-05-11', '2022-05-12','2022-05-13',
+								 '2022-05-14', '2022-05-15', '2022-05-16','2022-05-17', ], 
+	       datasets: [
+          {
+            label: "Sales",
+            data: ['467','576', '572', '79', '92',
+								 '574', '573', '576'],
+            backgroundColor: 'blue'
+          },
+          {
+            label: "Profit",
+            data: ['542', '542', '536', '327', '17',
+									 '0.00', '538', '541'],
+            backgroundColor: 'limegreen'
+          }  
+        ]
+      },
+      options: {
+        aspectRatio:2.5
       }
+      
     });
+  }
+
+  constructor() {
+  }
+
+  ngOnInit() {
+    this.createChart();
   }
 }
