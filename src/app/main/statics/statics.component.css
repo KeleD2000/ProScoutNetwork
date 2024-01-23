@@ -1,0 +1,105 @@
+.contact {
+    background-color: #cad7dd;
+    background-size: contain;
+    position: relative;
+  }
+  
+
+  .img{
+    width: 250px;
+    height: auto;
+  }
+
+  @keyframes animate-loading {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .breadcrumbs {
+    padding: 140px 0 60px 0;
+    min-height: 30vh;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .breadcrumbs:before {
+    content: "";
+    background-color: rgba(27, 47, 69, 0.7);
+    position: absolute;
+    inset: 0;
+  }
+  
+  .breadcrumbs h2 {
+    font-size: 56px;
+    font-weight: 500;
+    color: #fff;
+    font-family: var(--font-secondary);
+  }
+  
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0 0 10px 0;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #56b8e6;
+  }
+  
+  .breadcrumbs ol a {
+    color: rgba(255, 255, 255, 0.8);
+    transition: 0.3s;
+  }
+  
+  .breadcrumbs ol a:hover {
+    text-decoration: underline;
+  }
+  
+  .breadcrumbs ol li+li {
+    padding-left: 10px;
+  }
+  
+  .breadcrumbs ol li+li::before {
+    display: inline-block;
+    padding-right: 10px;
+    color: #fff;
+    content: "/";
+  }
+
+  .chart-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px; 
+}
+
+.chart-item {
+    flex: 1;
+    margin-right: 20px;
+}
+
+canvas {
+    width: 100%; 
+    height: auto; 
+}
+
+p {
+    text-align: center;
+    margin-top: 10px; 
+}
+
+.oszlop2{
+  margin-top: 150px
+}

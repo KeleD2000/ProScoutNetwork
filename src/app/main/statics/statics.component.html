@@ -1,3 +1,74 @@
-<div class="chart-container">
-        <canvas  id="MyChart" >{{ chart }}</canvas>
-  </div>
+<body class="page-contact">
+      <main id="main">
+            <!-- ======= Breadcrumbs ======= -->
+            <div class="breadcrumbs d-flex align-items-center" style="background-image: url('assets/statics.jpg');">
+                  <div class="container position-relative d-flex flex-column align-items-center">
+                        <h2>Statisztikák</h2>
+                        <ol>
+                              <li><a routerLink="/">Főoldal</a></li>
+                              <li>Statisztikák</li>
+                        </ol>
+                  </div>
+            </div><!-- End Breadcrumbs -->
+            <section id="about" class="about">
+                  <div class="container">
+                        <div class="chart-container">
+                              <div class="m-1 text-center">
+                                    <h3>Ezen az oldalon a weboldallal kapcsolatos statisztikákat jelenítük meg, hogy
+                                          több képet kaphassanak, hogy mégis miért érdemes regisztrálni.</h3>
+                              </div>
+                              <div class="chart-row">
+                                    <div class="chart-item d-flex justify-content-end align-items-start">
+                                          <div class="text-start me-auto">
+                                                <canvas id="kör">{{ chart }}</canvas>
+                                                <p>Ez a kör diagram megmutatja, hogy a weboldalunk egy Játékos (Player),
+                                                      és a Játékoskereső (Scout) a mostani hirdetésekhez képest
+                                                      átlagosan mennyi hirdetés adnak fel.</p>
+                                          </div>
+                                          <button class="btn btn-warning"
+                                                (click)="exportToPDF('kör', 'kör_diagram')">Export</button>
+                                    </div>
+                                    <div class="chart-item d-flex justify-content-end align-items-start">
+                                          <div class="text-start me-auto">
+                                                <canvas id="oszlop">{{ chart2 }}</canvas>
+                                                <canvas id="oszlop2">{{ chart3 }}</canvas>
+                                                <p>Ezek az oszlopdiagramok pedig azt mutatják meg, hogy a különböző
+                                                      sportokból a Játékosoknál (1. diagram) hány százaléka az összes
+                                                      Játékos hirdetésnek. Az alatta lévő pedig ugyanezt mutatja meg
+                                                      csak a Játékoskeresőnek (2.diagram).</p>
+                                          </div>
+                                          <div class="d-flex flex-column justify-content-end align-items-end">
+                                                <button class="btn btn-warning"
+                                                      (click)="exportToPDF('oszlop', 'oszlop_diagram')">Export</button>
+                                                <button class="btn btn-warning oszlop2"
+                                                      (click)="exportToPDF('oszlop2', 'oszlop2_diagram')">Export</button>
+                                          </div>
+                                    </div>
+
+                              </div>
+                              <div class="chart-row">
+                                    <div class="chart-item d-flex justify-content-end align-items-start">
+                                          <div class="text-start me-auto">
+                                                <canvas id="polar-area">{{ chart4 }}</canvas>
+                                                <p>Ezek a pólusi területi diagram pedig, az mutatja meg, hogy
+                                                      sportonként melyik az a játékos aki úgy mond legaktívabb vagyis a
+                                                      legtöbb hirdetése van a sportból.</p>
+                                          </div>
+                                          <button class="btn btn-warning"
+                                                (click)="exportToPDF('polar-area', 'polar_area_diagram')">Export</button>
+                                    </div>
+                                    <div class="chart-item d-flex justify-content-end align-items-start">
+                                          <div class="text-start me-auto">
+                                                <canvas id="polar-area2">{{ chart5 }}</canvas>
+                                                <p>Ezek a pólusi területi diagram pedig, ugyanazt mutatja, mint az előző
+                                                      csak a Játékoskereső szemszögéből.</p>
+                                          </div>
+                                          <button class="btn btn-warning"
+                                                (click)="exportToPDF('polar-area2', 'polar_area2_diagram')">Export</button>
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+            </section><!-- End About Section -->
+      </main>
+</body>
