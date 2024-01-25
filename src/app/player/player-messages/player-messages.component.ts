@@ -306,7 +306,12 @@ export class PlayerMessagesComponent {
     const now = new Date();
     const then = new Date(timestamp);
     const diff = now.getTime() - then.getTime();
-
+  
+    // Ellenőrizze, hogy a különbség nem NaN
+    if (isNaN(diff)) {
+      return "Éppen most";
+    }
+  
     const minutes = Math.floor(diff / 60000); // milliszekundumok percben
     for (let i in this.senderArray) {
       if (minutes < 5) {
@@ -322,8 +327,7 @@ export class PlayerMessagesComponent {
     }
     const days = Math.floor(hours / 24);
     return `${days} nappal ezelőtt`;
-  }
-
+  }  
 
   openSweetAlertOnLoad() {
     this.route.queryParams.subscribe(params => {

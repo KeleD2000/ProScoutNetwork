@@ -32,6 +32,11 @@
                             <button *ngIf="theSearcherIsScout" type="button" class="btn btn-danger m-1" (click)="this.showSweetAlert()">Játékos jelentése</button>
                         </div>
                     </div>
+                    <div *ngIf="theSearcherIsScout" class="card-body text-center">
+                        <div class="d-flex justify-content-center mb-2">
+                            <button type="button" class="btn btn-warning m-1" (click)="showBid()">Ajánlás küldése</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-8" data-aos="zoom-in" data-aos-delay="100" *ngFor="let profile of profileDetails">

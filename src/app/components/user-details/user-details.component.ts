@@ -9,6 +9,7 @@ import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import Swal from 'sweetalert2';
 import { ReportDto } from 'src/app/model/dto/ReportDto';
+import { BidDto } from 'src/app/model/dto/BidDto';
 
 @Component({
   selector: 'app-user-details',
@@ -34,6 +35,7 @@ export class UserDetailsComponent {
   input2Value: string = '';
   input3Value: string = '';
   username: string = '';
+  id: number = 0;
   pdf_filename: string = '';
   profileDetails: any[] = [];
   selectedFile?: File;
@@ -196,6 +198,7 @@ export class UserDetailsComponent {
       for (const [key, value] of Object.entries(user)) {
         if (key === 'id') {
           profilObj.id = value;
+          this.id = value;
         }
         if (key === 'username') {
           profilObj.username = value;
@@ -312,6 +315,36 @@ export class UserDetailsComponent {
     });
   }
 
+  sendBid(text: string) {
+    const username = localStorage.getItem('isLoggedin');
+    let currentUser = username?.replace(/"/g, '');
+    this.fileService.getCurrentUser(currentUser).subscribe(user => {
+      for (const [key, value] of Object.entries(user)) {
+        console.log(key, value);
+        if (key === 'id') {
+          this.reportSenderId = value;
+
+        }
+        if (key === 'username') {
+          this.reportSenderUsername = value;
+
+        }
+      }
+      console.log(this.notSenderId, this.notSenderUsername);
+      // Az időt most adjuk hozzá, itt azonosítási céllal
+      const currentDateTime = new Date();
+
+      const bidToSend: BidDto = {
+        bid_content: text,
+        timestamp: currentDateTime,
+        senderUsername: this.reportSenderUsername,
+        receiverUsername: this.username,
+        senderUserId: this.reportSenderId,
+        receiverUserId: this.id,
+      };
+      this.websocketService.sendBid(bidToSend);
+    });
+  }
 
   async showSweetAlert() {
     const { value: text, isConfirmed } = await Swal.fire({
@@ -350,6 +383,46 @@ export class UserDetailsComponent {
 
     if (isConfirmed && text) {
       this.sendReport(text);
+    }
+  }
+
+  async showBid() {
+    const { value: text, isConfirmed } = await Swal.fire({
+      input: "textarea",
+      inputLabel: `${this.reportName} felhasználónak ajánlat küldése`,
+      inputPlaceholder: "Ide írja az ajánlatát...",
+      inputAttributes: {
+        "aria-label": "Ide írja az ajánlatát..."
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Küldés',
+      cancelButtonText: 'Mégsem',
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger',
+      },
+      didOpen: () => {
+        // Az üzenetküldés gomb stílusainak felülírása
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.style.backgroundColor = '#28a745';
+          confirmButton.style.color = '#fff';
+          confirmButton.style.marginRight = '5px';
+        }
+
+        // A Mégsem gomb stílusainak felülírása
+        const cancelButton = Swal.getCancelButton();
+        if (cancelButton) {
+          cancelButton.style.backgroundColor = '#dc3545';
+          cancelButton.style.color = '#fff';
+          cancelButton.style.marginLeft = '5px';
+        }
+      }
+    });
+
+    if (isConfirmed && text) {
+      this.sendBid(text);
     }
   }
 

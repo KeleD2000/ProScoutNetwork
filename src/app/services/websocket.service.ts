@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { MessageDto } from '../model/dto/MessageDto';
 import { NotificationsBidDto } from '../model/dto/NotificationsBidDto';
 import { ReportDto } from '../model/dto/ReportDto';
+import { BidDto } from '../model/dto/BidDto';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class WebsocketService {
   private messageGroupSubject: Subject<MessageDto> = new Subject<MessageDto>;
   private notificationSubject: Subject<NotificationsBidDto> = new Subject<NotificationsBidDto>;
   private reportSubject: Subject<ReportDto> = new Subject<ReportDto>;
+  private bidSubject: Subject<BidDto> = new Subject<BidDto>;
 
   constructor() { }
 
@@ -52,12 +54,29 @@ export class WebsocketService {
                 this.reportSubject.next(JSON.parse(message.body));
               }
             );
+            this.stompClient.subscribe(
+              `/queue/bid/${converted}`,
+              (message) => {
+                this.bidSubject.next(JSON.parse(message.body));
+              }
+            );
           }, 1000);
         }
       },
     };
     this.stompClient = new Client(stompConfig);
     this.stompClient.activate();
+  }
+
+  sendBid(message: BidDto){
+    this.stompClient.publish({
+      destination: `/app/report/${message.receiverUserId}`,
+      body: JSON.stringify(message),
+    });
+  }
+
+  getBids(): Observable<BidDto> {
+    return this.bidSubject.asObservable();
   }
 
   sendReport(message: ReportDto) {
