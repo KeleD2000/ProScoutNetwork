@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faBackward, faClock, faLocationPin, faMagnifyingGlass, faMedal, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { NotificationsBidDto } from 'src/app/model/dto/NotificationsBidDto';
 import { BidService } from 'src/app/services/bid.service';
 import { FileService } from 'src/app/services/file.service';
@@ -16,7 +17,18 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-scout-main',
   templateUrl: './scout-main.component.html',
-  styleUrls: ['./scout-main.component.css']
+  styleUrls: ['./scout-main.component.css'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('300ms', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class ScoutMainComponent {
   faSearch = faMagnifyingGlass;
@@ -27,6 +39,7 @@ export class ScoutMainComponent {
   faBack = faBackward;
   playerAllAds: any[] = [];
   searchPlayerAllAds: any[] = [];
+  errorMessages: string[] = [];
   ownAds: boolean = false;
   searchTerm: string = '';
   selectedFile: File | null = null;
@@ -47,9 +60,23 @@ export class ScoutMainComponent {
 
 
   uploadAds() {
+    this.errorMessages = []; 
+
+
     if (!this.selectedFile) {
+      this.errorMessages.push('Képfeltöltés kötelező!');
       return;
     }
+
+    if (!this.adsForm.get('content')?.value) {
+      this.errorMessages.push('A tartalom kitöltése kötelező!');
+    }
+
+    if (this.errorMessages.length > 0) {
+      
+      return;
+    }
+    
     const username = localStorage.getItem('isLoggedin');
     const converted = username?.replace(/"/g, '');
     console.log(converted);

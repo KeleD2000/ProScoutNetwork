@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { faBackward, faClock, faMagnifyingGlass, faMedal, faPeopleGroup, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
@@ -11,7 +12,18 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-player-main',
   templateUrl: './player-main.component.html',
-  styleUrls: ['./player-main.component.css']
+  styleUrls: ['./player-main.component.css'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('300ms', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class PlayerMainComponent {
   faSearch = faMagnifyingGlass;
@@ -22,6 +34,7 @@ export class PlayerMainComponent {
   ownAds: boolean = false;
   scoutAllAds: any[] = [];
   searchScoutAllAds: any[] = [];
+  errorMessages: string[] = [];
   searchTerm: string = '';
   isSearched: boolean = false;
   selectedFile: File | null = null;
@@ -41,9 +54,23 @@ export class PlayerMainComponent {
   }
 
   uploadAds() {
+    this.errorMessages = []; 
+
+
     if (!this.selectedFile) {
+      this.errorMessages.push('Képfeltöltés kötelező!');
       return;
     }
+
+    if (!this.adsForm.get('content')?.value) {
+      this.errorMessages.push('A tartalom kitöltése kötelező!');
+    }
+
+    if (this.errorMessages.length > 0) {
+      
+      return;
+    }
+
     const username = localStorage.getItem('isLoggedin');
     const converted = username?.replace(/"/g, '');
     console.log(converted);

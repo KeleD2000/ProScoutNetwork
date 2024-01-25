@@ -27,6 +27,9 @@
                                                 <input type="file" class="custom-file-input" id="imageUpload"
                                                     (change)="onFileChange($event)" />
                                             </div>
+                                            <div [@fadeInOut] *ngIf="errorMessages.length > 0" class="error-message mt-3">
+                                                <p *ngFor="let errorMessage of errorMessages">{{ errorMessage }}</p>
+                                            </div>
                                         </div>
                                         <div class="text-center">
                                             <button class="regist-button" (click)="modifyAds()">Módosítás</button>

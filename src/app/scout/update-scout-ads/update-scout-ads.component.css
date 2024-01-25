@@ -215,3 +215,12 @@
       transform: rotate(360deg);
     }
   }
+  
+.error-message {
+  display: block;
+  color: #fff;
+  background: #df1529;
+  text-align: left;
+  padding: 10px;
+  font-weight: 400;
+}

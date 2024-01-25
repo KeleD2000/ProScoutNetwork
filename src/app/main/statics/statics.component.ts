@@ -63,7 +63,16 @@ export class StaticsComponent {
         ]
       },
       options: {
-        aspectRatio: 2.5
+        aspectRatio: 2.5,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                return context.dataset.label + ': ' + context.parsed.toFixed(2) + ' db';
+              }
+            }
+          }
+        }
       }
     });
 
@@ -76,14 +85,28 @@ export class StaticsComponent {
         datasets: [
           {
             label: "A hirdetések százalékos aránya játékos hirdetésnél",
-            data: this.avgPlayer,
+            data: ['57.24', '58.79'],
             backgroundColor: this.generateRandomColors(2)
           }
         ]
       },
       options: {
-        aspectRatio: 2.5
-        // További beállításokat itt adhatsz meg az options részben
+        aspectRatio: 2.5,
+        plugins: {
+          tooltip: {
+            callbacks : {
+              label : function (context) {
+                var label = context.dataset.label || '';
+                if(label) {
+                  label += ': ';
+                }
+                label += (context.parsed.y).toFixed(2) + "%";
+                return label;
+              }
+            }
+          }
+        }
+        
       }
     });
 
@@ -101,8 +124,21 @@ export class StaticsComponent {
         ]
       },
       options: {
-        aspectRatio: 2.5
-        // További beállításokat itt adhatsz meg az options részben
+        aspectRatio: 2.5,
+        plugins: {
+          tooltip: {
+            callbacks : {
+              label : function (context) {
+                var label = context.dataset.label || '';
+                if(label) {
+                  label += ': ';
+                }
+                label += (context.parsed.y).toFixed(2) + "%";
+                return label;
+              }
+            }
+          }
+        }
       }
     });
 
@@ -119,8 +155,17 @@ export class StaticsComponent {
         ]
       },
       options: {
-        aspectRatio: 2.5
-        // További beállításokat itt adhatsz meg az options részben
+        aspectRatio: 2.5,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                var value = typeof context.raw === 'number' ? context.raw : 0;
+                return context.dataset.label + ': ' + value.toFixed(2) + ' db';
+              }
+            }
+          }
+        }
       }
     });
 
@@ -137,8 +182,17 @@ export class StaticsComponent {
         ]
       },
       options: {
-        aspectRatio: 2.5
-        // További beállításokat itt adhatsz meg az options részben
+        aspectRatio: 2.5,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                var value = typeof context.raw === 'number' ? context.raw : 0;
+                return context.dataset.label + ': ' + value.toFixed(2) + ' db';
+              }
+            }
+          }
+        }
       }
     });
 
@@ -178,9 +232,8 @@ export class StaticsComponent {
     }
 
     this.response4 = await this.staticsService.topPlayerBySports().toPromise();
-    console.log(this.response4);
+
     for (const entry of this.response4) {
-      console.log(entry);
       const sport = entry[0];
       const player = entry[1];
       const average = entry[2];
