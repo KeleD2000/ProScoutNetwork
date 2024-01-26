@@ -70,7 +70,7 @@ export class WebsocketService {
 
   sendBid(message: BidDto){
     this.stompClient.publish({
-      destination: `/app/report/${message.receiverUserId}`,
+      destination: `/app/bid/${message.receiverUserId}`,
       body: JSON.stringify(message),
     });
   }

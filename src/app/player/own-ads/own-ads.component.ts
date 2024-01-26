@@ -2,8 +2,11 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faClock, faMagnifyingGlass, faPerson } from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
+import Swal from 'sweetalert2';
 import { FileService } from 'src/app/services/file.service';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import { BidDto } from 'src/app/model/dto/BidDto';
 
 @Component({
   selector: 'app-own-ads',
@@ -21,9 +24,50 @@ export class OwnAdsComponent {
   ownAds: any[] = [];
 
   constructor(private fileService: FileService, private playerAdsServices: PlayerAdsService, private router: Router,
-    private route: ActivatedRoute){}
+    private route: ActivatedRoute, private websocketService: WebsocketService){}
 
     ngOnInit() {
+      this.websocketService.initializeWebSocketConnection();
+
+      this.websocketService.getBids().subscribe((bid: BidDto) => {
+        console.log(bid);
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-success m-1',
+            cancelButton: 'btn btn-danger m-1',
+          },
+          buttonsStyling: false,
+        });
+        
+        swalWithBootstrapButtons
+          .fire({
+            title: `Ajánlat értesítés ${bid.senderUsername} felhasználótól.`,
+            text: `Ez az ajánlata: ${bid.bid_content}, ez az összeg amit ajánl: ${bid.offer}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Elfogadom!',
+            cancelButtonText: 'Nem fogadom el!',
+            reverseButtons: true,
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              swalWithBootstrapButtons.fire({
+                title: 'Elfogadtad a ajánlatot',
+                text: 'Sikeresen elfogadtad a ajánlatot, profil oldalon megfog jeleni az ajánlat amit elfogadtál.',
+                icon: 'success',
+              });
+            } else if (
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire({
+                title: 'Nem fogadtad el a licitálást.',
+                text: 'Nem éltél a licitálás lehetőségével.',
+                icon: 'error',
+              });
+            }
+          });
+      });
+
       const username = localStorage.getItem('isLoggedin');
       const converted = username?.replace(/"/g, '');
       if (converted) {

@@ -315,7 +315,7 @@ export class UserDetailsComponent {
     });
   }
 
-  sendBid(text: string) {
+  sendBid(text: string, offer: number) {
     const username = localStorage.getItem('isLoggedin');
     let currentUser = username?.replace(/"/g, '');
     this.fileService.getCurrentUser(currentUser).subscribe(user => {
@@ -337,6 +337,7 @@ export class UserDetailsComponent {
       const bidToSend: BidDto = {
         bid_content: text,
         timestamp: currentDateTime,
+        offer: offer,
         senderUsername: this.reportSenderUsername,
         receiverUsername: this.username,
         senderUserId: this.reportSenderId,
@@ -387,15 +388,16 @@ export class UserDetailsComponent {
   }
 
   async showBid() {
-    const { value: text, isConfirmed } = await Swal.fire({
-      input: "textarea",
-      inputLabel: `${this.reportName} felhasználónak ajánlat küldése`,
-      inputPlaceholder: "Ide írja az ajánlatát...",
+    const bidContent = await Swal.fire({
+      title: `${this.reportName} felhasználónak ajánlat küldése`,
+      input: 'textarea',
+      inputLabel: 'Írja ide az ajánlatát, és a következő mezőbe az összeget írja',
+      inputPlaceholder: 'Ide írja az ajánlatát...',
       inputAttributes: {
-        "aria-label": "Ide írja az ajánlatát..."
+        'aria-label': 'Ide írja az ajánlatát...'
       },
       showCancelButton: true,
-      confirmButtonText: 'Küldés',
+      confirmButtonText: 'Tovább',
       cancelButtonText: 'Mégsem',
       buttonsStyling: false,
       customClass: {
@@ -403,15 +405,12 @@ export class UserDetailsComponent {
         cancelButton: 'btn btn-danger',
       },
       didOpen: () => {
-        // Az üzenetküldés gomb stílusainak felülírása
         const confirmButton = Swal.getConfirmButton();
         if (confirmButton) {
           confirmButton.style.backgroundColor = '#28a745';
           confirmButton.style.color = '#fff';
           confirmButton.style.marginRight = '5px';
         }
-
-        // A Mégsem gomb stílusainak felülírása
         const cancelButton = Swal.getCancelButton();
         if (cancelButton) {
           cancelButton.style.backgroundColor = '#dc3545';
@@ -420,11 +419,46 @@ export class UserDetailsComponent {
         }
       }
     });
-
-    if (isConfirmed && text) {
-      this.sendBid(text);
+  
+    if (bidContent.isConfirmed) {
+      const bidAmount = await Swal.fire({
+        title: `${this.reportName} felhasználónak ajánlat küldése`,
+        input: 'text',
+        inputLabel: 'Írja ide az összeget, amit a játékosnak kínál (Pl. 130000)',
+        inputPlaceholder: 'Ide írja az összeget...',
+        inputAttributes: {
+          'aria-label': 'Ide írja az összeget...'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Küldés',
+        cancelButtonText: 'Mégsem',
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger',
+        },
+        didOpen: () => {
+          const confirmButton = Swal.getConfirmButton();
+          if (confirmButton) {
+            confirmButton.style.backgroundColor = '#28a745';
+            confirmButton.style.color = '#fff';
+            confirmButton.style.marginRight = '5px';
+          }
+          const cancelButton = Swal.getCancelButton();
+          if (cancelButton) {
+            cancelButton.style.backgroundColor = '#dc3545';
+            cancelButton.style.color = '#fff';
+            cancelButton.style.marginLeft = '5px';
+          }
+        }
+      });
+  
+      if (bidAmount.isConfirmed) {
+        this.sendBid(bidContent.value, bidAmount.value);
+      }
     }
   }
+  
 
   async ngAfterViewInit() {
     AOS.init({

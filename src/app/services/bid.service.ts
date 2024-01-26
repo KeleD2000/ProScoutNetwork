@@ -24,4 +24,8 @@ export class BidService {
   getGroupMessages(receiverUserId1: number, receiverUserId2: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/groupChatMessages/${receiverUserId1}/${receiverUserId2}`);
   }
+
+  getBestOffer(id: number){
+    return this.http.get(`${this.baseUrl}/api/bids/${id}/maxOffer`);
+  }
 }

@@ -2,8 +2,11 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as AOS from 'aos';
+import Swal from 'sweetalert2';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import { BidDto } from 'src/app/model/dto/BidDto';
 
 @Component({
   selector: 'app-update-ads',
@@ -28,7 +31,7 @@ export class UpdateAdsComponent {
   adsUpdate !: FormGroup
   contentValue: string = '';
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private playerAdsService: PlayerAdsService, private router: Router){
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private playerAdsService: PlayerAdsService, private router: Router, private websocketService: WebsocketService){
     this.adsUpdate = this.formBuilder.group({
       content : ['']
     })
@@ -72,6 +75,47 @@ export class UpdateAdsComponent {
   }
 
   ngOnInit(){
+    this.websocketService.initializeWebSocketConnection();
+
+    this.websocketService.getBids().subscribe((bid: BidDto) => {
+      console.log(bid);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success m-1',
+          cancelButton: 'btn btn-danger m-1',
+        },
+        buttonsStyling: false,
+      });
+      
+      swalWithBootstrapButtons
+        .fire({
+          title: `Ajánlat értesítés ${bid.senderUsername} felhasználótól.`,
+          text: `Ez az ajánlata: ${bid.bid_content}, ez az összeg amit ajánl: ${bid.offer}`,
+          showCancelButton: true,
+          confirmButtonText: 'Elfogadom!',
+          cancelButtonText: 'Nem fogadom el!',
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+              title: 'Elfogadtad a ajánlatot',
+              text: 'Sikeresen elfogadtad a ajánlatot, profil oldalon megfog jeleni az ajánlat amit elfogadtál.',
+              icon: 'success',
+            });
+          } else if (
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire({
+              title: 'Nem fogadtad el a licitálást.',
+              text: 'Nem éltél a licitálás lehetőségével.',
+              icon: 'error',
+            });
+          }
+        });
+    });
+
+
     this.route.params.subscribe(params => {
       this.currentAdId = +params['id'];
       // Itt a this.currentAdId változóban lesz az adott hirdetés azonosítója

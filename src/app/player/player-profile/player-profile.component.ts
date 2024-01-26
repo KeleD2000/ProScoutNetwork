@@ -1,11 +1,15 @@
 import { Component, Renderer2 } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as AOS from 'aos';
+import Swal from 'sweetalert2';
 import { FileService } from 'src/app/services/file.service';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import { BidDto } from 'src/app/model/dto/BidDto';
+import { BidService } from 'src/app/services/bid.service';
 
 @Component({
   selector: 'app-player-profile',
@@ -32,6 +36,7 @@ export class PlayerProfileComponent {
   input3Value: string = '';
   username: string = '';
   pdf_filename: string = '';
+  offer: string = '';
   profileDetails: any[] = [];
   selectedFile?: File;
   image: any;
@@ -42,7 +47,8 @@ export class PlayerProfileComponent {
 
   constructor(private renderer: Renderer2, private fileService: FileService,
     private sanitizer: DomSanitizer, private userSerivce: UserService,
-    private router: Router
+    private router: Router, private websocketService: WebsocketService,
+    private bidService: BidService
   ) {
 
   }
@@ -205,7 +211,64 @@ export class PlayerProfileComponent {
 
   }
 
+  showMessage() {
+    const messageElement = document.getElementById('message');
+    if (messageElement) {
+      messageElement.textContent = `${this.offer}`; 
+    }
+
+    if (messageElement) {
+      messageElement.addEventListener('mouseleave', () => {
+        messageElement.textContent = ''; // Ürítjük a <p> elem tartalmát
+
+      });
+    }
+
+  }
+
   ngOnInit() {
+    this.websocketService.initializeWebSocketConnection();
+
+    this.websocketService.getBids().subscribe((bid: BidDto) => {
+      console.log(bid);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success m-1',
+          cancelButton: 'btn btn-danger m-1',
+        },
+        buttonsStyling: false,
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: `Ajánlat értesítés ${bid.senderUsername} felhasználótól.`,
+          text: `Ez az ajánlata: ${bid.bid_content}, ez az összeg amit ajánl: ${bid.offer}`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Elfogadom!',
+          cancelButtonText: 'Nem fogadom el!',
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+              title: 'Elfogadtad a ajánlatot',
+              text: 'Sikeresen elfogadtad a ajánlatot, profil oldalon megfog jeleni az ajánlat amit elfogadtál.',
+              icon: 'success',
+            });
+            window.location.reload();
+          } else if (
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire({
+              title: 'Nem fogadtad el a licitálást.',
+              text: 'Nem éltél a licitálás lehetőségével.',
+              icon: 'error',
+            });
+          }
+        });
+    });
+
     const username = localStorage.getItem('isLoggedin');
     let current = username?.replace(/"/g, '');
     console.log(current);
@@ -267,12 +330,27 @@ export class PlayerProfileComponent {
             }
           }
         }
+        if(key === 'id'){
+          this.bidService.getBestOffer(value).subscribe( offer => {
+            console.log(offer)
+            if(offer !== null){
+              this.offer = offer as string + " €"
+              console.log(this.offer);
+            }else{
+              this.offer = 'Jelenleg nincs elfogadott ajánlata';
+            }
+
+          });
+        }
       }
       this.videoFileId = profilObj.video_file_id;
       this.profileDetails.push(profilObj);
+
     });
     console.log(this.profileDetails);
     console.log(this.pdf_filename);
+
+
   }
 
   ngAfterViewInit() {

@@ -7,7 +7,10 @@ import * as AOS from 'aos';
 import { FileService } from 'src/app/services/file.service';
 import { PlayerAdsService } from 'src/app/services/player-ads.service';
 import { ScoutAdsService } from 'src/app/services/scout-ads.service';
+import Swal from 'sweetalert2';
 import { UserService } from 'src/app/services/user.service';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import { BidDto } from 'src/app/model/dto/BidDto';
 
 @Component({
   selector: 'app-player-main',
@@ -43,7 +46,7 @@ export class PlayerMainComponent {
 
   constructor(private playerAdsService: PlayerAdsService, private fileService: FileService,
     private userService: UserService, private scoutAdsService: ScoutAdsService, private router: Router,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder, private websocketService: WebsocketService) {
       this.adsForm = this.formBuilder.group({
         content : ['']
       })
@@ -90,6 +93,47 @@ export class PlayerMainComponent {
   }
 
   ngOnInit() {
+    this.websocketService.initializeWebSocketConnection();
+
+    this.websocketService.getBids().subscribe((bid: BidDto) => {
+      console.log(bid);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success m-1',
+          cancelButton: 'btn btn-danger m-1',
+        },
+        buttonsStyling: false,
+      });
+      
+      swalWithBootstrapButtons
+        .fire({
+          title: `Ajánlat értesítés ${bid.senderUsername} felhasználótól.`,
+          text: `Ez az ajánlata: ${bid.bid_content}, ez az összeg amit ajánl: ${bid.offer}`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Elfogadom!',
+          cancelButtonText: 'Nem fogadom el!',
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+              title: 'Elfogadtad a ajánlatot',
+              text: 'Sikeresen elfogadtad a ajánlatot, profil oldalon megfog jeleni az ajánlat amit elfogadtál.',
+              icon: 'success',
+            });
+          } else if (
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire({
+              title: 'Nem fogadtad el a licitálást.',
+              text: 'Nem éltél a licitálás lehetőségével.',
+              icon: 'error',
+            });
+          }
+        });
+    });
+
     const username = localStorage.getItem('isLoggedin');
     const converted = username?.replace(/"/g, '');
     this.fileService.getCurrentUser(converted).subscribe(user => {
