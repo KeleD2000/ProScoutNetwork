@@ -553,3 +553,7 @@ li {
   padding: 10px;
   font-weight: 400;
 }
+
+.card-link{
+  float: right;
+}

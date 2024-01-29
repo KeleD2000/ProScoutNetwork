@@ -36,6 +36,10 @@
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" class="btn btn-warning m-1" (click)="showBid()">Ajánlás küldése</button>
                         </div>
+                        <div (mouseover)="showMessage()">
+                            <h5 class="my-3">A legjobb ajánlat amit eddig elfogadott húzzá ra az egerét ha érdekli.</h5>
+                            <p  [@fadeInOut] id="message"></p>
+                          </div>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { PlayerGuard } from './authguards/player.guard';
 import { ScoutGuard } from './authguards/scout.guard';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
+import { AdminGuard } from './authguards/admin.guard';
 
 
 
@@ -12,7 +13,7 @@ const routes: Routes = [
   {path: '', loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule)},
   {path: '', loadChildren: () => import('./player/player.module').then((m) => m.PlayerModule), canActivate: [PlayerGuard]},
   {path: '', loadChildren: () => import('./scout/scout.module').then((m) => m.ScoutModule), canActivate: [ScoutGuard]},
-  {path: '', loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule)},
+  {path: '', loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule), canActivate: [AdminGuard]},
   {path: 'user-details', component: UserDetailsComponent},
   {path: '**', component: NotFoundComponent}
 

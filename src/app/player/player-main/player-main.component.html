@@ -46,43 +46,39 @@
                                     </div>
                                 </form>
                             </div>
-                            <div data-aos="flip-up" data-aos-delay="300"
-                                *ngFor="let scoutad of (isSearched ? searchScoutAllAds : scoutAllAds)" class="col-lg-6">
-                                <article class="d-flex flex-column">
-                                    <div class="post-img">
-                                        <img [src]="scoutad.image" alt="" class="img-fluid">
+                            <div data-aos="flip-up" data-aos-delay="300" class="col-lg-6 mb-4" *ngFor="let scoutad of (isSearched ? searchScoutAllAds : scoutAllAds)">
+                                <div class="card">
+                                    <img [src]="scoutad.image" class="card-img-top" alt="Card image cap">
+                                    <div class="card-body">
+                                        <p class="card-text">{{ scoutad.content }}</p>
                                     </div>
-                                    <div class="meta-top">
-                                        <ul class="list-group">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon
-                                                            [icon]="faPeople"></fa-icon><a>{{scoutad.name}}</a></li>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon
-                                                            [icon]="faTeam"></fa-icon><a>{{scoutad.team}}</a></li>
-                                                </div>
+                                    <ul class="list-group list-group-flush">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <li class="list-group-item d-flex align-items-center">
+                                                    <fa-icon [icon]="faPeople"></fa-icon>
+                                                    <span>{{ scoutad.name }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex align-items-center">
+                                                    <fa-icon [icon]="faTeam"></fa-icon>
+                                                    <span>{{ scoutad.team }}</span>
+                                                </li>
                                             </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center"><fa-icon
-                                                            [icon]="faSport"></fa-icon><a>{{scoutad.sport}}</a></li>
-                                                </div>
+                                            <div class="col-md-6">
+                                                <li class="list-group-item d-flex align-items-center">
+                                                    <fa-icon [icon]="faSport"></fa-icon>
+                                                    <span>{{ scoutad.sport }}</span>
+                                                </li>
                                             </div>
-                                        </ul>
-
+                                        </div>
+                                    </ul>
+                                    <div class="card-body">
+                                        <a (click)="getUserDetails(scoutad.username)" class="card-link">Érdekel</a>
                                     </div>
-                                    <div class="content">
-                                        <p>{{ scoutad.content }}</p>
-                                    </div>
-                                    <div class="read-more mt-auto align-self-end">
-                                        <a (click)="getUserDetails(scoutad.username)">Érdekel<i
-                                                class="bi bi-arrow-right"></i></a>
-                                    </div>
-                                </article>
-                            </div><!-- End post list item -->
+                                </div>
+                            </div>
+                            
+                            <!-- End post list item -->
                         </div>
                     </div>
 

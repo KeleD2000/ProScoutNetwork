@@ -169,6 +169,12 @@
   font-weight: 500;
 }
 
+a {
+  text-decoration: none;
+  color: #1f98d1;
+  cursor: pointer;
+}
+
 .read-more a:hover {
   color: #56b8e6;
   cursor: pointer;
@@ -550,4 +556,8 @@ li {
   text-align: left;
   padding: 10px;
   font-weight: 400;
+}
+
+.card-link{
+  float: right;
 }

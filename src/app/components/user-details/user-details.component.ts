@@ -10,6 +10,7 @@ import { WebsocketService } from 'src/app/services/websocket.service';
 import Swal from 'sweetalert2';
 import { ReportDto } from 'src/app/model/dto/ReportDto';
 import { BidDto } from 'src/app/model/dto/BidDto';
+import { BidService } from 'src/app/services/bid.service';
 
 @Component({
   selector: 'app-user-details',
@@ -39,6 +40,7 @@ export class UserDetailsComponent {
   pdf_filename: string = '';
   profileDetails: any[] = [];
   selectedFile?: File;
+  offer: string = '';
   image: any;
   notSenderId: number = 0;
   notSenderUsername: string = '';
@@ -55,7 +57,8 @@ export class UserDetailsComponent {
 
   constructor(private renderer: Renderer2, private fileService: FileService,
     private sanitizer: DomSanitizer, private userSerivce: UserService,
-    private router: Router, private route: ActivatedRoute, private websocketService: WebsocketService
+    private router: Router, private route: ActivatedRoute, private websocketService: WebsocketService,
+    private bidService: BidService
   ) {
 
   }
@@ -197,6 +200,16 @@ export class UserDetailsComponent {
 
       for (const [key, value] of Object.entries(user)) {
         if (key === 'id') {
+          this.bidService.getBestOffer(value).subscribe( offer => {
+            console.log(offer)
+            if(offer !== null){
+              this.offer = offer as string + " €"
+              console.log(this.offer);
+            }else{
+              this.offer = 'Jelenleg nincs elfogadott ajánlata';
+            }
+
+          });
           profilObj.id = value;
           this.id = value;
         }
@@ -459,6 +472,21 @@ export class UserDetailsComponent {
     }
   }
   
+  showMessage() {
+    const messageElement = document.getElementById('message');
+    if (messageElement) {
+      messageElement.textContent = `${this.offer}`; 
+    }
+
+    if (messageElement) {
+      messageElement.addEventListener('mouseleave', () => {
+        messageElement.textContent = ''; // Ürítjük a <p> elem tartalmát
+
+      });
+    }
+
+  }
+
 
   async ngAfterViewInit() {
     AOS.init({

@@ -46,52 +46,41 @@
                                     </div>
                                 </form>
                             </div>
-                            <div data-aos="flip-up" data-aos-delay="300"
-                                *ngFor="let playerad of (isSearched ? searchPlayerAllAds : playerAllAds)"
-                                class="col-lg-6">
-                                <article class="d-flex flex-column">
-                                    <div class="post-img">
-                                        <img [src]="playerad.image" alt="" class="img-fluid">
+                            <div data-aos="flip-up" data-aos-delay="300" class="col-lg-6 mb-4"
+                                *ngFor="let playerad of (isSearched ? searchPlayerAllAds : playerAllAds)">
+                                <div class="card">
+                                    <img [src]="playerad.image" class="card-img-top" alt="Card image cap">
+                                    <div class="card-body">
+                                        <p class="card-text">{{ playerad.content }}</p>
                                     </div>
-                                    <div class="meta-top">
-                                        <ul class="list-group">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center">
-                                                        <fa-icon [icon]="faPeople"></fa-icon>
-                                                        <a>{{ playerad.name }}</a>
-                                                    </li>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center">
-                                                        <fa-icon [icon]="faPosition"></fa-icon>
-                                                        <a>{{ playerad.age }}</a>
-                                                    </li>
-                                                </div>
+                                    <ul class="list-group list-group-flush">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <li class="list-group-item d-flex align-items-center">
+                                                    <fa-icon [icon]="faPeople"></fa-icon>
+                                                    <span>{{ playerad.name }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex align-items-center">
+                                                    <fa-icon [icon]="faPosition"></fa-icon>
+                                                    <span>{{ playerad.age }}</span>
+                                                </li>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center">
-                                                        <fa-icon [icon]="faPosition"></fa-icon>
-                                                        <a>{{ playerad.position }}</a>
-                                                    </li>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <li class="list-group-item d-flex align-items-center">
-                                                        <fa-icon [icon]="faSport"></fa-icon>
-                                                        <a>{{ playerad.sport }}</a>
-                                                    </li>
-                                                </div>
+                                            <div class="col-md-6">
+                                                <li class="list-group-item d-flex align-items-center">
+                                                    <fa-icon [icon]="faPosition"></fa-icon>
+                                                    <span>{{ playerad.position }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex align-items-center">
+                                                    <fa-icon [icon]="faSport"></fa-icon>
+                                                    <span>{{ playerad.sport }}</span>
+                                                </li>
                                             </div>
-                                        </ul>
+                                        </div>
+                                    </ul>
+                                    <div class="card-body">
+                                        <a (click)="getUserDetails(playerad.username)" class="card-link">Érdekel</a>
                                     </div>
-                                    <div class="content">
-                                        <p>{{ playerad.content }}</p>
-                                    </div>
-                                    <div class="read-more mt-auto align-self-end">
-                                        <a (click)="getUserDetails(playerad.username)">Érdekel</a>
-                                    </div>
-                                </article>
+                                </div>
                             </div>
 
                         </div>

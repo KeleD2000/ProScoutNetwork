@@ -81,6 +81,20 @@ export class ScoutProfileComponent {
     }
   }
 
+  logout(){
+    if(localStorage.getItem('isPlayer')){
+      localStorage.removeItem('isPlayer');
+      localStorage.removeItem('isBid');
+    }else if(localStorage.getItem('isScout')){
+      localStorage.removeItem('isScout');
+      localStorage.removeItem('isBid');
+    }else if(localStorage.getItem('isAdmin')){
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('isBid');
+    }
+    localStorage.removeItem('isLoggedin');
+  }
+
   deleteProfile() {
     const user = localStorage.getItem('isLoggedin');
     let username: string | undefined;
@@ -91,6 +105,7 @@ export class ScoutProfileComponent {
 
     this.userSerivce.deleteScout(username).subscribe(user => {
       console.log(user);
+      this.logout();
       this.router.navigateByUrl('/');
     })
   }

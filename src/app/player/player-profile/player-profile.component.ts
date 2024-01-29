@@ -82,6 +82,20 @@ export class PlayerProfileComponent {
     }
   }
 
+  logout(){
+    if(localStorage.getItem('isPlayer')){
+      localStorage.removeItem('isPlayer');
+      localStorage.removeItem('isBid');
+    }else if(localStorage.getItem('isScout')){
+      localStorage.removeItem('isScout');
+      localStorage.removeItem('isBid');
+    }else if(localStorage.getItem('isAdmin')){
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('isBid');
+    }
+    localStorage.removeItem('isLoggedin');
+  }
+
   deleteProfile() {
     const user = localStorage.getItem('isLoggedin');
     let username: string | undefined;
@@ -92,6 +106,7 @@ export class PlayerProfileComponent {
         response => {
           console.log('Sikeres válasz:', response);
           this.router.navigateByUrl('/');
+          this.logout();
         },
         error => {
           console.error('Hiba történt:', error);
