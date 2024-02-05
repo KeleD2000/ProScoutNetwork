@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faX } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -10,6 +10,7 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 export class HeaderComponent {
   isScrollingDown = false;
   faHamb = faBars
+  faClose = faX;
   isMobileNavActive: boolean = false;
   isItPlayer: boolean = false;
   isItScout: boolean = false;
@@ -57,6 +58,8 @@ export class HeaderComponent {
     }else if(localStorage.getItem('isAdmin')){
       this.isItAdmin = true;
     }
+
+    console.log(this.isMobileNavActive);
   }
 
 }

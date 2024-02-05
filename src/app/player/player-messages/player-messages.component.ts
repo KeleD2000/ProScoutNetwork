@@ -101,7 +101,7 @@ export class PlayerMessagesComponent {
         content: mess.message_content,
         sender_username: mess.senderUsername,
         user_type: 'sent',
-        image: ""
+        image: "assets/not-found.jpg"
       };
       this.fileService.getProfilePicBlob(sendMessageObject.sender_username).subscribe(
         (response: any) => {
@@ -109,8 +109,7 @@ export class PlayerMessagesComponent {
             const reader = new FileReader();
             reader.onload = () => {
               sendMessageObject.image = reader.result as string;
-              this.combinedMessages.push(sendMessageObject);
-              console.log(this.combinedMessages);
+
             };
             reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
           }
@@ -119,6 +118,8 @@ export class PlayerMessagesComponent {
           console.error('Error fetching profile picture:', error);
         }
       );
+      this.combinedMessages.push(sendMessageObject);
+      console.log(this.combinedMessages);
       this.ngZone.run(() => {
         this.changeDetector.detectChanges();
       });
@@ -169,7 +170,7 @@ export class PlayerMessagesComponent {
         },
         (error) => {
           console.error('Error fetching profile picture:', error);
-          reject(error);
+          resolve('assets/not-found.jpg');
         }
       );
     });
@@ -189,8 +190,7 @@ export class PlayerMessagesComponent {
             name: receiver[i].username,
             content: receiver[i].message_content,
             timestamp: receiver[i].timestamp,
-            isRightNow: false,
-            image: ""
+            image: "assets/not-found.jpg"
           };
 
           this.fileService.getProfilePicBlob(senderObject.name).subscribe(
@@ -207,6 +207,7 @@ export class PlayerMessagesComponent {
               console.error('Error fetching profile picture:', error);
             }
           );
+          console.log(senderObject);
 
           this.senderArray.push(senderObject);
         }
@@ -240,7 +241,7 @@ export class PlayerMessagesComponent {
       content: message.message_content,
       sender_username: message.senderUsername,
       user_type: 'received',
-      image: ""
+      image: "assets/not-found.jpg"
     };
 
     this.fileService.getProfilePicBlob(message.senderUsername).subscribe(
@@ -307,7 +308,6 @@ export class PlayerMessagesComponent {
     const then = new Date(timestamp);
     const diff = now.getTime() - then.getTime();
   
-    // Ellenőrizze, hogy a különbség nem NaN
     if (isNaN(diff)) {
       return "Éppen most";
     }
@@ -315,7 +315,6 @@ export class PlayerMessagesComponent {
     const minutes = Math.floor(diff / 60000); // milliszekundumok percben
     for (let i in this.senderArray) {
       if (minutes < 5) {
-        this.senderArray[i].isRightNow = true;
         return "Éppen most";
       } else if (minutes < 60) {
         return `${minutes} perccel ezelőtt`;

@@ -85,7 +85,7 @@ export class StaticsComponent {
         datasets: [
           {
             label: "A hirdetések százalékos aránya játékos hirdetésnél",
-            data: ['57.24', '58.79'],
+            data: this.avgPlayer,
             backgroundColor: this.generateRandomColors(2)
           }
         ]
@@ -218,6 +218,7 @@ export class StaticsComponent {
     }
 
     const response2: any = await this.staticsService.averagePercentageBySport().toPromise();
+    console.log(response2);
 
     for (const entry of response2) {
       this.sportPlayer.push(entry[0]);

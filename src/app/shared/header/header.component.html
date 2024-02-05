@@ -5,10 +5,11 @@
         <img src="/assets/logo-removebg-preview.png" alt="Logó kép" class="logo">
       </a>
   
-      <fa-icon [icon]="faHamb" class="mobile-nav-toggle mobile-nav-show" (click)="toggleMobileNav()"></fa-icon>
+      <fa-icon [ngClass]="{'d-none': isMobileNavActive}" [icon]="faHamb" class="mobile-nav-toggle mobile-nav-show d-none" (click)="toggleMobileNav()"></fa-icon>
+      <fa-icon [ngClass]="{'d-none': !isMobileNavActive, 'close-icon' : isMobileNavActive}" [icon]="faClose" class="mobile-nav-toggle mobile-nav-show" (click)="toggleMobileNav()"></fa-icon>
       
   
-      <nav id="navbar" class="navbar" [ngClass]="{'mobile-nav-active': isMobileNavActive}">
+      <nav id="navbar" class="navbar" [ngClass]="{'mobile-nav-active': isMobileNavActive, 'nav-right': isMobileNavActive}">
         <ul>
           <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a routerLink="/" class="active">Főoldal</a></li>
           <li *ngIf="!isItPlayer && !isItScout && !isItAdmin"><a routerLink="/us" >Rólunk</a></li>

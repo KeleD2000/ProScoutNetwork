@@ -81,7 +81,7 @@ export class ScoutMessagesComponent {
         content: mess.message_content,
         sender_username: mess.senderUsername,
         user_type: 'sent',
-        image: ""
+        image: "assets/not-found.jpg"
       };
       this.fileService.getProfilePicBlob(sendMessageObject.sender_username).subscribe(
         (response: any) => {
@@ -89,8 +89,6 @@ export class ScoutMessagesComponent {
             const reader = new FileReader();
             reader.onload = () => {
               sendMessageObject.image = reader.result as string;
-              this.combinedMessages.push(sendMessageObject);
-              console.log(this.combinedMessages);
             };
             reader.readAsDataURL(new Blob([response], { type: 'image/png' }));
           }
@@ -99,6 +97,9 @@ export class ScoutMessagesComponent {
           console.error('Error fetching profile picture:', error);
         }
       );
+      this.combinedMessages.push(sendMessageObject);
+      console.log(this.combinedMessages);
+
       this.changeDetector.detectChanges();
     });
   }
@@ -143,7 +144,7 @@ export class ScoutMessagesComponent {
         },
         (error) => {
           console.error('Error fetching profile picture:', error);
-          reject(error);
+          resolve('assets/not-found.jpg');
         }
       );
     });
@@ -163,8 +164,7 @@ export class ScoutMessagesComponent {
             name: receiver[i].username,
             content: receiver[i].message_content,
             timestamp: receiver[i].timestamp,
-            isRightNow: false,
-            image: ""
+            image: "assets/not-found.jpg"
           };
 
           this.fileService.getProfilePicBlob(senderObject.name).subscribe(
@@ -179,6 +179,7 @@ export class ScoutMessagesComponent {
             },
             (error) => {
               console.error('Error fetching profile picture:', error);
+              senderObject.image = 'assets/not-found.jpg';
             }
           );
 
@@ -214,7 +215,7 @@ export class ScoutMessagesComponent {
       content: message.message_content,
       sender_username: message.senderUsername,
       user_type: 'received',
-      image: ""
+      image: "assets/not-found.jpg"
     };
 
     this.fileService.getProfilePicBlob(message.senderUsername).subscribe(
@@ -267,7 +268,7 @@ export class ScoutMessagesComponent {
       content: message.message_content,
       sender_username: message.senderUsername,
       user_type: 'received',
-      image: ""
+      image: "assets/not-found.jpg"
     };
 
     this.combinedMessages.push(chatMessage);
@@ -279,10 +280,13 @@ export class ScoutMessagesComponent {
     const then = new Date(timestamp);
     const diff = now.getTime() - then.getTime();
 
+    if (isNaN(diff)) {
+      return "Éppen most";
+    }
+
     const minutes = Math.floor(diff / 60000); // milliszekundumok percben
     for (let i in this.senderArray) {
       if (minutes < 5) {
-        this.senderArray[i].isRightNow = true;
         return "Éppen most";
       } else if (minutes < 60) {
         return `${minutes} perccel ezelőtt`;
