@@ -43,6 +43,7 @@ export class PlayerMessagesComponent {
   searchUsername: string = '';
   theSearcherIsScout: boolean = false;
   theSearcherIsPlayer: boolean = false;
+  isHasSender: boolean = false;
   searchUserId: number = 0;
   senderUser?: User;
   combinedMessages: any[] = [];
@@ -213,6 +214,9 @@ export class PlayerMessagesComponent {
         }
 
         console.log(this.senderArray);
+        if(this.senderArray.length === 0){
+          this.isHasSender = true;
+        }
       });
 
   }

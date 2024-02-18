@@ -43,7 +43,7 @@
                             <input formControlName="lastname" type="text" class="form-control" id="field1"
                               name="field1">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('lastname')?.errors?.['required'] && (registerFormPlayer.get('lastname')?.dirty || registerFormPlayer.get('lastname')?.touched)"
                             class="error-message mb-3">
                             Vezetéknév megadása kötelező
@@ -53,7 +53,7 @@
                             <input formControlName="firstname" type="text" class="form-control" id="field2"
                               name="field2">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('firstname')?.errors?.['required'] && (registerFormPlayer.get('firstname')?.dirty || registerFormPlayer.get('firstname')?.touched)"
                             class="error-message mb-3">
                             Keresztnév megadása kötelező
@@ -62,12 +62,12 @@
                             <label for="field3">E-mail</label>
                             <input formControlName="email" type="text" class="form-control" id="field3" name="field3">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('email')?.errors?.['required'] && (registerFormPlayer.get('email')?.dirty || registerFormPlayer.get('email')?.touched)"
                             class="error-message mb-3">
                             Email cím megadása kötelező
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('email')?.errors?.['email'] && (registerFormPlayer.get('email')?.dirty || registerFormPlayer.get('email')?.touched)"
                             class="error-message mb-3">
                             Adj meg érvényes email címet
@@ -77,7 +77,7 @@
                             <input formControlName="username" type="text" class="form-control" id="field4"
                               name="field4">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('username')?.errors?.['required'] && (registerFormPlayer.get('username')?.dirty || registerFormPlayer.get('username')?.touched)"
                             class="error-message mb-3">
                             Felhasználónév megadása kötelező
@@ -86,7 +86,7 @@
                             <label for="field5">Sportág</label>
                             <input formControlName="sport" type="text" class="form-control" id="field5" name="field5">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('sport')?.errors?.['required'] && (registerFormPlayer.get('sport')?.dirty || registerFormPlayer.get('sport')?.touched)"
                             class="error-message mb-3">
                             Sportág megadása kötelező
@@ -96,7 +96,7 @@
                             <input formControlName="position" type="text" class="form-control" id="field5"
                               name="field5">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('position')?.errors?.['required'] && (registerFormPlayer.get('position')?.dirty || registerFormPlayer.get('position')?.touched)"
                             class="error-message mb-3">
                             Pozició megadása kötelező
@@ -106,7 +106,7 @@
                             <input formControlName="location" type="text" class="form-control" id="field6"
                               name="field6">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('location')?.errors?.['required'] && (registerFormPlayer.get('location')?.dirty || registerFormPlayer.get('location')?.touched)"
                             class="error-message mb-3">
                             Hely megadása kötelező
@@ -115,7 +115,7 @@
                             <label for="field7">Életkor</label>
                             <input formControlName="age" type="text" class="form-control" id="field7" name="field7">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('age')?.errors?.['required'] && (registerFormPlayer.get('age')?.dirty || registerFormPlayer.get('age')?.touched)"
                             class="error-message mb-3">
                             Életkor megadása kötelező
@@ -125,12 +125,12 @@
                             <input formControlName="password" type="password" class="form-control" id="field8"
                               name="field8" minlength="8">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
                             class="error-message mb-3">
                             Jelszó megadása kötelező
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('password')?.errors?.['minlength'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
                             class="error-message mb-3">
                             A jelszónak legalább 8 karakter hosszúnak kell lennie.
@@ -140,13 +140,16 @@
                             <input formControlName="passwordAccept" type="password" class="form-control" id="field9"
                               name="field9">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormPlayer.get('passwordAccept')?.errors?.['required'] && (registerFormPlayer.get('passwordAccept')?.dirty || registerFormPlayer.get('passwordAccept')?.touched)"
                             class="error-message mb-3">
                             Jelszó megadása kötelező
                           </div>
                           <div *ngIf="registerFormPlayer.hasError('passwordMismatch')" class="error-message mb-3">
                             Jelszók nem egyeznek meg.
+                          </div>
+                          <div data-aos="zoom-in-down" data-aos-delay="100" *ngIf="isError" class="error-message mb-3">
+                            {{errorMessage}}
                           </div>
                           <div class="text-center">
                             <button class="regist-button" (click)="onSubmitPlayer()">Regisztráció</button>
@@ -162,7 +165,7 @@
                             <input formControlName="lastname" type="text" class="form-control" id="field1"
                               name="field1">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('lastname')?.errors?.['required'] && (registerFormScout.get('lastname')?.dirty || registerFormScout.get('lastname')?.touched)"
                             class="error-message mb-3">
                             Vezetéknév megadása kötelező
@@ -172,7 +175,7 @@
                             <input formControlName="firstname" type="text" class="form-control" id="field2"
                               name="field2">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('firstname')?.errors?.['required'] && (registerFormScout.get('firstname')?.dirty || registerFormScout.get('firstname')?.touched)"
                             class="error-message mb-3">
                             Keresztnév megadása kötelező
@@ -181,12 +184,12 @@
                             <label for="field3">E-mail</label>
                             <input formControlName="email" type="text" class="form-control" id="field3" name="field3">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('email')?.errors?.['required'] && (registerFormScout.get('email')?.dirty || registerFormScout.get('email')?.touched)"
                             class="error-message mb-3">
                             Email megadása kötelező
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('email')?.errors?.['email'] && (registerFormScout.get('email')?.dirty || registerFormScout.get('email')?.touched)"
                             class="error-message mb-3">
                             Adj meg érvényes email címet
@@ -196,7 +199,7 @@
                             <input formControlName="username" type="text" class="form-control" id="field4"
                               name="field4">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('username')?.errors?.['required'] && (registerFormScout.get('username')?.dirty || registerFormScout.get('username')?.touched)"
                             class="error-message mb-3">
                             Felhasználó név megadása kötelező
@@ -205,7 +208,7 @@
                             <label for="field5">Sport</label>
                             <input formControlName="sport" type="text" class="form-control" id="field5" name="field5">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('sport')?.errors?.['required'] && (registerFormScout.get('sport')?.dirty || registerFormScout.get('sport')?.touched)"
                             class="error-message mb-3">
                             Sport megadása kötelező
@@ -214,7 +217,7 @@
                             <label for="field5">Csapat</label>
                             <input formControlName="team" type="text" class="form-control" id="field5" name="field5">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('team')?.errors?.['required'] && (registerFormScout.get('team')?.dirty || registerFormScout.get('team')?.touched)"
                             class="error-message mb-3">
                             Csapat megadása kötelező
@@ -224,28 +227,31 @@
                             <input formControlName="password" type="password" class="form-control" id="field1"
                               name="field6" minlength="8">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('password')?.errors?.['required'] && (registerFormPlayer.get('password')?.dirty || registerFormPlayer.get('password')?.touched)"
                             class="error-message mb-3">
                             Jelszó megadása kötelező
                           </div>
-                          <div
-                          *ngIf="registerFormScout.get('password')?.errors?.['minlength'] && (registerFormScout.get('password')?.dirty || registerFormScout.get('password')?.touched)"
-                          class="error-message mb-3">
-                          A jelszónak legalább 8 karakter hosszúnak kell lennie.
-                        </div>
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
+                            *ngIf="registerFormScout.get('password')?.errors?.['minlength'] && (registerFormScout.get('password')?.dirty || registerFormScout.get('password')?.touched)"
+                            class="error-message mb-3">
+                            A jelszónak legalább 8 karakter hosszúnak kell lennie.
+                          </div>
                           <div class="mb-3">
                             <label for="field6">Jelszó megadása mégegyszer</label>
                             <input formControlName="passwordAccept" type="password" class="form-control" id="field1"
                               name="field6">
                           </div>
-                          <div
+                          <div data-aos="zoom-in-down" data-aos-delay="100"
                             *ngIf="registerFormScout.get('passwordAccept')?.errors?.['required'] && (registerFormPlayer.get('passwordAccept')?.dirty || registerFormPlayer.get('passwordAccept')?.touched)"
                             class="error-message mb-3">
                             Jelszó megadása kötelező
                           </div>
                           <div *ngIf="registerFormScout.hasError('passwordMismatch')" class="error-message mb-3">
                             Jelszók nem egyeznek meg.
+                          </div>
+                          <div data-aos="zoom-in-down" data-aos-delay="100" *ngIf="isError" class="error-message mb-3">
+                            {{errorMessage}}
                           </div>
                           <div class="text-center">
                             <button (click)="onSubmitScout()" class="regist-button">Regisztráció</button>

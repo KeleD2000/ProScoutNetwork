@@ -16,6 +16,8 @@ export class SigninComponent {
   isItPlayer: boolean = false;
   isItScout: boolean = false;
   isItAdmin: boolean = false;
+  isError: boolean = false;
+  errorMessage: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router){
     this.loginForm = this.fb.group({
@@ -52,6 +54,11 @@ export class SigninComponent {
           }
         }
         
+      }, (error) => {
+        if(error.status === 400){
+          this.isError = true;
+          this.errorMessage = error.error.message;
+        }
       })
     }else{
       console.log("Sikertelen bejelentkezés.");

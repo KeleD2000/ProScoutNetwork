@@ -26,6 +26,8 @@ export class SignupComponent {
   registerFormPlayer!: FormGroup
   registerFormScout!: FormGroup
   showForm: string = 'none';
+  isError: boolean = false;
+  errorMessage: string = '';
   passwordsMatch: boolean = true;
 
   constructor(private fb: FormBuilder, private router : Router, private authService: AuthService) {
@@ -75,9 +77,13 @@ export class SignupComponent {
       this.authService.registerScout(scoutData).subscribe(res => {
         console.log('Sikeres mentés', res);
         this.router.navigate(['/signin']);
-      }, error => {
-        console.error('Mentés sikertelen', error);
-      });
+      }, (error) => {
+        console.log(error);
+        if(error.status === 400){
+          this.isError = true;
+          this.errorMessage = error.error.message;
+        }
+      })
     }
   }
 
@@ -98,11 +104,14 @@ export class SignupComponent {
       this.authService.registerPlayer(playerData).subscribe(res => {
         console.log('Sikeres mentés', res);
         this.router.navigate(['/signin']);
-      }, error => {
-        console.error('Mentés sikertelen', error);
-      });
+      }, (error) => {
+        console.log(error);
+        if(error.status === 400){
+          this.isError = true;
+          this.errorMessage = error.error.message;
+        }
+      })
     }
-    console.log(this.registerFormPlayer.get('password')?.value)
   }
 
   ngOnInit() {

@@ -22,7 +22,7 @@
                                 <input formControlName="username" type="text" class="form-control" id="field1"
                                     name="field1">
                             </div>
-                            <div *ngIf="loginForm.get('username')?.errors?.['required'] && (loginForm.get('username')?.dirty || loginForm.get('username')?.touched)"
+                            <div data-aos="zoom-in-down" data-aos-delay="100" *ngIf="loginForm.get('username')?.errors?.['required'] && (loginForm.get('username')?.dirty || loginForm.get('username')?.touched)"
                                 class="error-message mb-3">
                                 Felhasználó név megadása kötelező
                             </div>
@@ -31,16 +31,21 @@
                                 <input formControlName="password" type="password" class="form-control" id="field2"
                                     name="field2">
                             </div>
-                            <div *ngIf="loginForm.get('password')?.errors?.['required'] && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)"
+                            <div data-aos="zoom-in-down" data-aos-delay="100" *ngIf="loginForm.get('password')?.errors?.['required'] && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)"
                                 class="error-message mb-3">
                                 Jelszó megadása kötelező
                             </div>
                         </div>
                     </form>
                     <div class="col-md-6 m-3 d-flex flex-column align-items-center">
+                        <div data-aos="zoom-in-down" data-aos-delay="100" *ngIf="isError" class="error-message mb-3">
+                            {{errorMessage}}
+                        </div>
                         <div data-aos="flip-left" data-aos-delay="100">
                             <button class="btn btn-primary left-button" (click)="onSubmit()">Bejelentkezés</button>
                         </div>
+                        <a class="a-reg" data-aos="flip-left" data-aos-delay="100" routerLink="/signup">Esetleg még
+                            nincs fiókod?<p>Kattints ide a regisztrációhoz.</p></a>
                         <img src="assets/logo-removebg-preview.png" class="img" data-aos="flip-right"
                             data-aos-delay="100">
                     </div>

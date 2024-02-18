@@ -31,6 +31,7 @@ export class ScoutMessagesComponent {
   searchMessage: string = '';
   theSearcherIsScout: boolean = false;
   theSearcherIsPlayer: boolean = false;
+  isHasSender: boolean = false;
   message: string = '';
   rightNow: boolean = false;
   senderUser?: User;
@@ -187,6 +188,9 @@ export class ScoutMessagesComponent {
         }
 
         console.log(this.senderArray);
+        if(this.senderArray.length === 0){
+          this.isHasSender = true;
+        }
       });
 
   }

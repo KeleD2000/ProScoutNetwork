@@ -19,6 +19,11 @@
             <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0" data-aos="zoom-in" data-aos-delay="300">
 
               <h5 class="font-weight-bold mb-3 text-center text-lg-start">Emberek</h5>
+              <div *ngIf="isHasSender" class="card">
+                <div class="card-body">
+                  Jelenleg nincs, olyan ember akivel üzenet küldést kezdeményeztél.
+                </div>
+              </div>
 
               <div class="card">
                 <div class="card-body" *ngFor="let sender of senderArray" data-aos="zoom-in" data-aos-delay="300">
