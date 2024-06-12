@@ -44,6 +44,8 @@ export class ScoutMainComponent {
   searchTerm: string = '';
   selectedFile: File | null = null;
   isSearched: boolean = false;
+  isError: boolean = false;
+  errorMessage: string = '';
   adsForm: FormGroup
 
   constructor(private scoutAdsService: ScoutAdsService, private fileService: FileService,
@@ -240,6 +242,12 @@ export class ScoutMainComponent {
         }
       }
 
+    }, (error) => {
+      console.log(error);
+      if(error.status === 400){
+        this.isError = true;
+        this.errorMessage = error.error.message;
+      }
     });
     this.isSearched = true;
   }

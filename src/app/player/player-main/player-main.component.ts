@@ -43,6 +43,8 @@ export class PlayerMainComponent {
   selectedFile: File | null = null;
   faBack = faBackward;
   adsForm: FormGroup
+  isError: boolean = false;
+  errorMessage: string = '';
 
   constructor(private playerAdsService: PlayerAdsService, private fileService: FileService,
     private userService: UserService, private scoutAdsService: ScoutAdsService, private router: Router,
@@ -228,6 +230,12 @@ export class PlayerMainComponent {
         }
       }
 
+    }, (error) => {
+      console.log(error);
+      if(error.status === 400){
+        this.isError = true;
+        this.errorMessage = error.error.message;
+      }
     });
     this.isSearched = true;
   }
